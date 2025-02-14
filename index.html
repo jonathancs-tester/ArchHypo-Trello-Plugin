@@ -48,32 +48,71 @@
             text: "ArchHypo Metrics",
             callback: function (t) {
               return t.cards('all').then(function (cards) {
-                if (!cards) {
+                if (!cards || cards.length === 0) {
                   return t.popup({
                     title: 'Erro',
                     items: [{ text: 'Nenhum cartão encontrado!', interactive: false }]
                   });
                 }
+
+                let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+                let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+                let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+
                 let cardPromises = cards.map(function (card) {
                   return Promise.all([
                     t.get(card.id, 'shared', 'incerteza'),
                     t.get(card.id, 'shared', 'impacto')
                   ]).then(function ([incerteza, impacto]) {
-                    return { incerteza: parseFloat(incerteza) || 0, impacto: parseFloat(impacto) || 0 };
+                    if (levels.includes(incerteza)) {
+                      countIncerteza[incerteza]++;
+                    }
+                    if (levels.includes(impacto)) {
+                      countImpacto[impacto]++;
+                    }
+                  }).catch(function (error) {
+                    console.error(`Erro ao obter valores do card ${card.id}:`, error);
                   });
                 });
-                return Promise.all(cardPromises).then(function (results) {
-                  let totalIncerteza = results.reduce((sum, r) => sum + r.incerteza, 0);
-                  let totalImpacto = results.reduce((sum, r) => sum + r.impacto, 0);
+
+                return Promise.all(cardPromises).then(function () {
+                  let items = [
+                    { text: "### Incerteza ###", interactive: false },
+                    ...levels.map(level => ({ text: `${level}: ${countIncerteza[level]}`, interactive: false })),
+                    { text: "### Impacto ###", interactive: false },
+                    ...levels.map(level => ({ text: `${level}: ${countImpacto[level]}`, interactive: false }))
+                  ];
+
                   return t.popup({
                     title: 'ArchHypo Metrics',
-                    items: [
-                      { text: `Total Incerteza: ${totalIncerteza}`, interactive: false },
-                      { text: `Total Impacto: ${totalImpacto}`, interactive: false }
-                    ]
+                    items: items
                   });
                 });
+              }).catch(function (error) {
+                console.error('Erro ao obter cartões:', error);
               });
+            }
+          },
+          {
+            icon: 'https://img.icons8.com/ios/50/000000/combo-chart.png', // Ícone opcional
+            text: 'Novo Card Incerteza',
+            callback: function (t) {
+                return t.popup({
+                    title: 'Criar Card Incerteza',
+                    url: 'create-card.html',
+                    height: 250
+                });
+            }
+          },
+          {
+            icon: 'https://img.icons8.com/ios/50/000000/combo-chart.png', // Ícone opcional
+            text: 'Novo GenAI Card Incerteza',
+            callback: function (t) {
+                return t.popup({
+                    title: 'Criar Card Incerteza - GenAI',
+                    url: 'create-card-genai.html',
+                    height: 250
+                });
             }
           }
         ];
