@@ -4,15 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Card no Trello com Gemini API</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #0079bf;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0079bf;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #026aa7;
+        }
+
+        button:active {
+            background-color: #005b94;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+    </style>
 </head>
 <body>
 
-    <h2>Gerar Card de Incerteza</h2>
-    <label for="incerteza">Digite a incerteza:</label>
-    <input type="text" id="incerteza" placeholder="Ex: Incerteza da IA no mercado">
-    <button id="botaoCriar" onclick="criarCard()">Criar Card</button>
-    
-    <p id="status"></p>
+    <div class="container">
+        <h2>Gerar Card de Incerteza</h2>
+        <label for="incerteza">Digite a incerteza:</label>
+        <input type="text" id="incerteza" placeholder="Ex: Incerteza da IA no mercado" />
+        <button id="botaoCriar" onclick="criarCard()">Criar Card</button>
+        
+        <p id="status"></p>
+    </div>
 
     <script>
         const BACKEND_URL = "https://elaborate-pasca-92084f.netlify.app/.netlify/functions"; // Chama nosso servidor backend
@@ -39,16 +126,19 @@
 
             if (!incerteza) {
                 status.innerText = "❌ Por favor, digite uma incerteza.";
+                status.className = 'error';
                 return;
             }
 
             botao.disabled = true;
             status.innerHTML = "⏳ Gerando detalhes do card...";
+            status.className = '';
 
             try {
                 const detalhes = await gerarDetalhesCard(incerteza);
 
                 status.innerText = `✅ Detalhes gerados:\n${detalhes}`;
+                status.className = 'success';
 
                 // Criar card no Trello automaticamente
                 await fetch(`${TRELLO_API_URL}?idList=${TRELLO_LIST_ID}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
@@ -64,6 +154,7 @@
             } catch (error) {
                 console.error(error);
                 status.innerText = "❌ Erro ao gerar/criar o card.";
+                status.className = 'error';
             } finally {
                 botao.disabled = false;
             }
