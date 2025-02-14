@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Card no Trello com Gemini API</title>
+</head>
+<body>
+
+    <h2>Gerar Card de Incerteza</h2>
+    <label for="incerteza">Digite a incerteza:</label>
+    <input type="text" id="incerteza" placeholder="Ex: Incerteza da IA no mercado">
+    <button id="botaoCriar" onclick="criarCard()">Criar Card</button>
+    
+    <p id="status"></p>
+
+    <script>
+        const BACKEND_URL = "https://elaborate-pasca-92084f.netlify.app/.netlify/functions"; // Chama nosso servidor backend
+        const TRELLO_API_URL = "https://api.trello.com/1/cards";
+        const TRELLO_LIST_ID = "6692d2e23c532f46419fc230"; // ID da lista no Trello
+        const TRELLO_KEY = "eb9d96c766c0a0ba5b9a4db8e940ed4d";
+        const TRELLO_TOKEN = "ATTA3d2621b57146b60ce3b3fa21dc193ad525c1d94ee2bfef004d1a24ed958a92332C751758";
+
+        async function gerarDetalhesCard(incerteza) {
+            const response = await fetch(`${BACKEND_URL}/gerar-card`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ campoIncerteza: incerteza })
+            });
+
+            const data = await response.json();
+            return data.detalhes; // Retorna os detalhes gerados
+        }
+
+        async function criarCard() {
+            const incerteza = document.getElementById("incerteza").value.trim();
+            const botao = document.getElementById("botaoCriar");
+            const status = document.getElementById("status");
+
+            if (!incerteza) {
+                status.innerText = "❌ Por favor, digite uma incerteza.";
+                return;
+            }
+
+            botao.disabled = true;
+            status.innerHTML = "⏳ Gerando detalhes do card...";
+
+            try {
+                const detalhes = await gerarDetalhesCard(incerteza);
+
+                status.innerText = `✅ Detalhes gerados:\n${detalhes}`;
+
+                // Criar card no Trello automaticamente
+                await fetch(`${TRELLO_API_URL}?idList=${TRELLO_LIST_ID}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: `Incerteza: ${incerteza}`,
+                        desc: detalhes
+                    })
+                });
+
+                status.innerText = "✅ Card criado no Trello com sucesso!";
+            } catch (error) {
+                console.error(error);
+                status.innerText = "❌ Erro ao gerar/criar o card.";
+            } finally {
+                botao.disabled = false;
+            }
+        }
+    </script>
+
+</body>
+</html>
