@@ -6,7 +6,7 @@
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
     <title>Criar Card Incerteza</title>
     <style>
-        /* Estilo baseado no Trello */
+        /* Estilo geral do Trello */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #0079bf; /* Azul do Trello */
@@ -17,7 +17,38 @@
             margin: 0;
         }
 
-        .container {
+        /* Botão para abrir o popup */
+        .open-popup-btn {
+            background-color: #0079bf;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .open-popup-btn:hover {
+            background-color: #026aa7;
+        }
+
+        /* Fundo do popup */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Conteúdo do popup */
+        .popup-content {
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -25,32 +56,40 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
+            position: relative;
         }
 
-        h2 {
-            margin-bottom: 15px;
-            color: #17394d; /* Azul escuro do Trello */
+        /* Botão de fechar */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
             font-size: 18px;
+            cursor: pointer;
         }
 
+        /* Inputs */
         input {
             width: 100%;
             padding: 10px;
             margin: 5px 0;
-            border: 2px solid #dfe1e6; /* Cor de borda dos inputs do Trello */
+            border: 2px solid #dfe1e6;
             border-radius: 3px;
             font-size: 14px;
             transition: border-color 0.2s;
         }
 
         input:focus {
-            border-color: #0079bf; /* Azul Trello */
+            border-color: #0079bf;
             outline: none;
         }
 
+        /* Botão de envio */
         button {
             width: 100%;
-            background-color: #0079bf; /* Azul Trello */
+            background-color: #0079bf;
             color: white;
             border: none;
             padding: 10px;
@@ -63,30 +102,39 @@
         }
 
         button:hover {
-            background-color: #026aa7; /* Azul mais escuro do Trello */
-        }
-
-        button:active {
-            background-color: #005b94;
+            background-color: #026aa7;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Criar Card Incerteza</h2>
-        <form id="create-card-form">
-            <input type="text" id="dominio" placeholder="Domínio do problema" required />
-            <input type="text" id="ponto" placeholder="Ponto de alerta" required />
-            <input type="text" id="hipotese" placeholder="Hipótese" required />
-            <input type="text" id="incerteza" placeholder="Incerteza" required />
-            <input type="text" id="impacto" placeholder="Impacto" required />
-            <input type="text" id="plano" placeholder="Plano" required />
-            <button type="submit">Criar Card</button>
-        </form>
+    <button class="open-popup-btn" onclick="openPopup()">Criar Card</button>
+
+    <div class="popup-overlay" id="popup">
+        <div class="popup-content">
+            <button class="close-btn" onclick="closePopup()">✖</button>
+            <h2>Criar Card Incerteza</h2>
+            <form id="create-card-form">
+                <input type="text" id="dominio" placeholder="Domínio do problema" required />
+                <input type="text" id="ponto" placeholder="Ponto de alerta" required />
+                <input type="text" id="hipotese" placeholder="Hipótese" required />
+                <input type="text" id="incerteza" placeholder="Incerteza" required />
+                <input type="text" id="impacto" placeholder="Impacto" required />
+                <input type="text" id="plano" placeholder="Plano" required />
+                <button type="submit">Criar Card</button>
+            </form>
+        </div>
     </div>
 
     <script>
         var t = window.TrelloPowerUp.iframe();
+
+        function openPopup() {
+            document.getElementById("popup").style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
 
         document.getElementById('create-card-form').addEventListener('submit', function (e) {
             e.preventDefault();
@@ -112,6 +160,7 @@
                 .then(response => response.json())
                 .then(function (result) {
                     console.log("Card criado!", result);
+                    closePopup(); // Fecha o popup após a criação do card
                     t.closePopup();
                 })
                 .catch(function (error) {
