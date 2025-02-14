@@ -38,14 +38,16 @@ export async function handler(event) {
         const prompt = {
             contents: [{
                 parts: [{
-                    text: `Crie um card de incerteza com os seguintes campos:
-                    - Incerteza: ${campoIncerteza}
-                    - Domínio do problema
-                    - Ponto de alerta
-                    - Hipótese
+                    text: `Crie um card de Incerteza: ${campoIncerteza} com os seguintes campos:
+                    - Domínio do problema(Performance/Segurança/Confiabilidade/Flexibilidade/Usabilidade/Produtividade): pode ser um ou mais valores
+                    - Ponto de alerta (uma unica frase)
+                    - Hipótese (uma unica frase)
                     - Incerteza (Muito Baixo/Baixo/Médio/Alto/Muito Alto)
                     - Impacto (Muito Baixo/Baixo/Médio/Alto/Muito Alto)
-                    - Plano`
+                    - Plano (criar em forma de tópicos)
+                    
+                    Obs: Remover a primeira linha: Card de Incerteza
+                    `
                 }]
             }]
         };
