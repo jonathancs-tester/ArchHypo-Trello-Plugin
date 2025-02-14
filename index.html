@@ -97,6 +97,17 @@
                 console.error('Erro ao obter cartões:', error);
               });
             }
+          },
+          {
+            icon: 'https://img.icons8.com/ios/50/000000/combo-chart.png', // Ícone opcional
+            text: 'Novo Card Incerteza',
+            callback: function (t) {
+                return t.popup({
+                    title: 'Criar Card Incerteza',
+                    url: 'create-card.html',
+                    height: 250
+                });
+            }
           }
         ];
       },

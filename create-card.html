@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+<body>
+    <h2>Criar Card Incerteza</h2>
+    <form id="create-card-form">
+        <input type="text" id="dominio" placeholder="Domínio do problema" required /><br>
+        <input type="text" id="ponto" placeholder="Ponto de alerta" required /><br>
+        <input type="text" id="hipotese" placeholder="Hipótese" required /><br>
+        <input type="text" id="risco" placeholder="Risco" required /><br>
+        <input type="text" id="impacto" placeholder="Impacto" required /><br>
+        <input type="text" id="plano" placeholder="Plano" required /><br>
+        <button type="submit">Criar Card</button>
+    </form>
+
+    <script>
+        var t = window.TrelloPowerUp.iframe();
+
+        document.getElementById('create-card-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var data = {
+                name: "Incerteza: " + document.getElementById('dominio').value,
+                desc: 
+                    "**Ponto de alerta:** " + document.getElementById('ponto').value + "\\n" +
+                    "**Hipótese:** " + document.getElementById('hipotese').value + "\\n" +
+                    "**Risco:** " + document.getElementById('risco').value + "\\n" +
+                    "**Impacto:** " + document.getElementById('impacto').value + "\\n" +
+                    "**Plano:** " + document.getElementById('plano').value
+            };
+
+            t.board('id')
+                .then(function (board) {
+                    return fetch(`https://api.trello.com/1/cards?idList=YOUR_LIST_ID&key=YOUR_API_KEY&token=YOUR_TOKEN`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    });
+                })
+                .then(response => response.json())
+                .then(function (result) {
+                    console.log("Card criado!", result);
+                    t.closePopup();
+                })
+                .catch(function (error) {
+                    console.error("Erro ao criar card:", error);
+                });
+        });
+    </script>
+</body>
+</html>
