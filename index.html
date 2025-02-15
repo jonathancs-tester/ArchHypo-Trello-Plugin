@@ -96,16 +96,43 @@
                 });
 
                 return Promise.all(cardPromises).then(function () {
-                  let items = [
-                    { text: "### Incerteza ###", interactive: false },
-                    ...levels.map(level => ({ text: `${level}: ${countIncerteza[level]}`, interactive: false })),
-                    { text: "### Impacto ###", interactive: false },
-                    ...levels.map(level => ({ text: `${level}: ${countImpacto[level]}`, interactive: false }))
-                  ];
+                  let canvas = document.createElement('canvas');
+                  canvas.id = 'myChart';
+                  let ctx = canvas.getContext('2d');
+
+                  let myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                      labels: levels,
+                      datasets: [
+                        {
+                          label: 'Incerteza',
+                          data: levels.map(level => countIncerteza[level]),
+                          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                          borderColor: 'rgba(75, 192, 192, 1)',
+                          borderWidth: 1
+                        },
+                        {
+                          label: 'Impacto',
+                          data: levels.map(level => countImpacto[level]),
+                          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                          borderColor: 'rgba(153, 102, 255, 1)',
+                          borderWidth: 1
+                        }
+                      ]
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true
+                        }
+                      }
+                    }
+                  });
 
                   return t.popup({
                     title: 'ArchHypo Metrics',
-                    items: items
+                    items: [{ html: canvas }]
                   });
                 });
               }).catch(function (error) {
