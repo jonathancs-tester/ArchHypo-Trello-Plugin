@@ -44,10 +44,7 @@ export async function handler(event) {
                     - Hipótese (uma unica frase)
                     - Incerteza (Muito Baixo/Baixo/Médio/Alto/Muito Alto)
                     - Impacto (Muito Baixo/Baixo/Médio/Alto/Muito Alto)
-                    - Plano (criar em forma de tópicos)
-                    
-                    Obs: Remover a primeira linha: Card de Incerteza
-                    `
+                    - Plano (criar em forma de tópicos)`
                 }]
             }]
         };
