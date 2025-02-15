@@ -13,13 +13,12 @@
 </head>
 <body>
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
           return [
               {
-                  icon: "https://img.icons8.com/ios/50/000000/combo-chart.png",
+                  icon: "https://img.icons8.com/ios/50/000000/process.png",
                   text: "Adicionar Campos de Incerteza",
                   callback: function (t) {
                       return t.card('desc') // Obtém a descrição do card
@@ -28,7 +27,7 @@
                               
                               // Função para extrair valores da descrição
                               function extrairValor(chave) {
-                                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*?)(?:\\s*\\*\\*Domínio do problema:\\s*\\*\\*\\s*(.*?))?(?:\\s*\\*\\*Impacto:\\s*\\*\\*\\s*(.*))?`, "i");
+                                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
                                   const match = descricao.match(regex);
                                   return match ? match[1].trim() : "";
                               }
@@ -68,14 +67,6 @@
             icon: "https://img.icons8.com/ios/50/000000/combo-chart.png",
             text: "ArchHypo Metrics",
             callback: function (t) {
-              // Verifica se o Chart.js está carregado
-              if (typeof Chart === 'undefined') {
-                return t.popup({
-                  title: 'Erro',
-                  items: [{ text: 'Chart.js não foi carregado!', interactive: false }]
-                });
-              }
-
               return t.cards('all').then(function (cards) {
                 if (!cards || cards.length === 0) {
                   return t.popup({
@@ -105,43 +96,16 @@
                 });
 
                 return Promise.all(cardPromises).then(function () {
-                  let canvas = document.createElement('canvas');
-                  canvas.id = 'myChart';
-                  let ctx = canvas.getContext('2d');
-
-                  let myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                      labels: levels,
-                      datasets: [
-                        {
-                          label: 'Incerteza',
-                          data: levels.map(level => countIncerteza[level]),
-                          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                          borderColor: 'rgba(75, 192, 192, 1)',
-                          borderWidth: 1
-                        },
-                        {
-                          label: 'Impacto',
-                          data: levels.map(level => countImpacto[level]),
-                          backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                          borderColor: 'rgba(153, 102, 255, 1)',
-                          borderWidth: 1
-                        }
-                      ]
-                    },
-                    options: {
-                      scales: {
-                        y: {
-                          beginAtZero: true
-                        }
-                      }
-                    }
-                  });
+                  let items = [
+                    { text: "### Incerteza ###", interactive: false },
+                    ...levels.map(level => ({ text: `${level}: ${countIncerteza[level]}`, interactive: false })),
+                    { text: "### Impacto ###", interactive: false },
+                    ...levels.map(level => ({ text: `${level}: ${countImpacto[level]}`, interactive: false }))
+                  ];
 
                   return t.popup({
                     title: 'ArchHypo Metrics',
-                    items: [{ html: canvas }]
+                    items: items
                   });
                 });
               }).catch(function (error) {
@@ -150,8 +114,8 @@
             }
           },
           {
-            icon: 'https://banner2.cleanpng.com/20210429/yix/transparent-add-icon-utilities-icon-add-file-icon-608a383fec0a10.4845369116196711039668.jpg', // Ícone opcional
-            text: 'Nova Incerteza',
+            icon: 'https://img.icons8.com/ios/50/000000/plus.png', // Ícone opcional
+            text: 'Novo Card Incerteza',
             callback: function (t) {
                 return t.popup({
                     title: 'Criar Card Incerteza',
@@ -161,7 +125,7 @@
             }
           },
           {
-            icon: 'https://w7.pngwing.com/pngs/150/625/png-transparent-artificial-intelligence-ai-chip-computer-technology-artificial-intelligence-icon.png', // Ícone opcional
+            icon: 'https://img.icons8.com/ios/50/000000/ai.png', // Ícone opcional
             text: 'Incerteza GenAI',
             callback: function (t) {
                 return t.popup({
@@ -178,7 +142,7 @@
           let badges = [];
           if (data.incerteza) badges.push({ text: `Incerteza: ${data.incerteza}`, color: 'red' });
           if (data.impacto) badges.push({ text: `Impacto: ${data.impacto}`, color: 'blue' });
-          if (data.dominio_problema) badges.push({ text: `Domínio: ${data.dominio_problema}`, color: 'green' });
+          //if (data.dominio_problema) badges.push({ text: `Domínio: ${data.dominio_problema}`, color: 'green' });
           return badges;
         });
       }
