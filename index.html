@@ -27,7 +27,7 @@
                               
                               // Função para extrair valores da descrição
                               function extrairValor(chave) {
-                                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)\\s*Domínio do problema:\\s*(.*)`, "i");
                                   const match = descricao.match(regex);
                                   return match ? match[1].trim() : "";
                               }
@@ -67,6 +67,14 @@
             icon: "https://img.icons8.com/ios/50/000000/combo-chart.png",
             text: "ArchHypo Metrics",
             callback: function (t) {
+              // Verifica se o Chart.js está carregado
+              if (typeof Chart === 'undefined') {
+                return t.popup({
+                  title: 'Erro',
+                  items: [{ text: 'Chart.js não foi carregado!', interactive: false }]
+                });
+              }
+
               return t.cards('all').then(function (cards) {
                 if (!cards || cards.length === 0) {
                   return t.popup({
@@ -141,8 +149,8 @@
             }
           },
           {
-            icon: 'https://img.icons8.com/ios/50/000000/combo-chart.png', // Ícone opcional
-            text: 'Novo Card Incerteza',
+            icon: 'https://banner2.cleanpng.com/20210429/yix/transparent-add-icon-utilities-icon-add-file-icon-608a383fec0a10.4845369116196711039668.jpg', // Ícone opcional
+            text: 'Nova Incerteza',
             callback: function (t) {
                 return t.popup({
                     title: 'Criar Card Incerteza',
@@ -152,8 +160,8 @@
             }
           },
           {
-            icon: 'https://img.icons8.com/ios/50/000000/combo-chart.png', // Ícone opcional
-            text: 'Novo GenAI Card Incerteza',
+            icon: 'https://w7.pngwing.com/pngs/150/625/png-transparent-artificial-intelligence-ai-chip-computer-technology-artificial-intelligence-icon.png', // Ícone opcional
+            text: 'Incerteza GenAI',
             callback: function (t) {
                 return t.popup({
                     title: 'Criar Card Incerteza - GenAI',
