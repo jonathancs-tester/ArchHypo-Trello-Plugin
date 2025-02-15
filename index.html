@@ -27,18 +27,18 @@
                               
                               // Função para extrair valores da descrição
                               function extrairValor(chave) {
-                                  const regex = new RegExp(`${chave}:\\s*(.*)`, "i");
+                                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
                                   const match = descricao.match(regex);
                                   return match ? match[1].trim() : "";
                               }
 
                               // Extraindo valores da descrição
-                              const dominio_problema = extrairValor("Domínio") || "Segurança, Confiabilidade";
-                              const ponto_alerta = extrairValor("Ponto de Alerta") || "Integrações falhas podem resultar em dados inconsistentes...";
-                              const hipotese = extrairValor("Hipótese") || "Implementando mecanismos robustos de validação...";
-                              const incerteza = extrairValor("Incerteza") || "Médio";
-                              const impacto = extrairValor("Impacto") || "Alto";
-                              const plano = extrairValor("Plano") || "Definir um conjunto completo de regras...";
+                              const dominio_problema = extrairValor("Domínio") || "Não encotrado";
+                              const ponto_alerta = extrairValor("Ponto de Alerta") || "Não encotrado";
+                              const hipotese = extrairValor("Hipótese") || "Não encotrado";
+                              const incerteza = extrairValor("Incerteza") || "Não encotrado";
+                              const impacto = extrairValor("Impacto") || "Não encotrado";
+                              const plano = extrairValor("Plano") || "Não encotrado";
 
                               // Salvar os valores no `shared` do Trello
                               return t.set('card', 'shared', {
