@@ -39,7 +39,7 @@ export async function handler(event) {
             contents: [{
                 parts: [{
                     text: `Crie uma task unica baseado em cada tópico do plano tecnico: ${campoPlano} com somente os campos (sem tabela):
-                    - Requisito Não Funcinal(Performance/Segurança/Confiabilidade/Flexibilidade/Usabilidade/Produtividade): somente um valor
+                    - Requisito Não Funcional(Performance/Segurança/Confiabilidade/Flexibilidade/Usabilidade/Produtividade): somente um valor
                     - Pattern (Software Analytics/Architectural Spike/Tracer Bullet/Architectural Trigger/Solution Candidate/GuideLine Implementation): somente um valor`
                 }]
             }]
