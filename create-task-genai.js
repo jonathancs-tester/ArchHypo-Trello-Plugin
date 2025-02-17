@@ -43,10 +43,12 @@ async function criarCard(bulletPoint, urlDoCard) {
                 desc: `Detalhes da tarefa: ${detalhes}\n\nURL da Incerteza: ${urlDoCard.url}` // Usando os detalhes gerados
             })
         });
-        console.log(response)
+
+        console.log(response.json())
+        responseCardId=response.json().id
 
         // Adicionando o attachment ao card criado
-        const attachmentResponse = await fetch(`${TRELLO_API_URL}/${response.id}/attachments?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const attachmentResponse = await fetch(`${TRELLO_API_URL}/${responseCardId}/attachments?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
