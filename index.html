@@ -112,27 +112,27 @@
             }
           },
           {
-            icon: 'https://img.icons8.com/ios/50/000000/plus.png', // Ícone opcional
-            text: 'Nova Incerteza',
-            callback: function (t) {
-                return t.popup({
-                    title: 'Criar Card Incerteza',
-                    url: 'create-card.html',
-                    height: 250
-                });
+                icon: "https://img.icons8.com/ios/50/000000/plus.png",
+                text: "Nova Incerteza",
+                callback: function (t) {
+                    return t.popup({
+                        title: "Criar Card Incerteza",
+                        url: "create-card.html",
+                        height: 250
+                    });
+                }
+            },
+            {
+                icon: "https://img.icons8.com/ios/50/000000/ai.png",
+                text: "Incerteza GenAI",
+                callback: function (t) {
+                    return t.popup({
+                        title: "Criar Card Incerteza - GenAI",
+                        url: "create-card-genai.html",
+                        height: 250
+                    });
+                }
             }
-          },
-          {
-            icon: 'https://img.icons8.com/ios/50/000000/ai.png', // Ícone opcional
-            text: 'Incerteza GenAI',
-            callback: function (t) {
-                return t.popup({
-                    title: 'Criar Card Incerteza - GenAI',
-                    url: 'create-card-genai.html',
-                    height: 250
-                });
-            }
-          }
         ];
       },
       'card-badges': function (t, options) {
