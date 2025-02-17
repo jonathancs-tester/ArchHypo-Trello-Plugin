@@ -133,23 +133,36 @@
                                 ]
                             });
                         }
-
-                        // Para cada "bullet point", chamamos a função para criar uma task
-                        bulletPoints.forEach(bulletPoint => {
-                            if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
-                                createTaskFromBulletPoint(bulletPoint.trim());
-                            }
-                        });
-
-                        // Retornar o popup com a confirmação de que as tasks foram geradas com sucesso
-                        return t.popup({
-                            title: 'Tasks Criadas',
-                            items: [
-                                {
-                                    icon: 'https://img.icons8.com/ios/50/000000/checkmark.png',
-                                    text: 'Tasks geradas com sucesso!',
+                        // Obtendo a URL da carta
+                        t.card('url').then(function(cardUrl) {
+                            // Para cada "bullet point", chama a função para criar uma task
+                            bulletPoints.forEach(bulletPoint => {
+                                if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
+                                    createTaskFromBulletPoint(bulletPoint.trim(), cardUrl);  // Passa o bulletPoint e a URL
                                 }
-                            ]
+                            });
+
+                            // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
+                            return t.popup({
+                                title: 'Tasks Criadas',
+                                items: [
+                                    {
+                                        icon: 'https://img.icons8.com/ios/50/000000/checkmark.png',
+                                        text: 'Tasks geradas com sucesso!',
+                                    }
+                                ]
+                            });
+                        }).catch(function (error) {
+                            console.error("Erro ao obter a URL do card:", error);
+                            return t.popup({
+                                title: 'Erro',
+                                items: [
+                                    {
+                                        icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                                        text: 'Houve um erro ao gerar as tasks.',
+                                    }
+                                ]
+                            });
                         });
                     }).catch(function (error) {
                         console.error("Erro ao processar o card:", error);
@@ -158,7 +171,7 @@
                             items: [
                                 {
                                     icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                                    text: 'Houve um erro ao gerar as tasks.',
+                                    text: 'Houve um erro ao processar o card.',
                                 }
                             ]
                         });
@@ -166,8 +179,9 @@
                 }
               }
         ];
-        function createTaskFromBulletPoint(bulletPoint) {
-           criarCard(bulletPoint);  // Passa o bulletPoint para a função criarCard
+        function createTaskFromBulletPoint(bulletPoint, cardUrl) {
+            // Passa o bulletPoint e a URL do card para a função criarCard
+          criarCard(bulletPoint, cardUrl);
         }
       },
       'board-buttons': function (t, options) {
