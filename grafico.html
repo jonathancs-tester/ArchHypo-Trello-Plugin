@@ -7,20 +7,27 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Importa Chart.js -->
 </head>
 <body>
+    <h3>Incerteza Metrics</h3>
     <canvas id="metricsChart"></canvas>
+
+    <h3>Não Funcional e Pattern Metrics</h3>
+    <canvas id="patternChart"></canvas>
 
     <script>
         // Pega os parâmetros da URL
         const urlParams = new URLSearchParams(window.location.search);
+        
+        // Obtenção dos dados para Incerteza e Impacto
         const incerteza = JSON.parse(urlParams.get('incerteza'));
         const impacto = JSON.parse(urlParams.get('impacto'));
 
+        // Dados para o gráfico de Incerteza
         let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
         let incertezaValues = levels.map(l => incerteza[l] || 0);
         let impactoValues = levels.map(l => impacto[l] || 0);
 
-        let ctx = document.getElementById('metricsChart').getContext('2d');
-        new Chart(ctx, {
+        let ctxMetrics = document.getElementById('metricsChart').getContext('2d');
+        new Chart(ctxMetrics, {
             type: 'bar',
             data: {
                 labels: levels,
@@ -37,6 +44,46 @@
                         data: impactoValues,
                         backgroundColor: "rgba(255, 99, 132, 0.7)",
                         borderColor: "rgba(255, 99, 132, 1)",
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Obtenção dos dados para Não Funcional e Pattern
+        const naoFuncional = JSON.parse(urlParams.get('naoFuncional'));
+        const pattern = JSON.parse(urlParams.get('pattern'));
+
+        // Dados para o gráfico de Não Funcional e Pattern
+        let naoFuncionalValues = levels.map(l => naoFuncional[l] || 0);
+        let patternValues = levels.map(l => pattern[l] || 0);
+
+        let ctxPattern = document.getElementById('patternChart').getContext('2d');
+        new Chart(ctxPattern, {
+            type: 'bar',
+            data: {
+                labels: levels,
+                datasets: [
+                    {
+                        label: "Não Funcional",
+                        data: naoFuncionalValues,
+                        backgroundColor: "rgba(75, 192, 192, 0.7)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: "Pattern",
+                        data: patternValues,
+                        backgroundColor: "rgba(153, 102, 255, 0.7)",
+                        borderColor: "rgba(153, 102, 255, 1)",
                         borderWidth: 1
                     }
                 ]

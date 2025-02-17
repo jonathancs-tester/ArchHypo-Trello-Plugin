@@ -185,19 +185,53 @@
                 }
 
                 let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+                
+                // Contadores para as novas categorias
                 let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
                 let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+                
+                // Novos valores possíveis para 'não funcional' e 'pattern'
+                let countNaoFuncional = {
+                  "Performance": 0,
+                  "Segurança": 0,
+                  "Confiabilidade": 0,
+                  "Flexibilidade": 0,
+                  "Usabilidade": 0,
+                  "Produtividade": 0
+                };
+
+                let countPattern = {
+                  "Software Analytics": 0,
+                  "Architectural Spike": 0,
+                  "Tracer Bullet": 0,
+                  "Architectural Trigger": 0,
+                  "Solution Candidate": 0,
+                  "GuideLine Implementation": 0
+                };
 
                 let cardPromises = cards.map(function (card) {
                   return Promise.all([
                     t.get(card.id, 'shared', 'incerteza'),
-                    t.get(card.id, 'shared', 'impacto')
-                  ]).then(function ([incerteza, impacto]) {
+                    t.get(card.id, 'shared', 'impacto'),
+                    t.get(card.id, 'shared', 'naoFuncional'),
+                    t.get(card.id, 'shared', 'pattern')
+                  ]).then(function ([incerteza, impacto, naoFuncional, pattern]) {
+                    // Atualiza os contadores de 'incerteza' e 'impacto'
                     if (levels.includes(incerteza)) {
                       countIncerteza[incerteza]++;
                     }
                     if (levels.includes(impacto)) {
                       countImpacto[impacto]++;
+                    }
+
+                    // Atualiza os contadores de 'não funcional'
+                    if (Object.keys(countNaoFuncional).includes(naoFuncional)) {
+                      countNaoFuncional[naoFuncional]++;
+                    }
+
+                    // Atualiza os contadores de 'pattern'
+                    if (Object.keys(countPattern).includes(pattern)) {
+                      countPattern[pattern]++;
                     }
                   }).catch(function (error) {
                     console.error(`Erro ao obter valores do card ${card.id}:`, error);
@@ -205,9 +239,12 @@
                 });
 
                 return Promise.all(cardPromises).then(function () {
+                  // Passa todos os dados para a URL
                   const params = new URLSearchParams({
                     incerteza: JSON.stringify(countIncerteza),
-                    impacto: JSON.stringify(countImpacto)
+                    impacto: JSON.stringify(countImpacto),
+                    naoFuncional: JSON.stringify(countNaoFuncional),
+                    pattern: JSON.stringify(countPattern)
                   }).toString();
 
                   return t.modal({
@@ -264,8 +301,8 @@
                           // Se necessário, descomente essa linha
                           // if (data.dominio_problema) badges.push({ text: `Domínio: ${data.dominio_problema}`, color: 'green' });
                       } else {
-                          if (data.requisito_nao_funcional) badges.push({ text: `Requisito Não Funcional: ${data.requisito_nao_funcional}`, color: 'red' });
-                          if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'blue' });
+                          if (data.requisito_nao_funcional) badges.push({ text: `Requisito Não Funcional: ${data.requisito_nao_funcional}`, color: 'green' });
+                          if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
                       }
 
                       return badges;
