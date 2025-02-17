@@ -9,7 +9,7 @@ async function gerarDetalhesCard(plano) {
     const response = await fetch(`${BACKEND_URL}/gerar-task`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ campoIncerteza: plano })
+        body: JSON.stringify({ campoPlano: plano })
     });
 
     const data = await response.json();

@@ -25,20 +25,20 @@ export async function handler(event) {
     }
 
     try {
-        const { plano } = JSON.parse(event.body);
+        const { campoPlano } = JSON.parse(event.body);
 
-        if (!plano) {
+        if (!campoPlano) {
             return {
                 statusCode: 400,
                 headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ erro: "O campo 'campoIncerteza' é obrigatório." }),
+                body: JSON.stringify({ erro: "O campo 'campoPlano' é obrigatório." }),
             };
         }
 
         const prompt = {
             contents: [{
                 parts: [{
-                    text: `Crie uma task baseado em cada tópico do plano tecnico: ${plano} com os seguintes campos:
+                    text: `Crie uma task unica baseado em cada tópico do plano tecnico: ${campoPlano} com somente os campos (sem tabela):
                     - Requisito Não Funcinal(Performance/Segurança/Confiabilidade/Flexibilidade/Usabilidade/Produtividade): somente um valor
                     - Pattern (Software Analytics/Architectural Spike/Tracer Bullet/Architectural Trigger/Solution Candidate/GuideLine Implementation): somente um valor`
                 }]
