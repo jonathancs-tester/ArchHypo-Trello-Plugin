@@ -27,9 +27,7 @@ async function criarCard(bulletPoint, urlDoCard) {
 
     try {
         const detalhes = await gerarDetalhesCard(bulletPoint); // Chama a função para obter os detalhes
-        const detalhesSemNegrito = detalhes.replace(/\*\*(.*?)\*\*/g, '$1');
-        const taskRegex = /Task (.*)/;
-        const taskMatch = detalhesSemNegrito.match(taskRegex);
+        const taskMatch = detalhes.match(/Task (.*)/);
 
         // Atualiza a mensagem de sucesso com os detalhes gerados
         console.log(`✅ Detalhes gerados:\n${detalhes}`)
