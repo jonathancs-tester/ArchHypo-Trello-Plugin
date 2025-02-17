@@ -17,7 +17,7 @@ async function gerarDetalhesCard(plano) {
 }
 
 // Função para criar o card no Trello
-async function criarCard(bulletPoint, cardURL) {
+async function criarCard(bulletPoint, urlDoCard) {
 
     console.log(bulletPoint)
     if (!bulletPoint) {
@@ -39,7 +39,7 @@ async function criarCard(bulletPoint, cardURL) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 name: `${taskMatch}`,
-                desc: `Detalhes da tarefa: ${detalhes}\n\nURL do Card: ${cardURL}` // Usando os detalhes gerados
+                desc: `Detalhes da tarefa: ${detalhes}\n\nURL do Card: ${urlDoCard}` // Usando os detalhes gerados
             })
         });
 
