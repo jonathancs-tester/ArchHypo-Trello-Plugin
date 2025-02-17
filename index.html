@@ -96,26 +96,24 @@
                 });
 
                 return Promise.all(cardPromises).then(function () {
-                  let items = [
-                    { text: "### Incerteza ###", interactive: false },
-                    ...levels.map(level => ({ text: `${level}: ${countIncerteza[level]}`, interactive: false })),
-                    { text: "### Impacto ###", interactive: false },
-                    ...levels.map(level => ({ text: `${level}: ${countImpacto[level]}`, interactive: false }))
-                  ];
-
-                  return t.popup({
-                    title: 'ArchHypo Metrics',
-                    items: items
+                  return t.modal({
+                    title: "ArchHypo Metrics",
+                    url: "./grafico",  // Página dentro do próprio Power-Up
+                    args: {
+                      incerteza: countIncerteza,
+                      impacto: countImpacto
+                    },
+                    fullscreen: false
                   });
                 });
               }).catch(function (error) {
-                console.error('Erro ao obter cartões:', error);
+                console.error("Erro ao obter cartões:", error);
               });
             }
           },
           {
             icon: 'https://img.icons8.com/ios/50/000000/plus.png', // Ícone opcional
-            text: 'Novo Card Incerteza',
+            text: 'Nova Incerteza',
             callback: function (t) {
                 return t.popup({
                     title: 'Criar Card Incerteza',
