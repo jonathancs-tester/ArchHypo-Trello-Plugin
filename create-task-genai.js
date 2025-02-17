@@ -29,7 +29,7 @@ async function criarCard(bulletPoint) {
         //const detalhes = await gerarDetalhesCard(bulletPoint); // Chama a função para obter os detalhes
 
         // Atualiza a mensagem de sucesso com os detalhes gerados
-        console.log(`✅ Detalhes gerados:\n${detalhes}`)
+        //console.log(`✅ Detalhes gerados:\n${detalhes}`)
 
         // Criar o card no Trello automaticamente
         const response = await fetch(`${TRELLO_API_URL}?idList=${TRELLO_LIST_ID}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
