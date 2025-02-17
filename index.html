@@ -64,7 +64,8 @@
                 text: "Criar task",
                 callback: function (t) {
                     return t.card('desc').then(function (card) {
-
+                      const descricao = card.desc || "";
+  
                       // Função para extrair valores da descrição
                         function extrairValor(chave) {
                           const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
