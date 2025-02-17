@@ -27,7 +27,8 @@ async function criarCard(bulletPoint, urlDoCard) {
 
     try {
         const detalhes = await gerarDetalhesCard(bulletPoint); // Chama a função para obter os detalhes
-        const taskMatch = detalhes.match(/Task (.*)/);
+        const taskRegex = /Task:\s*(.*)/;
+        const taskMatch = detalhes.match(taskRegex);
 
         // Atualiza a mensagem de sucesso com os detalhes gerados
         console.log(`✅ Detalhes gerados:\n${detalhes}`)
@@ -38,7 +39,7 @@ async function criarCard(bulletPoint, urlDoCard) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                name: `${taskMatch}`,
+                name: `${taskMatch[0]}`,
                 desc: `Detalhes da tarefa: ${detalhes}\n\nURL da Incerteza: ${urlDoCard.url}` // Usando os detalhes gerados
             })
         });
