@@ -38,7 +38,7 @@ async function criarCard(bulletPoint, cardURL) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                name: `Task: ${taskMatch}`,
+                name: `${taskMatch}`,
                 desc: `Detalhes da tarefa: ${detalhes}\n\nURL do Card: ${cardURL}` // Usando os detalhes gerados
             })
         });

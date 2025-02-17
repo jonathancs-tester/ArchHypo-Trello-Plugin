@@ -135,10 +135,11 @@
                         }
                         // Obtendo a URL da carta
                         t.card('url').then(function(cardUrl) {
+                            const urlDoCard = cardUrl;
                             // Para cada "bullet point", chama a função para criar uma task
                             bulletPoints.forEach(bulletPoint => {
                                 if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
-                                    createTaskFromBulletPoint(bulletPoint.trim(), cardUrl);  // Passa o bulletPoint e a URL
+                                    createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard);  // Passa o bulletPoint e a URL
                                 }
                             });
 
@@ -179,9 +180,9 @@
                 }
               }
         ];
-        function createTaskFromBulletPoint(bulletPoint, cardUrl) {
+        function createTaskFromBulletPoint(bulletPoint, urlDoCard) {
             // Passa o bulletPoint e a URL do card para a função criarCard
-          criarCard(bulletPoint, cardUrl);
+          criarCard(bulletPoint, urlDoCard);
         }
       },
       'board-buttons': function (t, options) {
