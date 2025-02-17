@@ -64,19 +64,13 @@
                 text: "Criar task",
                 callback: function (t) {
                     return t.card('desc').then(function (card) {
-                        const descricao = card.desc || "";  // Definindo corretamente a variável descricao
+                        // Descrição do card
+                        const descricao = card.desc || "";
 
-                        // Função para extrair valores da descrição
-                        function extrairValor(chave) {
-                            const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
-                            const match = descricao.match(regex);
-                            return match ? match[1].trim() : "";
-                        }
+                        // Extraindo os valores de "Plano" da descrição
+                        const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
 
-                        // Extraindo valores da descrição
-                        const descricaoPlanoTecnico = extrairValor("Plano") || "Não encontrado";
-
-                        // Divida a descrição em "bullet points" com base em novas linhas
+                        // Dividindo a descrição em "bullet points"
                         const bulletPoints = descricaoPlanoTecnico.split('\n').filter(line => line.trim() !== '');
 
                         // Se não houver bullet points, exibe mensagem
@@ -92,10 +86,11 @@
                             });
                         }
 
-                        // Para cada "bullet point", chamamos o arquivo create-task-genai.js passando o bullet point
+                        // Para cada "bullet point", chamamos a função para criar uma task
                         bulletPoints.forEach(bulletPoint => {
-                            // Passar o bullet point para o arquivo create-task-genai.js
-                            createTaskFromBulletPoint(bulletPoint.trim());
+                            if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
+                                createTaskFromBulletPoint(bulletPoint.trim());
+                            }
                         });
 
                         // Retornar o popup com a confirmação de que as tasks foram geradas com sucesso
