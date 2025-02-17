@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 
-const GENAI_API_KEY = process.env.REACT_APP_GENAI_API_KEY;
-const GENAI_URL = process.env.REACT_APP_GENAI_URL;
+const GENAI_API_KEY = import.meta.env.VITE_GENAI_API_KEY;
+const GENAI_URL = import.meta.env.VITE_GENAI_URL;
 
 export async function handler(event) {
     // Permitir requisições OPTIONS para suporte ao CORS
