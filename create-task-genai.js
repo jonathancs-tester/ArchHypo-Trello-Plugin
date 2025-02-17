@@ -18,28 +18,18 @@ async function gerarDetalhesCard(incerteza) {
 
 // Função para criar o card no Trello
 async function criarCard(bulletPoint) {
-    const status = document.getElementById("status");
 
-    if (!status) {
-        console.error("Elemento 'status' não encontrado.");
-        return;
-    }
-
+    console.log(bulletPoint)
     if (!bulletPoint) {
-        status.innerText = "❌ Por favor, forneça um bullet point.";
-        status.className = 'error';
+        console.log("❌ Por favor, forneça um bullet point.")
         return;
     }
-
-    status.innerHTML = "⏳ Gerando detalhes do card...";
-    status.className = '';
 
     try {
         //const detalhes = await gerarDetalhesCard(bulletPoint); // Chama a função para obter os detalhes
 
         // Atualiza a mensagem de sucesso com os detalhes gerados
-        status.innerText = `✅ Detalhes gerados:\n${detalhes}`;
-        status.className = 'success';
+        console.log(`✅ Detalhes gerados:\n${detalhes}`)
 
         // Criar o card no Trello automaticamente
         const response = await fetch(`${TRELLO_API_URL}?idList=${TRELLO_LIST_ID}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
@@ -53,13 +43,12 @@ async function criarCard(bulletPoint) {
 
         // Verifica se a criação do card foi bem-sucedida
         if (response.ok) {
-            status.innerText = "✅ Task criada no Trello com sucesso!";
+             console.log("✅ Task criada no Trello com sucesso!")
         } else {
             throw new Error('Falha ao criar card no Trello');
         }
     } catch (error) {
         console.error(error);
-        status.innerText = "❌ Erro ao gerar/criar a task.";
-        status.className = 'error';
+         console.log("❌ Erro ao gerar/criar a task.")
     }
 }
