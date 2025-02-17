@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArchHypo Metrics</title>
-    <script src="https://p.trellocdn.com/power-up.min.js"></script> <!-- SDK do Trello -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Importa Chart.js -->
 </head>
 <body>
@@ -12,47 +11,45 @@
     <canvas id="metricsChart"></canvas>
 
     <script>
-        // Acessando os dados passados para o modal com t.args()
-        var t = TrelloPowerUp.iframe(); // Obtém os dados enviados pelo Power-Up
+        // Pega os parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const incerteza = JSON.parse(urlParams.get('incerteza'));
+        const impacto = JSON.parse(urlParams.get('impacto'));
 
-        t.args().then(function (args) {
-            let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
-            let incertezaValues = levels.map(l => args.incerteza[l] || 0);
-            let impactoValues = levels.map(l => args.impacto[l] || 0);
+        let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+        let incertezaValues = levels.map(l => incerteza[l] || 0);
+        let impactoValues = levels.map(l => impacto[l] || 0);
 
-            let ctx = document.getElementById('metricsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: levels,
-                    datasets: [
-                        {
-                            label: "Incerteza",
-                            data: incertezaValues,
-                            backgroundColor: "rgba(54, 162, 235, 0.7)",
-                            borderColor: "rgba(54, 162, 235, 1)",
-                            borderWidth: 1
-                        },
-                        {
-                            label: "Impacto",
-                            data: impactoValues,
-                            backgroundColor: "rgba(255, 99, 132, 0.7)",
-                            borderColor: "rgba(255, 99, 132, 1)",
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+        let ctx = document.getElementById('metricsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: levels,
+                datasets: [
+                    {
+                        label: "Incerteza",
+                        data: incertezaValues,
+                        backgroundColor: "rgba(54, 162, 235, 0.7)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1
+                    },
+                    {
+                        label: "Impacto",
+                        data: impactoValues,
+                        backgroundColor: "rgba(255, 99, 132, 0.7)",
+                        borderColor: "rgba(255, 99, 132, 1)",
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
-            });
-        }).catch(function (error) {
-            console.error("Erro ao obter argumentos:", error);
+            }
         });
     </script>
 </body>

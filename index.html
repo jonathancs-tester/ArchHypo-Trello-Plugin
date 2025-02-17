@@ -96,13 +96,14 @@
                 });
 
                 return Promise.all(cardPromises).then(function () {
+                  const params = new URLSearchParams({
+                    incerteza: JSON.stringify(countIncerteza),
+                    impacto: JSON.stringify(countImpacto)
+                  }).toString();
+
                   return t.modal({
                     title: "ArchHypo Metrics",
-                    url: "grafico.html",  // Página dentro do próprio Power-Up
-                    args: {
-                      incerteza: countIncerteza,
-                      impacto: countImpacto
-                    },
+                    url: `grafico.html?${params}`,  // Passa os dados na URL
                     fullscreen: false
                   });
                 });
