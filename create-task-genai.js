@@ -27,11 +27,14 @@ async function criarCard(bulletPoint, urlDoCard) {
 
     try {
         const detalhes = await gerarDetalhesCard(bulletPoint); // Chama a função para obter os detalhes
+        const detalhesSemNegrito = detalhes.replace(/\*\*(.*?)\*\*/g, '$1');
         const taskRegex = /Task \d+: (.*)/;
-        const taskMatch = detalhes.match(taskRegex);
+        const taskMatch = detalhesSemNegrito.match(taskRegex);
 
         // Atualiza a mensagem de sucesso com os detalhes gerados
         console.log(`✅ Detalhes gerados:\n${detalhes}`)
+
+        console.log(urlDoCard)
 
         // Criar o card no Trello automaticamente
         const response = await fetch(`${TRELLO_API_URL}?idList=${TRELLO_LIST_ID}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
@@ -39,7 +42,7 @@ async function criarCard(bulletPoint, urlDoCard) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 name: `${taskMatch}`,
-                desc: `Detalhes da tarefa: ${detalhes}\n\nURL do Card: ${urlDoCard}` // Usando os detalhes gerados
+                desc: `Detalhes da tarefa: ${detalhes}\n\nURL da Incerteza: ${urlDoCard}` // Usando os detalhes gerados
             })
         });
 
