@@ -18,69 +18,80 @@
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
           return [
-              {
+                {
                   icon: "https://img.icons8.com/ios/50/000000/process.png",
                   text: "Adicionar Campos de Incerteza",
                   callback: function (t) {
-                      return t.card('desc') // Obtém a descrição do card
-                          .then(function (titulo) {
-                              const descricao = card.desc || "";
-                              
-                              if (titulo.startsWith("Incerteza")) {
-                                // Função para extrair valores da descrição
-                              function extrairValor(chave) {
-                                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
-                                  const match = descricao.match(regex);
-                                  return match ? match[1].trim() : "";
+                      return t.card('name') // Obtém o título do card
+                          .then(function (card) {
+                              if (!card || !card.name) {
+                                  console.error("Erro: Não foi possível obter o título do card.");
+                                  return t.alert({
+                                      message: "Erro ao obter o título do card!",
+                                      duration: 3,
+                                      display: "error"
+                                  });
                               }
 
-                              // Extraindo valores da descrição
-                              const dominio_problema = extrairValor("Domínio") || "Não encotrado";
-                              const ponto_alerta = extrairValor("Ponto de Alerta") || "Não encotrado";
-                              const hipotese = extrairValor("Hipótese") || "Não encotrado";
-                              const incerteza = extrairValor("Incerteza") || "Não encotrado";
-                              const impacto = extrairValor("Impacto") || "Não encotrado";
-                              const plano = extrairValor("Plano") || "Não encotrado";
+                              const titulo = card.name.trim(); // Pega o título do card e remove espaços extras
 
-                              // Salvar os valores no `shared` do Trello
-                              return t.set('card', 'shared', {
-                                  dominio_problema,
-                                  ponto_alerta,
-                                  hipotese,
-                                  incerteza,
-                                  impacto,
-                                  plano
-                              }).then(function () {
-                                  return t.alert({
-                                      message: "Campos adicionados com sucesso!",
-                                      duration: 3,
-                                      display: "success"
-                                  });
-                              });
-                            }
-                            else{ // Função para extrair valores da descrição
-                              function extrairValor(chave) {
-                                  const regex = new RegExp(`${chave}:\\s*(.*)`, "i");
-                                  const match = descricao.match(regex);
-                                  return match ? match[1].trim() : "";
-                              }
+                              return t.card('desc') // Obtém a descrição do card
+                                  .then(function (cardDesc) {
+                                      const descricao = cardDesc?.desc?.trim() || "";
 
-                              // Extraindo valores da descrição
-                              const requisito_nao_funcional = extrairValor("Requisito Não Funcinal") || "Não encotrado";
-                              const pattern = extrairValor("Pattern") || "Não encotrado";
-      
-                              // Salvar os valores no `shared` do Trello
-                              return t.set('card', 'shared', {
-                                  requisito_nao_funcional,
-                                  pattern
-                              }).then(function () {
-                                  return t.alert({
-                                      message: "Campos adicionados com sucesso!",
-                                      duration: 3,
-                                      display: "success"
+                                      // Função para extrair valores da descrição
+                                      function extrairValor(chave) {
+                                          const regex = new RegExp(`${chave}:\\s*(.*)`, "i");
+                                          const match = descricao.match(regex);
+                                          return match ? match[1].trim() : "Não encontrado";
+                                      }
+
+                                      if (titulo.startsWith("Incerteza")) {  
+                                          const dominio_problema = extrairValor("Domínio");
+                                          const ponto_alerta = extrairValor("Ponto de Alerta");
+                                          const hipotese = extrairValor("Hipótese");
+                                          const incerteza = extrairValor("Incerteza");
+                                          const impacto = extrairValor("Impacto");
+                                          const plano = extrairValor("Plano");
+
+                                          return t.set('card', 'shared', {
+                                              dominio_problema,
+                                              ponto_alerta,
+                                              hipotese,
+                                              incerteza,
+                                              impacto,
+                                              plano
+                                          }).then(function () {
+                                              return t.alert({
+                                                  message: "Campos adicionados com sucesso!",
+                                                  duration: 3,
+                                                  display: "success"
+                                              });
+                                          });
+                                      } else {  
+                                          const requisito_nao_funcional = extrairValor("Requisito Não Funcional");
+                                          const pattern = extrairValor("Pattern");
+
+                                          return t.set('card', 'shared', {
+                                              requisito_nao_funcional,
+                                              pattern
+                                          }).then(function () {
+                                              return t.alert({
+                                                  message: "Campos adicionados com sucesso!",
+                                                  duration: 3,
+                                                  display: "success"
+                                              });
+                                          });
+                                      }
                                   });
+                          })
+                          .catch(function (error) {
+                              console.error("Erro ao processar o card:", error);
+                              return t.alert({
+                                  message: "Erro inesperado!",
+                                  duration: 3,
+                                  display: "error"
                               });
-                            }
                           });
                   }
               },
