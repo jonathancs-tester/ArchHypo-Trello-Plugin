@@ -1,8 +1,10 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const TRELLO_API_URL = import.meta.env.VITE_TRELLO_API_UR;
-const TRELLO_LIST_ID = import.meta.env.VITE_TRELLO_LIST_IDL;
-const TRELLO_KEY = import.meta.env.VITE_TRELLO_KEY;
-const TRELLO_TOKEN = import.meta.env.VITE_TRELLO_TOKEN;
+import 'dotenv/config';
+
+const BACKEND_URL = process.env.VITE_BACKEND_URL;
+const TRELLO_API_URL = process.env.VITE_TRELLO_API_URL;
+const TRELLO_LIST_ID = process.env.VITE_TRELLO_LIST_ID;
+const TRELLO_KEY = process.env.VITE_TRELLO_KEY;
+const TRELLO_TOKEN = process.env.VITE_TRELLO_TOKEN;
 
 async function gerarDetalhesCard(incerteza) {
     const response = await fetch(`${BACKEND_URL}/gerar-card`, {
