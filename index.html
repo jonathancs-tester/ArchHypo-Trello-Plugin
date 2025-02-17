@@ -103,78 +103,98 @@
                   }
               },
               {
-                icon: "https://img.icons8.com/ios/50/000000/process.png",
-                text: "Criar task",
-                callback: function (t) {
-                    return t.card('desc').then(function (card) {
-                        // Descrição do card
-                        const descricao = card.desc || "";
+    icon: "https://img.icons8.com/ios/50/000000/process.png",
+    text: "Criar task",
+    callback: function (t) {
+        return t.card('title').then(function (card) {
+            const titulo = card.title || ""; // Obtém o título do card
+            
+            // Verifica se o título do card é diferente de "Task:"
+            if (titulo.startsWith("Task:")) {
+                return; // Não faz nada se o título começar com "Task:"
+            }
 
-                        function extrairValor(chave, descricao) {
-                            const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
-                            const match = descricao.match(regex);
-                            return match ? match[1].trim() : "";
-                        }
-                        // Extraindo os valores de "Plano" da descrição
-                        const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
+            return t.card('desc').then(function (card) {
+                // Descrição do card
+                const descricao = card.desc || "";
 
-                        // Dividindo a descrição em "bullet points"
-                        const bulletPoints = descricaoPlanoTecnico.split('\n').filter(line => line.trim() !== '');
+                function extrairValor(chave, descricao) {
+                    const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                    const match = descricao.match(regex);
+                    return match ? match[1].trim() : "";
+                }
+                // Extraindo os valores de "Plano" da descrição
+                const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
 
-                        // Se não houver bullet points, exibe mensagem
-                        if (bulletPoints.length === 0) {
-                            return t.popup({
-                                title: 'Erro',
-                                items: [
-                                    {
-                                        icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                                        text: 'Não foi possível encontrar nenhum bullet point.',
-                                    }
-                                ]
-                            });
-                        }
-                        // Obtendo a URL da carta
-                        t.card('url').then(function(cardUrl) {
-                            const urlDoCard = cardUrl;
-                            // Para cada "bullet point", chama a função para criar uma task
-                            bulletPoints.forEach(bulletPoint => {
-                                if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
-                                    createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard);  // Passa o bulletPoint e a URL
-                                }
-                            });
+                // Dividindo a descrição em "bullet points"
+                const bulletPoints = descricaoPlanoTecnico.split('\n').filter(line => line.trim() !== '');
 
-                            // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
-                            return t.alert({
-                                message: "Task criada com sucesso!",
-                                duration: 3,
-                                display: "success"
-                            });
-                        }).catch(function (error) {
-                            console.error("Erro ao obter a URL do card:", error);
-                            return t.popup({
-                                title: 'Erro',
-                                items: [
-                                    {
-                                        icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                                        text: 'Houve um erro ao gerar as tasks.',
-                                    }
-                                ]
-                            });
-                        });
-                    }).catch(function (error) {
-                        console.error("Erro ao processar o card:", error);
-                        return t.popup({
-                            title: 'Erro',
-                            items: [
-                                {
-                                    icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                                    text: 'Houve um erro ao processar o card.',
-                                }
-                            ]
-                        });
+                // Se não houver bullet points, exibe mensagem
+                if (bulletPoints.length === 0) {
+                    return t.popup({
+                        title: 'Erro',
+                        items: [
+                            {
+                                icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                                text: 'Não foi possível encontrar nenhum bullet point.',
+                            }
+                        ]
                     });
                 }
-              }
+                // Obtendo a URL da carta
+                t.card('url').then(function(cardUrl) {
+                    const urlDoCard = cardUrl;
+                    // Para cada "bullet point", chama a função para criar uma task
+                    bulletPoints.forEach(bulletPoint => {
+                        if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
+                            createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard);  // Passa o bulletPoint e a URL
+                        }
+                    });
+
+                    // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
+                    return t.alert({
+                        message: "Task criada com sucesso!",
+                        duration: 3,
+                        display: "success"
+                    });
+                }).catch(function (error) {
+                    console.error("Erro ao obter a URL do card:", error);
+                    return t.popup({
+                        title: 'Erro',
+                        items: [
+                            {
+                                icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                                text: 'Houve um erro ao gerar as tasks.',
+                            }
+                        ]
+                    });
+                });
+            }).catch(function (error) {
+                console.error("Erro ao processar o card:", error);
+                return t.popup({
+                    title: 'Erro',
+                    items: [
+                        {
+                            icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                            text: 'Houve um erro ao processar o card.',
+                        }
+                    ]
+                });
+            });
+        }).catch(function (error) {
+            console.error("Erro ao processar o título do card:", error);
+            return t.popup({
+                title: 'Erro',
+                items: [
+                    {
+                        icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                        text: 'Houve um erro ao processar o título do card.',
+                    }
+                ]
+            });
+        });
+    }
+}
         ];
         function createTaskFromBulletPoint(bulletPoint, urlDoCard) {
             // Passa o bulletPoint e a URL do card para a função criarCard
