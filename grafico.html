@@ -22,15 +22,15 @@
         const impacto = JSON.parse(urlParams.get('impacto'));
 
         // Dados para o gráfico de Incerteza
-        let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
-        let incertezaValues = levels.map(l => incerteza[l] || 0);
-        let impactoValues = levels.map(l => impacto[l] || 0);
+        let levelsIncertezaImpacto = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+        let incertezaValues = levelsIncertezaImpacto.map(l => incerteza[l] || 0);
+        let impactoValues = levelsIncertezaImpacto.map(l => impacto[l] || 0);
 
         let ctxMetrics = document.getElementById('metricsChart').getContext('2d');
         new Chart(ctxMetrics, {
             type: 'bar',
             data: {
-                labels: levels,
+                labels: levelsIncertezaImpacto,
                 datasets: [
                     {
                         label: "Incerteza",
@@ -63,17 +63,18 @@
         const pattern = JSON.parse(urlParams.get('pattern'));
 
         // Dados para o gráfico de Não Funcional e Pattern
-        let naoFuncionalValues = levels.map(l => naoFuncional[l] || 0);
-        let patternValues = levels.map(l => pattern[l] || 0);
+        let levelsNaoFuncionalPattern = ["Performance", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Produtividade"];
+        let naoFuncionalValues = levelsNaoFuncionalPattern.map(l => naoFuncional[l] || 0);
+        let patternValues = levelsNaoFuncionalPattern.map(l => pattern[l] || 0);
 
         let ctxPattern = document.getElementById('patternChart').getContext('2d');
         new Chart(ctxPattern, {
             type: 'bar',
             data: {
-                labels: levels,
+                labels: levelsNaoFuncionalPattern,
                 datasets: [
                     {
-                        label: "Não Funcional",
+                        label: "Requisito Não Funcional",
                         data: naoFuncionalValues,
                         backgroundColor: "rgba(75, 192, 192, 0.7)",
                         borderColor: "rgba(75, 192, 192, 1)",
