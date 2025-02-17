@@ -1,8 +1,6 @@
 import fetch from "node-fetch";
-import 'dotenv/config';
 
-const GENAI_API_KEY = process.env.VITE_GENAI_API_KEY;
-const GENAI_URL = process.env.VITE_GENAI_URL;
+const GEMINI_API_KEY = "AIzaSyDij92-PQ02BGMtSR6N4Uhx-jwwlWvkhPo"; // Substitua pela sua chave válida
 
 export async function handler(event) {
     // Permitir requisições OPTIONS para suporte ao CORS
@@ -40,7 +38,7 @@ export async function handler(event) {
         const prompt = {
             contents: [{
                 parts: [{
-                    text: `Crie uma task unica baseado em cada tópico do plano tecnico: ${campoPlano} com somente os campos (sem tabela e sem negrito):
+                    text: `Crie uma task unica baseado em cada tópico do plano tecnico: ${campoPlano} com somente os campos (sem tabela):
                     - Objetivo: (como deve ser realizado a task)
                     - Requisito Não Funcional(Performance/Segurança/Confiabilidade/Flexibilidade/Usabilidade/Produtividade): somente um valor
                     - Pattern (Software Analytics/Architectural Spike/Tracer Bullet/Architectural Trigger/Solution Candidate/GuideLine Implementation): somente um valor`
@@ -48,7 +46,7 @@ export async function handler(event) {
             }]
         };
 
-        const response = await fetch(`${GENAI_URL}?key=${GENAI_API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(prompt)

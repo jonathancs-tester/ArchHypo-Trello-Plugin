@@ -13,7 +13,7 @@
 </head>
 <body>
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
-  <script type="module" src="create-task-genai.js"></script>
+  <script src="create-task-genai.js"></script>
   <script>
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
@@ -261,8 +261,7 @@
                   return t.modal({
                     title: "ArchHypo Metrics",
                     url: `grafico.html?${params}`,  // Passa os dados na URL
-                    fullscreen: false,
-                    height: 800
+                    fullscreen: false
                   });
                 });
               }).catch(function (error) {
