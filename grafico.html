@@ -13,9 +13,9 @@
 
     <script>
         // Agora o SDK do Trello está carregado antes de ser chamado
-        var t = TrelloPowerUp.iframe(); // Obtém os dados enviados pelo Power-Up
+        var t = TrelloPowerUp.iframe(); // Obtém o iframe para interagir com os dados passados
 
-        t.args('incerteza', 'impacto').then(function (args) {
+        t.args().then(function (args) { // Chama args() para acessar os dados passados para o iframe
             let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
             let incertezaValues = levels.map(l => args.incerteza[l] || 0);
             let impactoValues = levels.map(l => args.impacto[l] || 0);
