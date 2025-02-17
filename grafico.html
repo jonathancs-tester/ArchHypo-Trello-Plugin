@@ -10,7 +10,10 @@
     <h3>Incerteza Metrics</h3>
     <canvas id="metricsChart"></canvas>
 
-    <h3>Não Funcional e Pattern Metrics</h3>
+    <h3>Requisito Não Funcional Metrics</h3>
+    <canvas id="naoFuncionalChart"></canvas>
+
+    <h3>Pattern Metrics</h3>
     <canvas id="patternChart"></canvas>
 
     <script>
@@ -58,20 +61,18 @@
             }
         });
 
-        // Obtenção dos dados para Não Funcional e Pattern
+        // Obtenção dos dados para Requisito Não Funcional
         const naoFuncional = JSON.parse(urlParams.get('naoFuncional'));
-        const pattern = JSON.parse(urlParams.get('pattern'));
 
-        // Dados para o gráfico de Não Funcional e Pattern
-        let levelsNaoFuncionalPattern = ["Performance", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Produtividade"];
-        let naoFuncionalValues = levelsNaoFuncionalPattern.map(l => naoFuncional[l] || 0);
-        let patternValues = levelsNaoFuncionalPattern.map(l => pattern[l] || 0);
+        // Dados para o gráfico de Requisito Não Funcional
+        let levelsNaoFuncional = ["Performance", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Produtividade"];
+        let naoFuncionalValues = levelsNaoFuncional.map(l => naoFuncional[l] || 0);
 
-        let ctxPattern = document.getElementById('patternChart').getContext('2d');
-        new Chart(ctxPattern, {
+        let ctxNaoFuncional = document.getElementById('naoFuncionalChart').getContext('2d');
+        new Chart(ctxNaoFuncional, {
             type: 'bar',
             data: {
-                labels: levelsNaoFuncionalPattern,
+                labels: levelsNaoFuncional,
                 datasets: [
                     {
                         label: "Requisito Não Funcional",
@@ -79,7 +80,32 @@
                         backgroundColor: "rgba(75, 192, 192, 0.7)",
                         borderColor: "rgba(75, 192, 192, 1)",
                         borderWidth: 1
-                    },
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Obtenção dos dados para Pattern
+        const pattern = JSON.parse(urlParams.get('pattern'));
+
+        // Dados para o gráfico de Pattern
+        let levelsPattern = ["Software Analytics", "Architectural Spike", "Tracer Bullet", "Architectural Trigger", "Solution Candidate", "GuideLine Implementation"];
+        let patternValues = levelsPattern.map(l => pattern[l] || 0);
+
+        let ctxPattern = document.getElementById('patternChart').getContext('2d');
+        new Chart(ctxPattern, {
+            type: 'bar',
+            data: {
+                labels: levelsPattern,
+                datasets: [
                     {
                         label: "Pattern",
                         data: patternValues,
