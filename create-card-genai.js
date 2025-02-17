@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const TRELLO_API_URL = process.env.REACT_APP_TRELLO_API_URL;
 const TRELLO_LIST_ID = process.env.REACT_APP_TRELLO_LIST_ID;
