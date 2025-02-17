@@ -144,14 +144,10 @@
                             });
 
                             // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
-                            return t.popup({
-                                title: 'Tasks Criadas',
-                                items: [
-                                    {
-                                        icon: 'https://img.icons8.com/ios/50/000000/checkmark.png',
-                                        text: 'Tasks geradas com sucesso!',
-                                    }
-                                ]
+                            return t.alert({
+                                message: "Campos adicionados com sucesso!",
+                                duration: 3,
+                                display: "success"
                             });
                         }).catch(function (error) {
                             console.error("Erro ao obter a URL do card:", error);

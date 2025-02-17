@@ -28,7 +28,7 @@ async function criarCard(bulletPoint, urlDoCard) {
     try {
         const detalhes = await gerarDetalhesCard(bulletPoint); // Chama a função para obter os detalhes
         const detalhesSemNegrito = detalhes.replace(/\*\*(.*?)\*\*/g, '$1');
-        const taskRegex = /Task \d+: (.*)/;
+        const taskRegex = /Task (.*)/;
         const taskMatch = detalhesSemNegrito.match(taskRegex);
 
         // Atualiza a mensagem de sucesso com os detalhes gerados
@@ -43,9 +43,10 @@ async function criarCard(bulletPoint, urlDoCard) {
                 desc: `Detalhes da tarefa: ${detalhes}\n\nURL da Incerteza: ${urlDoCard.url}` // Usando os detalhes gerados
             })
         });
+        console.log(response)
 
         // Adicionando o attachment ao card criado
-        const attachmentResponse = await fetch(`https://api.trello.com/1/cards/${response.id}/attachments?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const attachmentResponse = await fetch(`${TRELLO_API_URL}/${response.id}/attachments?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -53,6 +54,8 @@ async function criarCard(bulletPoint, urlDoCard) {
                 name: "Link para Incerteza", // Você pode nomear o attachment como quiser
             })
         });
+        console.log(attachmentResponse.json())
+
 
         const attachmentData = await attachmentResponse.json();
         console.log('Attachment adicionado com sucesso:', attachmentData);
