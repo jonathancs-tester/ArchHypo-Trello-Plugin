@@ -1,3 +1,5 @@
+console.log(import.meta.env);
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const TRELLO_API_URL = import.meta.env.VITE_TRELLO_API_UR;
 const TRELLO_LIST_ID = import.meta.env.VITE_TRELLO_LIST_IDL;
