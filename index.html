@@ -213,9 +213,9 @@
                   return Promise.all([
                     t.get(card.id, 'shared', 'incerteza'),
                     t.get(card.id, 'shared', 'impacto'),
-                    t.get(card.id, 'shared', 'naoFuncional'),
+                    t.get(card.id, 'shared', 'requisito_nao_funcional'),
                     t.get(card.id, 'shared', 'pattern')
-                  ]).then(function ([incerteza, impacto, naoFuncional, pattern]) {
+                  ]).then(function ([incerteza, impacto, requisito_nao_funcional, pattern]) {
                     // Atualiza os contadores de 'incerteza' e 'impacto'
                     if (levels.includes(incerteza)) {
                       countIncerteza[incerteza]++;
@@ -225,8 +225,8 @@
                     }
 
                     // Atualiza os contadores de 'não funcional'
-                    if (Object.keys(countNaoFuncional).includes(naoFuncional)) {
-                      countNaoFuncional[naoFuncional]++;
+                    if (Object.keys(countNaoFuncional).includes(requisito_nao_funcional)) {
+                      countNaoFuncional[requisito_nao_funcional]++;
                     }
 
                     // Atualiza os contadores de 'pattern'
