@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,117 +12,110 @@
     }
   </style>
 </head>
+
 <body>
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
   <script src="create-task-genai.js"></script>
   <script>
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
-          return [
-                {
-                  icon: "https://img.icons8.com/ios/50/000000/process.png",
-                  text: "Adicionar Métricas",
-                  callback: function (t) {
-                      return t.card('name') // Obtém o título do card
-                          .then(function (card) {
-                              if (!card || !card.name) {
-                                  console.error("Erro: Não foi possível obter o título do card.");
-                                  return t.alert({
-                                      message: "Erro ao obter o título do card!",
-                                      duration: 3,
-                                      display: "error"
-                                  });
-                              }
-
-                              const titulo = card.name.trim(); // Pega o título do card e remove espaços extras
-
-                              return t.card('desc') // Obtém a descrição do card
-                                  .then(function (cardDesc) {
-                                      const descricao = cardDesc?.desc?.trim() || "";
-
-                                      if (titulo.startsWith("Incerteza")) {  
-                                        
-                                        function extrairValor(chave) {
-                                            const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
-                                            const match = descricao.match(regex);
-                                            return match ? match[1].trim() : "";
-                                        }
-                                          const dominio_problema = extrairValor("Domínio");
-                                          const ponto_alerta = extrairValor("Ponto de Alerta");
-                                          const hipotese = extrairValor("Hipótese");
-                                          const incerteza = extrairValor("Incerteza");
-                                          const impacto = extrairValor("Impacto");
-                                          const plano = extrairValor("Plano");
-
-                                          return t.set('card', 'shared', {
-                                              dominio_problema,
-                                              ponto_alerta,
-                                              hipotese,
-                                              incerteza,
-                                              impacto,
-                                              plano
-                                          }).then(function () {
-                                              return t.alert({
-                                                  message: "Campos adicionados com sucesso!",
-                                                  duration: 3,
-                                                  display: "success"
-                                              });
-                                          });
-                                      } else {  
-
-                                          // Função para extrair valores da descrição
-                                          function extrairValorTask(chave) {
-                                              const regex = new RegExp(`\\b${chave}\\s*:\\s*(.+)`, "i");
-                                              const match = descricao.match(regex);
-                                              return match ? match[1].trim() : "Não encontrado";
-                                          }
-
-                                          const requisito_nao_funcional = extrairValorTask("Requisito Não Funcional");
-                                          const pattern = extrairValorTask("Pattern");
-
-                                          return t.set('card', 'shared', {
-                                              requisito_nao_funcional,
-                                              pattern
-                                          }).then(function () {
-                                              return t.alert({
-                                                  message: "Campos adicionados com sucesso!",
-                                                  duration: 3,
-                                                  display: "success"
-                                              });
-                                          });
-                                      }
-                                  });
-                          })
-                          .catch(function (error) {
-                              console.error("Erro ao processar o card:", error);
-                              return t.alert({
-                                  message: "Erro inesperado!",
-                                  duration: 3,
-                                  display: "error"
-                              });
-                          });
+        return [
+          {
+            icon: "https://img.icons8.com/ios/50/000000/process.png",
+            text: "Adicionar Métricas",
+            callback: function (t) {
+              return t.card('name') // Obtém o título do card
+                .then(function (card) {
+                  if (!card || !card.name) {
+                    console.error("Erro: Não foi possível obter o título do card.");
+                    return t.alert({
+                      message: "Erro ao obter o título do card!",
+                      duration: 3,
+                      display: "error"
+                    });
                   }
-              },
-              {
-    icon: "https://img.icons8.com/ios/50/000000/process.png",
-    text: "Criar task",
-    callback: function (t) {
-        return t.card('title').then(function (card) {
-            const titulo = card.title || ""; // Obtém o título do card
-            
-            // Verifica se o título do card é diferente de "Task:"
-            if (titulo.startsWith("Task:")) {
-                return; // Não faz nada se o título começar com "Task:"
-            }
 
-            return t.card('desc').then(function (card) {
+                  const titulo = card.name.trim(); // Pega o título do card e remove espaços extras
+
+                  return t.card('desc') // Obtém a descrição do card
+                    .then(function (cardDesc) {
+                      const descricao = cardDesc?.desc?.trim() || "";
+
+                      if (titulo.startsWith("Incerteza")) {
+
+                        function extrairValor(chave) {
+                          const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                          const match = descricao.match(regex);
+                          return match ? match[1].trim() : "";
+                        }
+                        const dominio_problema = extrairValor("Domínio");
+                        const ponto_alerta = extrairValor("Ponto de Alerta");
+                        const hipotese = extrairValor("Hipótese");
+                        const incerteza = extrairValor("Incerteza");
+                        const impacto = extrairValor("Impacto");
+                        const plano = extrairValor("Plano");
+
+                        return t.set('card', 'shared', {
+                          dominio_problema,
+                          ponto_alerta,
+                          hipotese,
+                          incerteza,
+                          impacto,
+                          plano
+                        }).then(function () {
+                          return t.alert({
+                            message: "Campos adicionados com sucesso!",
+                            duration: 3,
+                            display: "success"
+                          });
+                        });
+                      } else {
+
+                        // Função para extrair valores da descrição
+                        function extrairValorTask(chave) {
+                          const regex = new RegExp(`\\b${chave}\\s*:\\s*(.+)`, "i");
+                          const match = descricao.match(regex);
+                          return match ? match[1].trim() : "Não encontrado";
+                        }
+
+                        const requisito_nao_funcional = extrairValorTask("Requisito Não Funcional");
+                        const pattern = extrairValorTask("Pattern");
+
+                        return t.set('card', 'shared', {
+                          requisito_nao_funcional,
+                          pattern
+                        }).then(function () {
+                          return t.alert({
+                            message: "Campos adicionados com sucesso!",
+                            duration: 3,
+                            display: "success"
+                          });
+                        });
+                      }
+                    });
+                })
+                .catch(function (error) {
+                  console.error("Erro ao processar o card:", error);
+                  return t.alert({
+                    message: "Erro inesperado!",
+                    duration: 3,
+                    display: "error"
+                  });
+                });
+            }
+          },
+          {
+            icon: "https://img.icons8.com/ios/50/000000/process.png",
+            text: "Criar task",
+            callback: function (t) {
+              return t.card('desc').then(function (card) {
                 // Descrição do card
                 const descricao = card.desc || "";
 
                 function extrairValor(chave, descricao) {
-                    const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
-                    const match = descricao.match(regex);
-                    return match ? match[1].trim() : "";
+                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                  const match = descricao.match(regex);
+                  return match ? match[1].trim() : "";
                 }
                 // Extraindo os valores de "Plano" da descrição
                 const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
@@ -131,73 +125,61 @@
 
                 // Se não houver bullet points, exibe mensagem
                 if (bulletPoints.length === 0) {
-                    return t.popup({
-                        title: 'Erro',
-                        items: [
-                            {
-                                icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                                text: 'Não foi possível encontrar nenhum bullet point.',
-                            }
-                        ]
-                    });
-                }
-                // Obtendo a URL da carta
-                t.card('url').then(function(cardUrl) {
-                    const urlDoCard = cardUrl;
-                    // Para cada "bullet point", chama a função para criar uma task
-                    bulletPoints.forEach(bulletPoint => {
-                        if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
-                            createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard);  // Passa o bulletPoint e a URL
-                        }
-                    });
-
-                    // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
-                    return t.alert({
-                        message: "Task criada com sucesso!",
-                        duration: 3,
-                        display: "success"
-                    });
-                }).catch(function (error) {
-                    console.error("Erro ao obter a URL do card:", error);
-                    return t.popup({
-                        title: 'Erro',
-                        items: [
-                            {
-                                icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                                text: 'Houve um erro ao gerar as tasks.',
-                            }
-                        ]
-                    });
-                });
-            }).catch(function (error) {
-                console.error("Erro ao processar o card:", error);
-                return t.popup({
+                  return t.popup({
                     title: 'Erro',
                     items: [
-                        {
-                            icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                            text: 'Houve um erro ao processar o card.',
-                        }
-                    ]
-                });
-            });
-        }).catch(function (error) {
-            console.error("Erro ao processar o título do card:", error);
-            return t.popup({
-                title: 'Erro',
-                items: [
-                    {
+                      {
                         icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                        text: 'Houve um erro ao processar o título do card.',
+                        text: 'Não foi possível encontrar nenhum bullet point.',
+                      }
+                    ]
+                  });
+                }
+                // Obtendo a URL da carta
+                t.card('url').then(function (cardUrl) {
+                  const urlDoCard = cardUrl;
+                  // Para cada "bullet point", chama a função para criar uma task
+                  bulletPoints.forEach(bulletPoint => {
+                    if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
+                      createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard);  // Passa o bulletPoint e a URL
                     }
-                ]
-            });
-        });
-    }
-}
+                  });
+
+                  // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
+                  return t.alert({
+                    message: "Task criada com sucesso!",
+                    duration: 3,
+                    display: "success"
+                  });
+                }).catch(function (error) {
+                  console.error("Erro ao obter a URL do card:", error);
+                  return t.popup({
+                    title: 'Erro',
+                    items: [
+                      {
+                        icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                        text: 'Houve um erro ao gerar as tasks.',
+                      }
+                    ]
+                  });
+                });
+              }).catch(function (error) {
+                console.error("Erro ao processar o card:", error);
+                return t.popup({
+                  title: 'Erro',
+                  items: [
+                    {
+                      icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                      text: 'Houve um erro ao processar o card.',
+                    }
+                  ]
+                });
+              });
+            }
+          }
         ];
         function createTaskFromBulletPoint(bulletPoint, urlDoCard) {
-            // Passa o bulletPoint e a URL do card para a função criarCard
+          // Passa o bulletPoint e a URL do card para a função criarCard
           criarCard(bulletPoint, urlDoCard);
         }
       },
@@ -216,11 +198,11 @@
                 }
 
                 let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
-                
+
                 // Contadores para as novas categorias
                 let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
                 let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
-                
+
                 // Novos valores possíveis para 'não funcional' e 'pattern'
                 let countNaoFuncional = {
                   "Performance": 0,
@@ -290,61 +272,62 @@
             }
           },
           {
-                icon: "https://img.icons8.com/ios/50/000000/plus.png",
-                text: "Nova Incerteza",
-                callback: function (t) {
-                    return t.modal({
-                        title: "Nova Incerteza",
-                        url: "create-card.html",
-                        height: 500
-                    });
-                }
-            },
-            {
-                icon: "https://img.icons8.com/ios/50/000000/ai.png",
-                text: "Incerteza GenAI",
-                callback: function (t) {
-                    return t.modal({
-                        title: "Incerteza - GenAI",
-                        url: "create-card-genai.html",
-                        height: 250
-                    });
-                }
+            icon: "https://img.icons8.com/ios/50/000000/plus.png",
+            text: "Nova Incerteza",
+            callback: function (t) {
+              return t.modal({
+                title: "Nova Incerteza",
+                url: "create-card.html",
+                height: 500
+              });
             }
+          },
+          {
+            icon: "https://img.icons8.com/ios/50/000000/ai.png",
+            text: "Incerteza GenAI",
+            callback: function (t) {
+              return t.modal({
+                title: "Incerteza - GenAI",
+                url: "create-card-genai.html",
+                height: 250
+              });
+            }
+          }
         ];
       },
       'card-badges': function (t, options) {
-          return t.card('name') // Obtém o título do card
-              .then(function (card) {
-                  if (!card || !card.name) {
-                      console.error("Erro: Não foi possível obter o título do card.");
-                      return [];
-                  }
+        return t.card('name') // Obtém o título do card
+          .then(function (card) {
+            if (!card || !card.name) {
+              console.error("Erro: Não foi possível obter o título do card.");
+              return [];
+            }
 
-                  const titulo = card.name.trim(); // Remove espaços extras do título
+            const titulo = card.name.trim(); // Remove espaços extras do título
 
-                  return t.get('card', 'shared').then(function (data) {
-                      let badges = [];
+            return t.get('card', 'shared').then(function (data) {
+              let badges = [];
 
-                      if (titulo.startsWith("Incerteza")) {
-                          if (data.incerteza) badges.push({ text: `Incerteza: ${data.incerteza}`, color: 'red' });
-                          if (data.impacto) badges.push({ text: `Impacto: ${data.impacto}`, color: 'blue' });
-                          // Se necessário, descomente essa linha
-                          // if (data.dominio_problema) badges.push({ text: `Domínio: ${data.dominio_problema}`, color: 'green' });
-                      } else {
-                          if (data.requisito_nao_funcional) badges.push({ text: `Requisito Não Funcional: ${data.requisito_nao_funcional}`, color: 'green' });
-                          if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
-                      }
+              if (titulo.startsWith("Incerteza")) {
+                if (data.incerteza) badges.push({ text: `Incerteza: ${data.incerteza}`, color: 'red' });
+                if (data.impacto) badges.push({ text: `Impacto: ${data.impacto}`, color: 'blue' });
+                // Se necessário, descomente essa linha
+                // if (data.dominio_problema) badges.push({ text: `Domínio: ${data.dominio_problema}`, color: 'green' });
+              } else {
+                if (data.requisito_nao_funcional) badges.push({ text: `Requisito Não Funcional: ${data.requisito_nao_funcional}`, color: 'green' });
+                if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
+              }
 
-                      return badges;
-                  });
-              })
-              .catch(function (error) {
-                  console.error("Erro ao processar badges:", error);
-                  return [];
-              });
+              return badges;
+            });
+          })
+          .catch(function (error) {
+            console.error("Erro ao processar badges:", error);
+            return [];
+          });
       }
     });
   </script>
 </body>
+
 </html>
