@@ -63,55 +63,54 @@
 
       'board-buttons': function (t, options) {
         return [
-            {
-                icon: "https://img.icons8.com/ios/50/000000/combo-chart.png",
-                text: "ArchHypo Metrics",
-                callback: function (t) {
-                    return t.cards('all').then(function (cards) {
-                        if (!cards || cards.length === 0) {
-                            return t.popup({
-                                title: 'Erro',
-                                items: [{ text: 'Nenhum cartão encontrado!', interactive: false }]
-                            });
-                        }
-
-                        let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
-                        let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
-                        let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
-
-                        let cardPromises = cards.map(function (card) {
-                            return Promise.all([
-                                t.get(card.id, 'shared', 'incerteza'),
-                                t.get(card.id, 'shared', 'impacto')
-                            ]).then(function ([incerteza, impacto]) {
-                                if (levels.includes(incerteza)) {
-                                    countIncerteza[incerteza]++;
-                                }
-                                if (levels.includes(impacto)) {
-                                    countImpacto[impacto]++;
-                                }
-                            }).catch(function (error) {
-                                console.error(`Erro ao obter valores do card ${card.id}:`, error);
-                            });
-                        });
-
-                        return Promise.all(cardPromises).then(function () {
-                            return t.modal({
-                                title: "ArchHypo Metrics",
-                                url: "grafico.html",  // Página dentro do próprio Power-Up
-                                args: {
-                                    incerteza: countIncerteza,
-                                    impacto: countImpacto
-                                },
-                                fullscreen: false
-                            });
-                        });
-                    }).catch(function (error) {
-                        console.error("Erro ao obter cartões:", error);
-                    });
+          {
+            icon: "https://img.icons8.com/ios/50/000000/combo-chart.png",
+            text: "ArchHypo Metrics",
+            callback: function (t) {
+              return t.cards('all').then(function (cards) {
+                if (!cards || cards.length === 0) {
+                  return t.popup({
+                    title: 'Erro',
+                    items: [{ text: 'Nenhum cartão encontrado!', interactive: false }]
+                  });
                 }
-            },
 
+                let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+                let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+                let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+
+                let cardPromises = cards.map(function (card) {
+                  return Promise.all([
+                    t.get(card.id, 'shared', 'incerteza'),
+                    t.get(card.id, 'shared', 'impacto')
+                  ]).then(function ([incerteza, impacto]) {
+                    if (levels.includes(incerteza)) {
+                      countIncerteza[incerteza]++;
+                    }
+                    if (levels.includes(impacto)) {
+                      countImpacto[impacto]++;
+                    }
+                  }).catch(function (error) {
+                    console.error(`Erro ao obter valores do card ${card.id}:`, error);
+                  });
+                });
+
+                return Promise.all(cardPromises).then(function () {
+                  return t.modal({
+                    title: "ArchHypo Metrics",
+                    url: "grafico.html",  // Página dentro do próprio Power-Up
+                    args: {
+                      incerteza: countIncerteza,
+                      impacto: countImpacto
+                    },
+                    fullscreen: false
+                  });
+                });
+              }).catch(function (error) {
+                console.error("Erro ao obter cartões:", error);
+              });
+            }
+          },
           {
                 icon: "https://img.icons8.com/ios/50/000000/plus.png",
                 text: "Nova Incerteza",
