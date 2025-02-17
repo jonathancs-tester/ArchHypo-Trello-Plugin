@@ -23,10 +23,11 @@
                   text: "Adicionar Campos de Incerteza",
                   callback: function (t) {
                       return t.card('desc') // Obtém a descrição do card
-                          .then(function (card) {
+                          .then(function (titulo) {
                               const descricao = card.desc || "";
                               
-                              // Função para extrair valores da descrição
+                              if (titulo.startsWith("Incerteza")) {
+                                // Função para extrair valores da descrição
                               function extrairValor(chave) {
                                   const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
                                   const match = descricao.match(regex);
@@ -56,6 +57,30 @@
                                       display: "success"
                                   });
                               });
+                            }
+                            else{ // Função para extrair valores da descrição
+                              function extrairValor(chave) {
+                                  const regex = new RegExp(`${chave}:\\s*(.*)`, "i");
+                                  const match = descricao.match(regex);
+                                  return match ? match[1].trim() : "";
+                              }
+
+                              // Extraindo valores da descrição
+                              const requisito_nao_funcional = extrairValor("Requisito Não Funcinal") || "Não encotrado";
+                              const pattern = extrairValor("Pattern") || "Não encotrado";
+      
+                              // Salvar os valores no `shared` do Trello
+                              return t.set('card', 'shared', {
+                                  requisito_nao_funcional,
+                                  pattern
+                              }).then(function () {
+                                  return t.alert({
+                                      message: "Campos adicionados com sucesso!",
+                                      duration: 3,
+                                      display: "success"
+                                  });
+                              });
+                            }
                           });
                   }
               },
@@ -207,6 +232,8 @@
           let badges = [];
           if (data.incerteza) badges.push({ text: `Incerteza: ${data.incerteza}`, color: 'red' });
           if (data.impacto) badges.push({ text: `Impacto: ${data.impacto}`, color: 'blue' });
+          if (data.requisito_nao_funcional) badges.push({ text: `Requisito Não Funcional: ${data.requisito_nao_funcional}`, color: 'red' });
+          if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'blue' });
           //if (data.dominio_problema) badges.push({ text: `Domínio: ${data.dominio_problema}`, color: 'green' });
           return badges;
         });
