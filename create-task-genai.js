@@ -1,8 +1,8 @@
-const BACKEND_URL = "https://elaborate-pasca-92084f.netlify.app/.netlify/functions"; // Chama nosso servidor backend
-const TRELLO_API_URL = "https://api.trello.com/1/cards";
-const TRELLO_LIST_ID = "6692d2e23c532f46419fc230"; // ID da lista no Trello
-const TRELLO_KEY = "eb9d96c766c0a0ba5b9a4db8e940ed4d";
-const TRELLO_TOKEN = "ATTA3d2621b57146b60ce3b3fa21dc193ad525c1d94ee2bfef004d1a24ed958a92332C751758";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const TRELLO_API_URL = process.env.REACT_APP_TRELLO_API_URL;
+const TRELLO_LIST_ID = process.env.REACT_APP_TRELLO_LIST_ID;
+const TRELLO_KEY = process.env.REACT_APP_TRELLO_KEY;
+const TRELLO_TOKEN = process.env.REACT_APP_TRELLO_TOKEN;
 
 // Função que chama o backend para gerar os detalhes do card
 async function gerarDetalhesCard(plano) {
@@ -46,8 +46,6 @@ async function criarCard(bulletPoint, urlDoCard) {
 
         // Espera a resposta e converte para JSON
         const responseData = await response.json();
-        console.log(responseData); // Verifique o conteúdo da resposta
-
         // Extrai o id do card da resposta
         const responseCardId = responseData.id;
 
@@ -60,11 +58,6 @@ async function criarCard(bulletPoint, urlDoCard) {
                 name: "Link para Incerteza", // Você pode nomear o attachment como quiser
             })
         });
-        console.log(attachmentResponse.json())
-
-
-        const attachmentData = await attachmentResponse.json();
-        console.log('Attachment adicionado com sucesso:', attachmentData);
 
         // Verifica se a criação do card foi bem-sucedida
         if (response.ok) {
