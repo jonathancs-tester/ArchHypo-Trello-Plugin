@@ -98,7 +98,7 @@
                 return Promise.all(cardPromises).then(function () {
                   return t.modal({
                     title: "ArchHypo Metrics",
-                    url: "./grafico",  // Página dentro do próprio Power-Up
+                    url: "grafico.html",  // Página dentro do próprio Power-Up
                     args: {
                       incerteza: countIncerteza,
                       impacto: countImpacto
@@ -115,8 +115,8 @@
                 icon: "https://img.icons8.com/ios/50/000000/plus.png",
                 text: "Nova Incerteza",
                 callback: function (t) {
-                    return t.popup({
-                        title: "Criar Card Incerteza",
+                    return t.modal({
+                        title: "Nova Incerteza",
                         url: "create-card.html",
                         height: 250
                     });
@@ -126,8 +126,8 @@
                 icon: "https://img.icons8.com/ios/50/000000/ai.png",
                 text: "Incerteza GenAI",
                 callback: function (t) {
-                    return t.popup({
-                        title: "Criar Card Incerteza - GenAI",
+                    return t.modal({
+                        title: "Incerteza - GenAI",
                         url: "create-card-genai.html",
                         height: 250
                     });
