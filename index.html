@@ -57,10 +57,80 @@
                               });
                           });
                   }
-              }
+              },
+              {
+                  icon: "https://img.icons8.com/ios/50/000000/process.png",
+                  text: "Criar Tasks",
+                  callback: function (t) {
+                      return t.card('desc') // Obtém a descrição do card
+                          .then(function (card) {
+                              const descricao = card.desc || "";
+
+                              // Função para extrair valores da descrição
+                              function extrairValor(chave) {
+                                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                                  const match = descricao.match(regex);
+                                  return match ? match[1].trim() : "";
+                              }
+
+                              // Função para extrair os bullet points do Plano
+                              function extrairPlano(planoDescricao) {
+                                  const regex = /\*\*(.*?)\*\*/g;
+                                  let match;
+                                  const pontos = [];
+                                  while ((match = regex.exec(planoDescricao)) !== null) {
+                                      pontos.push(match[1].trim());
+                                  }
+                                  return pontos;
+                              }
+
+                              const planoDescricao = extrairValor("Plano") || "Não encontrado";
+
+                              // Extraindo os bullet points do Plano
+                              const planoPontos = extrairPlano(planoDescricao);
+
+                              // Obtendo o link do card original
+                              const cardUrl = card.url;
+
+                              // Criar tasks no Trello com os valores extraídos
+                              function criarTask(titulo, descricao) {
+                                  return t.cards.create({
+                                      name: titulo,
+                                      desc: descricao
+                                  });
+                              }
+
+                              // Criando tasks para o Plano, uma para cada bullet point
+                              const tasks = planoPontos.map(function (ponto, index) {
+                                  return criarTask(`Plano - Ponto ${index + 1}`, ponto);
+                              });
+
+                              // Adicionando o link como badge no card
+                              return t.set('card', 'shared', { tasksCreated: tasks }).then(function () {
+                                  return t.card('id').then(function(cardId) {
+                                      t.set('card', 'badges', [{
+                                          title: 'Link do Card',
+                                          text: 'Abrir',
+                                          color: 'blue',
+                                          callback: function() {
+                                              window.open(cardUrl, '_blank');
+                                          }
+                                      }]);
+                                  }).then(function () {
+                                      return Promise.all(tasks);
+                                  }).then(function () {
+                                      return t.alert({
+                                          message: "Campos e tasks adicionados com sucesso!",
+                                          duration: 3,
+                                          display: "success"
+                                      });
+                                  });
+                              });
+                          });
+                  }
+              },
           ];
       },
-
       'board-buttons': function (t, options) {
         return [
           {
