@@ -1,11 +1,88 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArchHypo Metrics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Importa Chart.js -->
+    <style>
+        /* Reset básico de margens e preenchimentos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Definir a fonte e o background geral da página */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0079bf;
+            /* Azul do Trello */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        /* Título principal */
+        h3 {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 30px 0 10px 0;
+        }
+
+        /* Container para os gráficos */
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo dos gráficos (canvas) */
+        canvas {
+            width: 80% !important;
+            max-width: 800px;
+            height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Adicionar um pequeno espaçamento entre as seções */
+        h3+canvas {
+            margin-top: 30px;
+        }
+
+        /* Adiciona uma estrutura para os gráficos */
+        .chart-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        /* Rodapé com alguma informação */
+        footer {
+            margin-top: auto;
+            color: white;
+            font-size: 14px;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
     <h3>Incerteza Metrics</h3>
     <canvas id="metricsChart"></canvas>
@@ -19,7 +96,7 @@
     <script>
         // Pega os parâmetros da URL
         const urlParams = new URLSearchParams(window.location.search);
-        
+
         // Obtenção dos dados para Incerteza e Impacto
         const incerteza = JSON.parse(urlParams.get('incerteza'));
         const impacto = JSON.parse(urlParams.get('impacto'));
@@ -126,4 +203,5 @@
         });
     </script>
 </body>
+
 </html>
