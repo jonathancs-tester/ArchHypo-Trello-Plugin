@@ -45,8 +45,8 @@ async function criarCard(bulletPoint, urlDoCard) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                cardid: responseCardId,
-                url: `${urlDoCard.url}`
+                responseCardId: responseCardId,
+                urlDoCard: `${urlDoCard.url}`
             })
         });
 
