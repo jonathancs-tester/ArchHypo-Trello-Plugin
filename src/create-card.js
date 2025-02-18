@@ -1,5 +1,3 @@
-var t = window.TrelloPowerUp.iframe();
-
 document.getElementById('create-card-form').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -22,7 +20,6 @@ document.getElementById('create-card-form').addEventListener('submit', function 
     .then(response => response.json())
     .then(function (result) {
         console.log("Card criado!", result);
-        t.closePopup(); // Fecha o popup do Power-Up do Trello
     })
     .catch(function (error) {
         console.error("Erro ao criar card:", error);

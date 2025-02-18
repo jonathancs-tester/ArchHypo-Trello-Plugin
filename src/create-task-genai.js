@@ -1,12 +1,6 @@
-const BACKEND_URL = "https://elaborate-pasca-92084f.netlify.app/.netlify/functions"; // Chama nosso servidor backend
-const TRELLO_API_URL = "https://api.trello.com/1/cards";
-const TRELLO_LIST_ID = "6692d2e23c532f46419fc230"; // ID da lista no Trello
-const TRELLO_KEY = "eb9d96c766c0a0ba5b9a4db8e940ed4d";
-const TRELLO_TOKEN = "ATTA3d2621b57146b60ce3b3fa21dc193ad525c1d94ee2bfef004d1a24ed958a92332C751758";
-
 // Função que chama o backend para gerar os detalhes do card
 async function gerarDetalhesCard(plano) {
-    const response = await fetch(`${BACKEND_URL}/gerar-task`, {
+    const response = await fetch(`/.netlify/functions/gerar-task`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ campoPlano: plano })
@@ -33,23 +27,21 @@ async function criarCard(bulletPoint, urlDoCard) {
         // Atualiza a mensagem de sucesso com os detalhes gerados
         console.log(`✅ Detalhes gerados:\n${detalhes}`)
 
-        // Criar o card no Trello automaticamente
-        const response = await fetch(`${TRELLO_API_URL}?idList=${TRELLO_LIST_ID}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const response = await fetch(`/.netlify/functions/criar-card`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 name: `${taskMatch[0]}`,
-                desc: `Detalhes da tarefa:\n\n ${detalhes}\n\nURL da Incerteza: ${urlDoCard.url}` // Usando os detalhes gerados
+                detalhes: `Detalhes da tarefa:\n\n ${detalhes}\n\nURL da Incerteza: ${urlDoCard.url}` // Usando os detalhes gerados
             })
         });
-
+        
         // Espera a resposta e converte para JSON
         const responseData = await response.json();
         // Extrai o id do card da resposta
         const responseCardId = responseData.id;
 
-        // Adicionando o attachment ao card criado
-        const attachmentResponse = await fetch(`${TRELLO_API_URL}/${responseCardId}/attachments?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const attachmentResponse = await fetch(`/.netlify/functions/attachment`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
