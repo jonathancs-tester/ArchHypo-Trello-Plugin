@@ -30,11 +30,11 @@ export async function handler(event) {
     try {
         const { name, detalhes } = JSON.parse(event.body);
 
-        if (!incerteza || !detalhes) {
+        if (!name || !detalhes) {
             return {
                 statusCode: 400,
                 headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ erro: "Os campos 'incerteza' e 'detalhes' são obrigatórios." }),
+                body: JSON.stringify({ erro: "Os campos 'name' e 'detalhes' são obrigatórios." }),
             };
         }
 
