@@ -1,5 +1,5 @@
 async function gerarDetalhesCard(incerteza) {
-    const response = await fetch(`${BACKEND_URL}/gerar-card`, {
+    const response = await fetch(`/.netlify/functions/gerar-card`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ campoIncerteza: incerteza })
