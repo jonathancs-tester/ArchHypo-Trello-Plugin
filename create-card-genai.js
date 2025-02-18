@@ -32,7 +32,7 @@ async function criarCard() {
         status.innerText = `✅ Detalhes gerados:\n${detalhes}`;
         status.className = 'success';
 
-        const response = await fetch(`${BACKEND_URL}/criar-card`, {
+        const response = await fetch(`/.netlify/functions/criar-card`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
