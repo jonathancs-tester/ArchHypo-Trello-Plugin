@@ -28,7 +28,7 @@ export async function handler(event) {
     }
 
     try {
-        const { incerteza, detalhes } = JSON.parse(event.body);
+        const { name, detalhes } = JSON.parse(event.body);
 
         if (!incerteza || !detalhes) {
             return {
@@ -42,7 +42,7 @@ export async function handler(event) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                name: `Incerteza: ${incerteza}`,
+                name: name,
                 desc: detalhes,
             }),
         });

@@ -1,5 +1,3 @@
-const BACKEND_URL = "https://elaborate-pasca-92084f.netlify.app/.netlify/functions"; 
-
 async function gerarDetalhesCard(incerteza) {
     const response = await fetch(`${BACKEND_URL}/gerar-card`, {
         method: "POST",
@@ -36,7 +34,7 @@ async function criarCard() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                incerteza,
+                name: `Incerteza: ${incerteza}`,
                 detalhes
             })
         });
