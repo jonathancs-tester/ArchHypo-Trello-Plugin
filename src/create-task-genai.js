@@ -38,18 +38,19 @@ async function criarCard(bulletPoint, urlDoCard) {
         
         // Espera a resposta e converte para JSON
         const responseData = await response.json();
+        console.log("responseData.id:", responseData.id);  // Verifique se o id está presente
 
         const attachmentResponse = await fetch(`/.netlify/functions/attachment`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                responseCardId: responseData.id,
-                urlDoCard: `${urlDoCard.url}`
+                responseCardId: responseData.id,  // Verifique se o id está aqui
+                urlDoCard: `${urlDoCard.url}`  // Verifique se a URL está correta
             })
-        });
+        });        
 
         // Verifica se a criação do card foi bem-sucedida
-        if (response.ok) {
+        if (attachmentResponse.ok) {
              console.log("✅ Task criada no Trello com sucesso!")
         } else {
             throw new Error('Falha ao criar card no Trello');

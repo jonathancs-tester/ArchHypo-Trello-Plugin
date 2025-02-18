@@ -24,6 +24,7 @@ export async function handler(event) {
 
     try {
         const { responseCardId, urlDoCard } = JSON.parse(event.body);
+        console.log("Recebido responseCardId:", responseCardId, "e urlDoCard:", urlDoCard);
 
         if (!responseCardId || !urlDoCard) {
             return {
