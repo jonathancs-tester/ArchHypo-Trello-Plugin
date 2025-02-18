@@ -108,73 +108,100 @@
             icon: "https://img.icons8.com/ios/50/000000/process.png",
             text: "Criar task",
             callback: function (t) {
-              return t.card('desc').then(function (card) {
-                // Descrição do card
-                const descricao = card.desc || "";
+              return t.card('name') // Obtém o título do card
+                .then(function (card) {
+                  if (!card || !card.name) {
+                    console.error("Erro: Não foi possível obter o título do card.");
+                    return t.alert({
+                      message: "Erro ao obter o título do card!",
+                      duration: 3,
+                      display: "error"
+                    });
+                  }
 
-                function extrairValor(chave, descricao) {
-                  const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
-                  const match = descricao.match(regex);
-                  return match ? match[1].trim() : "";
-                }
-                // Extraindo os valores de "Plano" da descrição
-                const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
+                  const titulo = card.name.trim(); // Pega o título do card e remove espaços extras
 
-                // Dividindo a descrição em "bullet points"
-                const bulletPoints = descricaoPlanoTecnico.split('\n').filter(line => line.trim() !== '');
+                  if (titulo.startsWith("Task")) {
+                    return t.popup({
+                      title: 'Erro',
+                      items: [
+                        {
+                          icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                          text: 'Não é possível criar task de um Task Card.',
+                        }
+                      ]
+                    });
 
-                // Se não houver bullet points, exibe mensagem
-                if (bulletPoints.length === 0) {
-                  return t.popup({
-                    title: 'Erro',
-                    items: [
-                      {
-                        icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                        text: 'Não foi possível encontrar nenhum bullet point.',
-                      }
-                    ]
-                  });
-                }
-                // Obtendo a URL da carta
-                t.card('url').then(function (cardUrl) {
-                  const urlDoCard = cardUrl;
-                  // Para cada "bullet point", chama a função para criar uma task
-                  bulletPoints.forEach(bulletPoint => {
-                    if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
-                      createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard);  // Passa o bulletPoint e a URL
+                  }
+
+                  return t.card('desc').then(function (card) {
+                    // Descrição do card
+                    const descricao = card.desc || "";
+
+                    function extrairValor(chave, descricao) {
+                      const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                      const match = descricao.match(regex);
+                      return match ? match[1].trim() : "";
                     }
-                  });
+                    // Extraindo os valores de "Plano" da descrição
+                    const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
 
-                  // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
-                  return t.alert({
-                    message: "Task criada com sucesso!",
-                    duration: 3,
-                    display: "success"
-                  });
-                }).catch(function (error) {
-                  console.error("Erro ao obter a URL do card:", error);
-                  return t.popup({
-                    title: 'Erro',
-                    items: [
-                      {
-                        icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                        text: 'Houve um erro ao gerar as tasks.',
-                      }
-                    ]
+                    // Dividindo a descrição em "bullet points"
+                    const bulletPoints = descricaoPlanoTecnico.split('\n').filter(line => line.trim() !== '');
+
+                    // Se não houver bullet points, exibe mensagem
+                    if (bulletPoints.length === 0) {
+                      return t.popup({
+                        title: 'Erro',
+                        items: [
+                          {
+                            icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                            text: 'Não foi possível encontrar nenhum bullet point.',
+                          }
+                        ]
+                      });
+                    }
+                    // Obtendo a URL da carta
+                    t.card('url').then(function (cardUrl) {
+                      const urlDoCard = cardUrl;
+                      // Para cada "bullet point", chama a função para criar uma task
+                      bulletPoints.forEach(bulletPoint => {
+                        if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
+                          createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard);  // Passa o bulletPoint e a URL
+                        }
+                      });
+
+                      // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
+                      return t.alert({
+                        message: "Task criada com sucesso!",
+                        duration: 3,
+                        display: "success"
+                      });
+                    }).catch(function (error) {
+                      console.error("Erro ao obter a URL do card:", error);
+                      return t.popup({
+                        title: 'Erro',
+                        items: [
+                          {
+                            icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                            text: 'Houve um erro ao gerar as tasks.',
+                          }
+                        ]
+                      });
+                    });
+                  }).catch(function (error) {
+                    console.error("Erro ao processar o card:", error);
+                    return t.popup({
+                      title: 'Erro',
+                      items: [
+                        {
+                          icon: 'https://img.icons8.com/ios/50/000000/error.png',
+                          text: 'Houve um erro ao processar o card.',
+                        }
+                      ]
+                    });
                   });
                 });
-              }).catch(function (error) {
-                console.error("Erro ao processar o card:", error);
-                return t.popup({
-                  title: 'Erro',
-                  items: [
-                    {
-                      icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                      text: 'Houve um erro ao processar o card.',
-                    }
-                  ]
-                });
-              });
             }
           }
         ];
