@@ -145,7 +145,7 @@
                     }
                     // Extraindo os valores de "Plano" da descrição
                     const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
-
+                    console.log("Descrição extraída:", descricaoPlanoTecnico);
                     // Dividindo a descrição em "bullet points"
                     const bulletPoints = descricaoPlanoTecnico.split('\n').filter(line => line.trim() !== '');
 
@@ -161,6 +161,7 @@
                         ]
                       });
                     }
+                    console.log("Bullet points extraídos:", bulletPoints);
                     // Obtendo a URL da carta
                     t.card('url').then(function (cardUrl) {
                       const urlDoCard = cardUrl;
