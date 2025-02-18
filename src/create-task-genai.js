@@ -38,7 +38,6 @@ async function criarCard(bulletPoint, urlDoCard) {
         
         // Espera a resposta e converte para JSON
         const responseData = await response.json();
-        console.log("responseData.id:", responseData.data);  // Verifique se o id está presente
 
         const attachmentResponse = await fetch(`/.netlify/functions/attachment`, {
             method: "POST",
