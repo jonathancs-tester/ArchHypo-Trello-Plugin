@@ -86,39 +86,6 @@
         </form>
     </div>
 
-    <script>
-        var t = window.TrelloPowerUp.iframe();
-
-        document.getElementById('create-card-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            var data = {
-                name: "Incerteza: " + document.getElementById('dominio').value,
-                desc: 
-                    "**Ponto de alerta:** " + document.getElementById('ponto').value + "\\n" +
-                    "**Hipótese:** " + document.getElementById('hipotese').value + "\\n" +
-                    "**Incerteza:** " + document.getElementById('incerteza').value + "\\n" +
-                    "**Impacto:** " + document.getElementById('impacto').value + "\\n" +
-                    "**Plano:** " + document.getElementById('plano').value
-            };
-
-            t.board('id')
-                .then(function (board) {
-                    return fetch(`https://api.trello.com/1/cards?idList=6692d2e23c532f46419fc230&key=eb9d96c766c0a0ba5b9a4db8e940ed4d&token=ATTA3d2621b57146b60ce3b3fa21dc193ad525c1d94ee2bfef004d1a24ed958a92332C751758`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(data)
-                    });
-                })
-                .then(response => response.json())
-                .then(function (result) {
-                    console.log("Card criado!", result);
-                    t.closePopup();
-                })
-                .catch(function (error) {
-                    console.error("Erro ao criar card:", error);
-                });
-        });
-    </script>
+    <script src="../src/create-card.js"></script>
 </body>
 </html>
