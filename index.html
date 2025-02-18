@@ -139,7 +139,7 @@
                     const descricao = card.desc || "";
 
                     function extrairValor(chave, descricao) {
-                      const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                      const regex = new RegExp(`${chave}:\\s*([\\s\\S]*?)(?=\\n\\w+:|$)`, "i");
                       const match = descricao.match(regex);
                       return match ? match[1].trim() : "";
                     }
