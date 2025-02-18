@@ -290,7 +290,8 @@
                   return t.modal({
                     title: "ArchHypo Metrics",
                     url: `pages/metrics-graph.html?${params}`,  // Passa os dados na URL
-                    fullscreen: false
+                    fullscreen: false,
+                    height: 500
                   });
                 });
               }).catch(function (error) {
@@ -305,7 +306,7 @@
               return t.modal({
                 title: "Nova Incerteza",
                 url: "./pages/create-card.html",
-                height: 800
+                height: 500
               });
             }
           },
