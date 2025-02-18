@@ -38,14 +38,12 @@ async function criarCard(bulletPoint, urlDoCard) {
         
         // Espera a resposta e converte para JSON
         const responseData = await response.json();
-        // Extrai o id do card da resposta
-        const responseCardId = responseData.id;
 
         const attachmentResponse = await fetch(`/.netlify/functions/attachment`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                responseCardId: responseCardId,
+                responseCardId: responseData.id,
                 urlDoCard: `${urlDoCard.url}`
             })
         });
