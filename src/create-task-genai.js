@@ -45,8 +45,8 @@ async function criarCard(bulletPoint, urlDoCard) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                url: `${urlDoCard.url}`,
-                name: "Link para Incerteza", // Você pode nomear o attachment como quiser
+                cardid: responseCardId,
+                url: `${urlDoCard.url}`
             })
         });
 
