@@ -24,10 +24,10 @@ document.getElementById('create-card-form').addEventListener('submit', async fun
     var data = {
         name: "Incerteza: " + dominio,
         detalhes:
-            "**Ponto de alerta:** " + ponto + "<br>" +
-            "**Hipótese:** " + hipotese + "<br>" +
-            "**Incerteza:** " + incerteza + "<br>" +
-            "**Impacto:** " + impacto + "<br>" +
+            "**Ponto de alerta:** " + ponto + "\n" +
+            "**Hipótese:** " + hipotese + "\n" +
+            "**Incerteza:** " + incerteza + "\n" +
+            "**Impacto:** " + impacto + "\n" +
             "**Plano:** " + plano
     };
 
