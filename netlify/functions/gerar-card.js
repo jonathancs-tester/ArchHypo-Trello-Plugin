@@ -45,7 +45,9 @@ export async function handler(event) {
                     - Hipótese (uma unica frase)
                     - Incerteza (Muito Baixo/Baixo/Médio/Alto/Muito Alto)
                     - Impacto (Muito Baixo/Baixo/Médio/Alto/Muito Alto)
-                    - Plano (criar em forma de tópicos)`
+                    - Plano (criar conforme o exemplo: Plano:
+                        Item 1: item 1
+                        Item 2: item 2`
                 }]
             }]
         };

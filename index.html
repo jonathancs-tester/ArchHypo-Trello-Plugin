@@ -108,7 +108,6 @@
             icon: "https://img.icons8.com/ios/50/000000/process.png",
             text: "Criar task",
             callback: function (t) {
-              t.board('id').then(function (boardId) {
               return t.card('name') // Obtém o título do card
                 .then(function (card) {
                   if (!card || !card.name) {
@@ -134,7 +133,7 @@
                     });
 
                   }
-
+                  t.board('id').then(function (boardId) {
                   return t.card('desc').then(function (card) {
                     // Descrição do card
                     const descricao = card.desc || "";
