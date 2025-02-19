@@ -46,12 +46,20 @@ export async function handler(event) {
             };
         }
 
+        console.log(`${TRELLO_API_URL}/boards/${boardId}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
+
         const idListRespose = await fetch(`${TRELLO_API_URL}/boards/${boardId}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
-        console.log(idListRespose[0])
-        const idList = idListRespose[0].id
+        console.log(idListRespose)
+        const idList = idListRespose.length > 0 ? idListRespose[0].id : null;
+
+        if (idList) {
+            console.log("ID da Lista:", idList);
+        } else {
+            console.error("Nenhuma lista encontrada.");
+        }
         const response = await fetch(`${TRELLO_API_URL}/cards?idList=${idList}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
