@@ -145,7 +145,6 @@
                     }
                     // Extraindo os valores de "Plano" da descrição
                     const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
-                    console.log("Descrição extraída:", descricaoPlanoTecnico);
 
                     // Remover o primeiro " **" e garantir que os bullet points sejam formatados corretamente
                     const bulletPoints = descricaoPlanoTecnico
@@ -163,8 +162,6 @@
                         return `- ${line}`; // Para linhas simples, apenas cria um bullet normal
                       });
 
-
-                    console.log("Bullet Points:", bulletPoints);
 
                     // Se não houver bullet points, exibe mensagem
                     if (bulletPoints.length === 0) {
