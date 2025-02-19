@@ -38,11 +38,12 @@ export async function handler(event) {
             };
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const boardId = urlParams.get('boardId');  // Obtém o listId passado pela URL
-
-        console.log("List ID:", boardId);
+        if (typeof window !== "undefined") {
+            const urlParams = new URLSearchParams(window.location.search);
+            const boardId = urlParams.get('boardId'); 
         
+            console.log("Board ID:", boardId);
+        }
 
         const response = await fetch(`${TRELLO_API_URL}?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
