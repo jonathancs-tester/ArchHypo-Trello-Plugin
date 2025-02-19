@@ -1,7 +1,6 @@
 import fetch from "node-fetch";
 
 const TRELLO_API_URL = process.env.TRELLO_API_URL;
-//const TRELLO_LIST_ID = process.env.TRELLO_LIST_ID;
 const TRELLO_KEY = process.env.TRELLO_KEY;
 const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
@@ -46,6 +45,8 @@ export async function handler(event) {
                 body: JSON.stringify({ error: "O parâmetro boardId é obrigatório." })
             };
         }
+
+        console.log(`${TRELLO_API_URL}/cards?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
 
         const response = await fetch(`${TRELLO_API_URL}/cards?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
