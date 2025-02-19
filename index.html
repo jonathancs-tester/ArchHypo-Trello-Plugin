@@ -146,8 +146,10 @@
                     // Extraindo os valores de "Plano" da descrição
                     const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
                     console.log("Descrição extraída:", descricaoPlanoTecnico);
+                    
                     // Dividindo a descrição em "bullet points"
-                    const bulletPoints = descricaoPlanoTecnico.split('\n').filter(line => line.trim() !== '');
+                    const bulletPoints = descricaoPlanoTecnico.split('\n').map(line => line.trim()).filter(line => line !== '');
+                    console.log("Bullet Points:", bulletPoints);
 
                     // Se não houver bullet points, exibe mensagem
                     if (bulletPoints.length === 0) {
