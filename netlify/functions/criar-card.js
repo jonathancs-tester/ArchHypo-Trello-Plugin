@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 
 const TRELLO_API_URL = process.env.TRELLO_API_URL;
-const TRELLO_LIST_ID = process.env.TRELLO_LIST_ID;
+//const TRELLO_LIST_ID = process.env.TRELLO_LIST_ID;
 const TRELLO_KEY = process.env.TRELLO_KEY;
 const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
@@ -38,7 +38,13 @@ export async function handler(event) {
             };
         }
 
-        const response = await fetch(`${TRELLO_API_URL}?idList=${TRELLO_LIST_ID}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const urlParams = new URLSearchParams(window.location.search);
+        const boardId = urlParams.get('boardId');  // Obtém o listId passado pela URL
+
+        console.log("List ID:", boardId);
+        
+
+        const response = await fetch(`${TRELLO_API_URL}?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

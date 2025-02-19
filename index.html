@@ -318,34 +318,25 @@
             icon: "https://img.icons8.com/ios/50/000000/plus.png",
             text: "Nova Incerteza",
             callback: function (t) {
-              // Tenta pegar o ID do board primeiro
               t.board('id').then(function (boardId) {
                 console.log("Board ID:", boardId);
 
-                // Agora vamos acessar as listas com base no boardId
-                t.lists(boardId).then(function (lists) {
-                  if (!lists || lists.length === 0) {
-                    console.error("Não há listas neste board");
-                    return;
-                  }
-
-                  const listId = lists[0].id; // Pegando o primeiro listId, você pode mudar isso conforme necessário
-                  console.log("List ID encontrado:", listId);
-
-                  // Gerar a URL para o modal com o listId
-                  const modalUrl = `./pages/create-card.html?listId=${listId}`;
-
-                  // Exibir o modal com a URL
-                  return t.modal({
-                    title: "Nova Incerteza",
-                    url: modalUrl,
-                    height: 500
-                  });
-                }).catch(function (error) {
-                  console.error("Erro ao acessar as listas:", error);
+                return t.modal({
+                  title: "Nova Incerteza",
+                  url: "./pages/create-card.html?boardId=${boardId}",
+                  height: 500
                 });
-              }).catch(function (error) {
-                console.error("Erro ao acessar o board:", error);
+              });
+            }
+          },
+          {
+            icon: "https://img.icons8.com/ios/50/000000/ai.png",
+            text: "Incerteza GenAI",
+            callback: function (t) {
+              return t.modal({
+                title: "Incerteza - GenAI",
+                url: "./pages/create-card-genai.html",
+                height: 250
               });
             }
           }
