@@ -319,11 +319,11 @@
             text: "Nova Incerteza",
             callback: function (t) {
               t.board('id').then(function (boardId) {
-                console.log("Board ID:", boardId);
+                console.log("Board ID:", boardId.id);
 
                 return t.modal({
                   title: "Nova Incerteza",
-                  url: `./pages/create-card.html?boardId=${boardId}`,
+                  url: `./pages/create-card.html?boardId=${boardId.id}`,
                   height: 500
                 });
               });
