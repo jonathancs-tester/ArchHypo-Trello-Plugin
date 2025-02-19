@@ -46,9 +46,13 @@ export async function handler(event) {
             };
         }
 
-        console.log(`${TRELLO_API_URL}/cards?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
-
-        const response = await fetch(`${TRELLO_API_URL}/cards?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const idListRespose = await fetch(`${TRELLO_API_URL}/boards/${boardId}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+        console.log(idListRespose[0])
+        const idList = idListRespose[0].id
+        const response = await fetch(`${TRELLO_API_URL}/cards?idList=${idList}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
