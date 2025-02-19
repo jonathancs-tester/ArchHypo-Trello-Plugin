@@ -39,7 +39,6 @@ export async function handler(event) {
         }
 
         const { boardId } = event.queryStringParameters;
-        console.log(boardId)
 
         if (!boardId) {
             return {
@@ -48,7 +47,7 @@ export async function handler(event) {
             };
         }
 
-        const response = await fetch(`${TRELLO_API_URL}?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const response = await fetch(`${TRELLO_API_URL}/cards?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

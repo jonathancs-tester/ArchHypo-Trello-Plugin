@@ -30,7 +30,10 @@ async function criarCard() {
         status.innerText = `✅ Detalhes gerados:\n${detalhes}`;
         status.className = 'success';
 
-        const response = await fetch(`/.netlify/functions/criar-card`, {
+        const urlParams = new URLSearchParams(window.location.search);
+        const boardId = urlParams.get('boardId');  // Obtém o listId passado pela URL
+
+        const response = await fetch(`/.netlify/functions/criar-card?boardId=${boardId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

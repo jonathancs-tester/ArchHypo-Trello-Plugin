@@ -38,7 +38,7 @@ export async function handler(event) {
         const TRELLO_KEY = process.env.TRELLO_KEY;
         const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
-        const attachmentResponse = await fetch(`${TRELLO_API_URL}/${responseCardId}/attachments?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const attachmentResponse = await fetch(`${TRELLO_API_URL}/cards/${responseCardId}/attachments?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

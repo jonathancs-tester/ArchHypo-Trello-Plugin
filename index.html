@@ -108,6 +108,7 @@
             icon: "https://img.icons8.com/ios/50/000000/process.png",
             text: "Criar task",
             callback: function (t) {
+              t.board('id').then(function (boardId) {
               return t.card('name') // Obtém o título do card
                 .then(function (card) {
                   if (!card || !card.name) {
@@ -182,7 +183,7 @@
                       // Para cada "bullet point", chama a função para criar uma task
                       bulletPoints.forEach(bulletPoint => {
                         if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
-                          createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard);  // Passa o bulletPoint e a URL
+                          createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard, boardId.id);  // Passa o bulletPoint e a URL
                         }
                       });
 
@@ -217,12 +218,13 @@
                     });
                   });
                 });
+              });
             }
           }
         ];
-        function createTaskFromBulletPoint(bulletPoint, urlDoCard) {
+        function createTaskFromBulletPoint(bulletPoint, urlDoCard, boardId) {
           // Passa o bulletPoint e a URL do card para a função criarCard
-          criarCard(bulletPoint, urlDoCard);
+          criarCard(bulletPoint, urlDoCard, boardId);
         }
       },
       'board-buttons': function (t, options) {
@@ -319,8 +321,6 @@
             text: "Nova Incerteza",
             callback: function (t) {
               t.board('id').then(function (boardId) {
-                console.log("Board ID:", boardId.id);
-
                 return t.modal({
                   title: "Nova Incerteza",
                   url: `./pages/create-card.html?boardId=${boardId.id}`,
@@ -333,10 +333,12 @@
             icon: "https://img.icons8.com/ios/50/000000/ai.png",
             text: "Incerteza GenAI",
             callback: function (t) {
-              return t.modal({
-                title: "Incerteza - GenAI",
-                url: "./pages/create-card-genai.html",
-                height: 250
+              t.board('id').then(function (boardId) {
+                return t.modal({
+                  title: "Incerteza - GenAI",
+                  url: `./pages/create-card-genai.html?boardId=${boardId.id}`,
+                  height: 250
+                });
               });
             }
           }

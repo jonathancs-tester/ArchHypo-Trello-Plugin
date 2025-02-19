@@ -11,7 +11,7 @@ async function gerarDetalhesCard(plano) {
 }
 
 // Função para criar o card no Trello
-async function criarCard(bulletPoint, urlDoCard) {
+async function criarCard(bulletPoint, urlDoCard, boardId) {
 
     console.log(bulletPoint)
     if (!bulletPoint) {
@@ -27,7 +27,7 @@ async function criarCard(bulletPoint, urlDoCard) {
         // Atualiza a mensagem de sucesso com os detalhes gerados
         console.log(`✅ Detalhes gerados:\n${detalhes}`)
 
-        const response = await fetch(`/.netlify/functions/criar-card`, {
+        const response = await fetch(`/.netlify/functions/criar-card?boardId=${boardId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

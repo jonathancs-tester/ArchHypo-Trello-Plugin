@@ -24,8 +24,6 @@ document.getElementById('create-card-form').addEventListener('submit', async fun
     const urlParams = new URLSearchParams(window.location.search);
     const boardId = urlParams.get('boardId');  // Obtém o listId passado pela URL
 
-    console.log("List ID:", boardId);
-
     var data = {
         name: "Incerteza: " + dominio,
         detalhes:
