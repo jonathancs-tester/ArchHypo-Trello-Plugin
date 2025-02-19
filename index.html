@@ -148,13 +148,18 @@
                     console.log("Descrição extraída:", descricaoPlanoTecnico);
 
                     const bulletPoints = descricaoPlanoTecnico
-                      .split(/\n+/)  // Quebra por linhas vazias
-                      .map(line => line.trim())  // Remove espaços extras
-                      .filter(line => line.length > 0)  // Remove linhas vazias
+                      .split(/\n+/) // Divide por linhas vazias ou quebras de linha
+                      .map(line => line.trim()) // Remove espaços extras
+                      .filter(line => line.length > 0) // Remove linhas vazias
                       .map(line => {
-                        // Garante que já há um título no formato "Texto:"
+                        // Garante que a linha começa com "Título:"
                         const match = line.match(/^(.+?):\s*(.*)/);
-                        return match ? `- **${match[1]}:** ${match[2]}` : `- ${line}`;
+                        if (match) {
+                          const titulo = match[1].trim();
+                          const conteudo = match[2].trim();
+                          return `- **${titulo}:** ${conteudo}`;
+                        }
+                        return `- ${line}`; // Se não for um título, mantém a linha como bullet point normal
                       });
 
                     console.log("Bullet Points:", bulletPoints);
