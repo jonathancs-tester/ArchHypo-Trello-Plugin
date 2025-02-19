@@ -147,8 +147,13 @@
                     const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
                     console.log("Descrição extraída:", descricaoPlanoTecnico);
                     
-                    // Dividindo a descrição em "bullet points"
-                    const bulletPoints = descricaoPlanoTecnico.split('\n').map(line => line.trim()).filter(line => line !== '');
+                    // Dividindo a descrição corretamente
+                    const bulletPoints = descricaoPlanoTecnico
+                      .split(/\n+/)  // Quebra por linhas vazias
+                      .map(line => line.trim())  // Remove espaços extras
+                      .filter(line => line.length > 0)  // Remove linhas vazias
+                      .map(line => `- **${line}**`);  // Formata cada item com Markdown
+
                     console.log("Bullet Points:", bulletPoints);
 
                     // Se não houver bullet points, exibe mensagem
