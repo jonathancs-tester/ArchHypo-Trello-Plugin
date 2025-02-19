@@ -52,15 +52,11 @@ export async function handler(event) {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
-        console.log(idListRespose)
-        const idList = idListRespose.length > 0 ? idListRespose[0].id : null;
+        
+        const idList = await idListRespose.json();
+        console.log(idList[0].id)
 
-        if (idList) {
-            console.log("ID da Lista:", idList);
-        } else {
-            console.error("Nenhuma lista encontrada.");
-        }
-        const response = await fetch(`${TRELLO_API_URL}/cards?idList=${idList}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+        const response = await fetch(`${TRELLO_API_URL}/cards?idList=${idList[0].id}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
