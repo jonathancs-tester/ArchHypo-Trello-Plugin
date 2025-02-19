@@ -320,12 +320,20 @@
             callback: function (t) {
               // Obtém as listas do board
               t.board('idLists').then(function (board) {
+                // Verifica se 'idLists' está disponível no objeto board
+                console.log('Board carregado:', board);
                 const listIds = board.idLists;
-                console.log(listIds)
+
+                if (!listIds || listIds.length === 0) {
+                  console.error('Nenhuma lista encontrada no board.');
+                  return;
+                }
+
                 // Aqui, você pode fazer qualquer coisa com os listIds, como passar o primeiro listId para o modal
                 const listId = listIds[0];  // Usando o primeiro listId como exemplo
+                console.log('List ID:', listId);
 
-                // Agora você pode passar o listId para o modal, talvez por meio da URL ou diretamente para o modal
+                // Passando o listId para o modal via URL
                 return t.modal({
                   title: "Nova Incerteza",
                   url: `./pages/create-card.html?listId=${listId}`,  // Passando o listId na URL
