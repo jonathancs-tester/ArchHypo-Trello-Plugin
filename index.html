@@ -146,13 +146,16 @@
                     // Extraindo os valores de "Plano" da descrição
                     const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
                     console.log("Descrição extraída:", descricaoPlanoTecnico);
-                    
-                    // Dividindo a descrição corretamente
+
                     const bulletPoints = descricaoPlanoTecnico
                       .split(/\n+/)  // Quebra por linhas vazias
                       .map(line => line.trim())  // Remove espaços extras
                       .filter(line => line.length > 0)  // Remove linhas vazias
-                      .map(line => `- **${line}**`);  // Formata cada item com Markdown
+                      .map(line => {
+                        // Garante que já há um título no formato "Texto:"
+                        const match = line.match(/^(.+?):\s*(.*)/);
+                        return match ? `- **${match[1]}:** ${match[2]}` : `- ${line}`;
+                      });
 
                     console.log("Bullet Points:", bulletPoints);
 
