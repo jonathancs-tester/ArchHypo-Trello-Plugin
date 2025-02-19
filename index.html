@@ -147,20 +147,22 @@
                     const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
                     console.log("Descrição extraída:", descricaoPlanoTecnico);
 
+                    // Remover o primeiro " **" e garantir que os bullet points sejam formatados corretamente
                     const bulletPoints = descricaoPlanoTecnico
-                      .split(/\n+/) // Divide por linhas vazias ou quebras de linha
+                      .replace(/^\*\*/, '') // Remove o excesso de "**" no início
+                      .split(/\n+/) // Divide por linhas
                       .map(line => line.trim()) // Remove espaços extras
                       .filter(line => line.length > 0) // Remove linhas vazias
                       .map(line => {
-                        // Garante que a linha começa com "Título:"
-                        const match = line.match(/^(.+?):\s*(.*)/);
+                        const match = line.match(/^(.+?):\s*(.*)/);  // Procura por "Título: descrição"
                         if (match) {
                           const titulo = match[1].trim();
                           const conteudo = match[2].trim();
                           return `- **${titulo}:** ${conteudo}`;
                         }
-                        return `- ${line}`; // Se não for um título, mantém a linha como bullet point normal
+                        return `- ${line}`; // Para linhas simples, apenas cria um bullet normal
                       });
+
 
                     console.log("Bullet Points:", bulletPoints);
 
