@@ -57,5 +57,9 @@ async function criarCard(bulletPoint, urlDoCard, boardId) {
     } catch (error) {
         console.error(error);
          console.log("❌ Erro ao gerar/criar a task.")
+         return t.popup({
+            title: 'Erro',
+            items: [{ icon: 'https://img.icons8.com/ios/50/000000/error.png', text: `Erro ao criar task: ${error.message || 'Erro desconhecido'}` }]
+        });
     }
 }
