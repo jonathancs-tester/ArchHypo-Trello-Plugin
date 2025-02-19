@@ -315,46 +315,6 @@
             }
           },
           {
-            icon: "https://img.icons8.com/ios/50/000000/plus.png",
-            text: "Nova Incerteza",
-            callback: function (t) {
-              // Obtém as listas do board
-              t.board('idLists').then(function (board) {
-                console.log('Board carregado:', board);  // Verifique o que está sendo retornado
-                const listIds = board.idLists;
-
-                if (!listIds || listIds.length === 0) {
-                  console.error('Nenhuma lista encontrada no board.');
-                  return;
-                }
-
-                const listId = listIds[0];  // Usando o primeiro listId como exemplo
-                console.log('List ID:', listId);
-
-                // Verifica se a URL é válida antes de passar para o modal
-                const modalUrl = `./pages/create-card.html?listId=${listId}`;
-                if (!modalUrl) {
-                  console.error("URL inválida para o modal");
-                  return;
-                }
-
-                return t.modal({
-                  title: "Nova Incerteza",
-                  url: modalUrl,  // Passando a URL corretamente
-                  height: 500
-                });
-              })
-                .catch(function (error) {
-                  console.error("Erro ao obter listas do board:", error);
-                  return t.modal({
-                    title: "Erro",
-                    content: "Houve um erro ao tentar carregar as listas.",
-                    height: 200
-                  });
-                });
-            }
-          },
-          {
             icon: "https://img.icons8.com/ios/50/000000/ai.png",
             text: "Incerteza GenAI",
             callback: function (t) {
