@@ -4,6 +4,7 @@ document.getElementById('create-card-form').addEventListener('submit', async fun
     const botao = document.getElementById("botaoCriar");
     const status = document.getElementById("status");
 
+    const name = document.getElementById('nome').value.trim();
     const dominio = document.getElementById('dominio').value.trim();
     const ponto = document.getElementById('ponto').value.trim();
     const hipotese = document.getElementById('hipotese').value.trim();
@@ -25,8 +26,9 @@ document.getElementById('create-card-form').addEventListener('submit', async fun
     const boardId = urlParams.get('boardId');  // Obtém o listId passado pela URL
 
     var data = {
-        name: "Incerteza: " + dominio,
+        name: "Incerteza: " + name,
         detalhes:
+            "**Domínio do problema:** " + dominio + "\n" +
             "**Ponto de alerta:** " + ponto + "\n" +
             "**Hipótese:** " + hipotese + "\n" +
             "**Incerteza:** " + incerteza + "\n" +
