@@ -318,11 +318,28 @@
             icon: "https://img.icons8.com/ios/50/000000/plus.png",
             text: "Nova Incerteza",
             callback: function (t) {
-              return t.modal({
-                title: "Nova Incerteza",
-                url: "./pages/create-card.html",
-                height: 500
-              });
+              // Obtém as listas do board
+              t.board('idLists').then(function (board) {
+                const listIds = board.idLists;
+                console.log(listIds)
+                // Aqui, você pode fazer qualquer coisa com os listIds, como passar o primeiro listId para o modal
+                const listId = listIds[0];  // Usando o primeiro listId como exemplo
+
+                // Agora você pode passar o listId para o modal, talvez por meio da URL ou diretamente para o modal
+                return t.modal({
+                  title: "Nova Incerteza",
+                  url: `./pages/create-card.html?listId=${listId}`,  // Passando o listId na URL
+                  height: 500
+                });
+              })
+                .catch(function (error) {
+                  console.error("Erro ao obter listas do board:", error);
+                  return t.modal({
+                    title: "Erro",
+                    content: "Houve um erro ao tentar carregar as listas.",
+                    height: 200
+                  });
+                });
             }
           },
           {
