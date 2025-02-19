@@ -318,12 +318,21 @@
             icon: "https://img.icons8.com/ios/50/000000/ai.png",
             text: "Incerteza GenAI",
             callback: function (t) {
-              return t.modal({
-                title: "Incerteza - GenAI",
-                url: "./pages/create-card-genai.html",
-                height: 250
-              });
-            }
+              t.board('idLists').then(function (board) {
+                if (!board || !board.idLists || board.idLists.length === 0) {
+                  console.error("Não há listas no board");
+                  return;
+                }
+
+                // Pegando o listId do board (assumindo que você quer o primeiro listId)
+                const listId = board.idLists[0];
+                console.log("List ID encontrado:", listId);
+                return t.modal({
+                  title: "Incerteza - GenAI",
+                  url: "./pages/create-card-genai.html",
+                  height: 250
+                });
+              }
           }
         ];
       },
