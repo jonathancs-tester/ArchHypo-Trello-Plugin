@@ -16,6 +16,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 10px;
         }
 
         .container {
@@ -41,7 +42,8 @@
             margin-bottom: 10px;
         }
 
-        input {
+        input,
+        textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
@@ -52,9 +54,15 @@
             transition: border-color 0.2s;
         }
 
-        input:focus {
+        input:focus,
+        textarea:focus {
             border-color: #0079bf;
-            /* Cor azul do Trello ao focar */
+            /* Azul do Trello ao focar */
+        }
+
+        textarea {
+            resize: vertical;
+            height: 120px;
         }
 
         button {
@@ -101,12 +109,13 @@
     <div class="container">
         <h2>Criar Card Incerteza</h2>
         <form id="create-card-form">
-            <input type="text" id="dominio" placeholder="Domínio do problema" required />
-            <input type="text" id="ponto" placeholder="Ponto de alerta" required />
-            <input type="text" id="hipotese" placeholder="Hipótese" required />
-            <input type="text" id="incerteza" placeholder="Incerteza" required />
-            <input type="text" id="impacto" placeholder="Impacto" required />
-            <input type="text" id="plano" placeholder="Plano" required />
+            <input type="text" id="nome" placeholder="Título da Incerteza:" required />
+            <input type="text" id="dominio" placeholder="Domínio do problema (Performance, Segurança e outros)" required />
+            <input type="text" id="ponto" placeholder="Ponto de alerta:" required />
+            <input type="text" id="hipotese" placeholder="Hipótese:" required />
+            <input type="text" id="incerteza" placeholder="Incerteza: (Muito Baixo/Baixo/Médio/Alto/Muito Alto)" required />
+            <input type="text" id="impacto" placeholder="Impacto: (Muito Baixo/Baixo/Médio/Alto/Muito Alto)" required />
+            <textarea id="plano" placeholder="Plano:&#10;- Item 1: Descrição do item 1&#10;- Item 2: Descrição do item 2" required></textarea>
             <button type="submit" id="botaoCriar">Criar Card</button>
         </form>
         <p id="status"></p>
