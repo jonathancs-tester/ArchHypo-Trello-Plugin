@@ -39,6 +39,7 @@ export async function handler(event) {
         }
 
         const { boardId } = event.queryStringParameters;
+        console.log(boardId)
 
         if (!boardId) {
             return {
