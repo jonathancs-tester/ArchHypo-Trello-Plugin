@@ -21,6 +21,11 @@ document.getElementById('create-card-form').addEventListener('submit', async fun
     status.innerHTML = "⏳ Criando card...";
     status.className = '';
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const boardId = urlParams.get('boardId');  // Obtém o listId passado pela URL
+
+    console.log("List ID:", boardId);
+
     var data = {
         name: "Incerteza: " + dominio,
         detalhes:
@@ -32,7 +37,7 @@ document.getElementById('create-card-form').addEventListener('submit', async fun
     };
 
     try {
-        const response = await fetch(`/.netlify/functions/criar-card`, {
+        const response = await fetch(`/.netlify/functions/criar-card?boardId=${boardId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)

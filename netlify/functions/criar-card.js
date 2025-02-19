@@ -38,10 +38,14 @@ export async function handler(event) {
             };
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
+        const { boardId } = event.queryStringParameters;
 
-        // Obtenção dos dados para Incerteza e Impacto
-        const boardId = JSON.parse(urlParams.get('boardId'));
+        if (!boardId) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: "O parâmetro boardId é obrigatório." })
+            };
+        }
 
         const response = await fetch(`${TRELLO_API_URL}?idList=${boardId}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
