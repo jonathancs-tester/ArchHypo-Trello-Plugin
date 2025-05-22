@@ -68,7 +68,7 @@ export async function handler(event) {
     }
 
     // Use __dirname direto (CommonJS)
-   const folderPath = path.resolve(__dirname, '../../../../../docs');
+   const folderPath = path.resolve(process.cwd(), 'docs');
    console.log(folderPath)
 
     if (!(await fs.pathExists(folderPath))) {
