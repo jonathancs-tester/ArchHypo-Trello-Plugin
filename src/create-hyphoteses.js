@@ -1,74 +1,163 @@
-let hipotese = '';
-let impacto = '';
-let impactoMotivo = '';
-let incerteza = '';
-let incertezaMotivo = '';
+const state = {
+  contexto: '',
+  incerteza: '',
+  incertezaMotivo: '',
+  impacto: '',
+  impactoMotivo: '',
+  hipotese: '',
+  hipoteseMotivo: '',
+  alerta: '',
+  alertaMotivo: '',
+  dominio: '',
+  dominioMotivo: '',
+  plano: '',
+  planoMotivo: '',
+};
 
 function showStep(stepId) {
-    document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-    document.getElementById(stepId).classList.add('active');
+  document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+  document.getElementById('step' + stepId).classList.add('active');
 }
 
-async function analyzeImpact() {
-    hipotese = document.getElementById('hipotese').value;
-    if (!hipotese) return alert('Digite uma hipótese.');
+async function callEndpoint(endpoint, input) {
+  const res = await fetch(`/.netlify/functions/${endpoint}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ input }),
+  });
 
-    const res = await fetch('/.netlify/functions/analyze-impact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hipotese }),
-    });
-
-    const data = await res.json();
-    impacto = data.impacto;
-    impactoMotivo = data.motivo;
-
-    document.getElementById('impactoResultado').innerHTML = `
-        <strong>Impacto sugerido:</strong> ${impacto}<br>
-        <details>
-            <summary><em>Motivo (clique para ver)</em></summary>
-            <p>${impactoMotivo}</p>
-        </details>
-    `;
-    showStep('step2');
+  const data = await res.json();
+  return data;
 }
 
 async function analyzeUncertainty() {
-    const impactoManual = document.getElementById('impactoManual').value;
-    impacto = impactoManual || impacto;
+  const input = document.getElementById('contexto').value;
+  const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
-    const res = await fetch('/.netlify/functions/analyze-uncertainty', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hipotese, impacto }),
-    });
+  state.contexto = input;
+  state.incerteza = sugestao;
+  state.incertezaMotivo = motivo;
 
-    const data = await res.json();
-    incerteza = data.incerteza;
-    incertezaMotivo = data.motivo;
+  document.getElementById('incerteza').value = sugestao;
+  document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
 
-    document.getElementById('incertezaResultado').innerHTML = `
-        <strong>Incerteza sugerida:</strong> ${incerteza}<br>
-        <details>
-            <summary><em>Motivo (clique para ver)</em></summary>
-            <p>${incertezaMotivo}</p>
-        </details>
-    `;
-    showStep('step3');
+  showStep(1);
+}
+
+async function analyzeHypothesis() {
+  const input = `Contexto: ${state.contexto}, Incerteza: ${state.incerteza}, Impacto: ${state.impacto}`;
+  const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
+
+  state.hipotese = sugestao;
+  state.hipoteseMotivo = motivo;
+
+  document.getElementById('hipotese').value = sugestao;
+  document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
+
+  showStep(3);
+}
+
+async function analyzeImpact() {
+  const input = `Contexto: ${state.contexto}, Incerteza: ${state.incerteza}`;
+  const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
+
+  state.impacto = sugestao;
+  state.impactoMotivo = motivo;
+
+  document.getElementById('impacto').value = sugestao;
+  document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
+
+  showStep(2);
+}
+
+async function analyzeAlert() {
+  const input = `Contexto: ${state.contexto}, Incerteza: ${state.incerteza}, Impacto: ${state.impacto}, Hipótese: ${state.hipotese}`;
+  const { sugestao, motivo } = await callEndpoint('analyze-alert', input);
+
+  state.alerta = sugestao;
+  state.alertaMotivo = motivo;
+
+  document.getElementById('alerta').value = sugestao;
+  document.getElementById('alertaResultado').innerHTML = motivoHTML(motivo);
+
+  showStep(4);
+}
+
+async function analyzeDomain() {
+  const input = `Contexto: ${state.contexto}, Incerteza: ${state.incerteza}, Impacto: ${state.impacto}, Hipótese: ${state.hipotese}, Alerta: ${state.alerta}`;
+  const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
+
+  state.dominio = sugestao;
+  state.dominioMotivo = motivo;
+
+  document.getElementById('dominio').value = sugestao;
+  document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
+
+  showStep(5);
+}
+
+async function analyzePlan() {
+  const input = `
+Contexto: ${state.contexto}, Incerteza: ${state.incerteza}, Impacto: ${state.impacto}, Hipótese: ${state.hipotese}, Alerta: ${state.alerta},
+Domínio: ${state.dominio}
+  `;
+
+  const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
+
+  state.plano = sugestao;
+  state.planoMotivo = motivo;
+
+  document.getElementById('plano').value = sugestao;
+  document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
+
+  showStep(6);
 }
 
 async function createCard() {
-    const incertezaManual = document.getElementById('incertezaManual').value;
-    incerteza = incertezaManual || incerteza;
+    const urlParams = new URLSearchParams(window.location.search);
+    const boardId = urlParams.get('boardId');  // Obtém o boardId da URL
 
-    const res = await fetch('/.netlify/functions/create-card', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hipotese, impacto, incerteza }),
-    });
+    const data = {
+        name: "Incerteza: " + state.contexto,
+        detalhes:
+            "**Domínio do problema:** " + state.dominio + "\n" +
+            "**Ponto de alerta:** " + state.alerta + "\n" +
+            "**Hipótese:** " + state.hipotese + "\n" +
+            "**Incerteza:** " + state.incerteza + "\n" +
+            "**Impacto:** " + state.impacto + "\n" +
+            "**Plano:** " + state.plano
+    };
 
-    const data = await res.json();
+    try {
+        const res = await fetch(`/.netlify/functions/criar-card?boardId=${boardId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
 
-    document.getElementById('cardLink').innerHTML = `<a href="${data.url}" target="_blank">Acessar Card no Trello</a>`;
-    showStep('step4');
+        const result = await res.json();
+
+        if (!res.ok) {
+            alert(`Erro ao criar card: ${result.erro || result.error || 'Erro desconhecido'}`);
+            return;
+        }
+
+        const cardUrl = result.data.shortUrl || result.data.url;
+
+        document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">Acessar Card no Trello</a>`;
+        showStep(7);
+    } catch (error) {
+        console.error('❌ Erro na requisição:', error);
+        alert('Erro ao criar o card. Verifique o console para mais detalhes.');
+    }
+    showStep(7);
+}
+
+function motivoHTML(motivo) {
+  return `
+    <details>
+      <summary><em>Motivo (clique para ver)</em></summary>
+      <p>${motivo}</p>
+    </details>
+  `;
 }
