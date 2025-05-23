@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Power App - Trello com AI</title>
+  <style>
+    /* Reset básico */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f5f7;
+      margin: 40px;
+      color: #172b4d;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: #026aa7;
+      text-align: center;
+      user-select: none;
+    }
+
+    h2 {
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #172b4d;
+    }
+
+    .step {
+      display: none;
+      background: white;
+      max-width: 480px;
+      margin: 0 auto 2rem auto;
+      padding: 1.8rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(9,30,66,.25);
+      transition: all 0.3s ease;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 0.6rem 1rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      border: 1px solid #dfe1e6;
+      border-radius: 4px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      border-color: #0079bf;
+      outline: none;
+      box-shadow: 0 0 4px #0079bf;
+    }
+
+    button {
+      background-color: #5aac44;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.8rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #519839;
+    }
+
+    /* Estilo para o ícone de help */
+    .help-icon {
+      display: inline-block;
+      border-bottom: 1.5px dotted #0079bf;
+      cursor: help;
+      position: relative;
+      color: #0079bf;
+      font-weight: 700;
+      margin-left: 6px;
+      font-size: 1.1em;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .help-icon:hover .tooltip,
+    .help-icon:focus .tooltip {
+      display: block;
+    }
+
+    .tooltip {
+      display: none;
+      position: absolute;
+      top: 125%; /* abaixo do ícone */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #172b4d;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.85em;
+      white-space: normal;
+      z-index: 100;
+      max-width: 280px;
+      text-align: left;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 8px;
+      border-style: solid;
+      border-color: transparent transparent #172b4d transparent;
+    }
+
+    /* Estilo do <details> para motivo */
+    details summary {
+      cursor: pointer;
+      font-style: italic;
+      color: #444;
+      user-select: none;
+    }
+
+    details summary:hover {
+      color: #0079bf;
+    }
+
+    details p {
+      margin: 10px 0 0 0;
+      padding-left: 12px;
+      color: #222;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Power App - Trello + AI</h1>
+
+  <div id="step1" class="step active">
+    <h2>1. Defina sua hipótese</h2>
+    <input type="text" id="hipotese" placeholder="Digite sua hipótese" />
+    <button onclick="analyzeImpact()">Próximo</button>
+  </div>
+
+  <div id="step2" class="step">
+    <h2>2. Avaliação de Impacto<span class="help-icon" tabindex="0" aria-label="Impacto significa a gravidade das consequências da hipótese, podendo ser baixo, médio ou alto.">
+        ?
+        <span class="tooltip">
+          Impacto significa a gravidade das consequências da hipótese, podendo ser:<br>
+          <strong>Baixo:</strong> pouco impacto<br>
+          <strong>Médio:</strong> impacto moderado<br>
+          <strong>Alto:</strong> impacto significativo
+        </span>
+      </span>
+    </h2>
+    <p id="impactoResultado"></p>
+    <label>Escolha manual (opcional):
+      <select id="impactoManual">
+        <option value="">--Escolher--</option>
+        <option value="baixo">Baixo</option>
+        <option value="medio">Médio</option>
+        <option value="alto">Alto</option>
+      </select>
+    </label>
+    <button onclick="analyzeUncertainty()">Próximo</button>
+  </div>
+
+  <div id="step3" class="step">
+    <h2>3. Avaliação de Incerteza</h2>
+    <p id="incertezaResultado"></p>
+    <label>Escolha manual (opcional):
+      <select id="incertezaManual">
+        <option value="">--Escolher--</option>
+        <option value="baixo">Baixo</option>
+        <option value="medio">Médio</option>
+        <option value="alto">Alto</option>
+      </select>
+    </label>
+    <button onclick="createCard()">Criar no Trello</button>
+  </div>
+
+  <div id="step4" class="step">
+    <h2>✅ Card criado no Trello!</h2>
+    <p id="cardLink"></p>
+  </div>
+
+  <script src="../src/create-hyphoteses.js"></script>
+</body>
+</html>
