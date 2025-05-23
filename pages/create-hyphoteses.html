@@ -12,7 +12,7 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f5f7;
+      background-color: #172b4d;
       margin: 40px;
       color: #172b4d;
     }
@@ -86,52 +86,59 @@
       background-color: #519839;
     }
 
-    /* Estilo para o ícone de help */
     .help-icon {
-      display: inline-block;
-      border-bottom: 1.5px dotted #0079bf;
-      cursor: help;
-      position: relative;
-      color: #0079bf;
-      font-weight: 700;
-      margin-left: 6px;
-      font-size: 1.1em;
-      user-select: none;
-      line-height: 1;
+        position: relative;
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 8px;
+        user-select: none;
+    }
+
+    .help-icon:focus,
+    .help-icon:hover {
+        background-color: #0056b3;
+    }
+
+    .tooltip {
+        visibility: hidden;
+        width: 280px;
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        border-radius: 8px;
+        padding: 10px;
+        position: absolute;
+        z-index: 100;
+        top: 25px;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 14px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .tooltip::before {
+        content: "";
+        position: absolute;
+        top: -6px;
+        left: 10px;
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent transparent #333 transparent;
     }
 
     .help-icon:hover .tooltip,
     .help-icon:focus .tooltip {
-      display: block;
-    }
-
-    .tooltip {
-      display: none;
-      position: absolute;
-      top: 125%; /* abaixo do ícone */
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #172b4d;
-      color: #fff;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 0.85em;
-      white-space: normal;
-      z-index: 100;
-      max-width: 280px;
-      text-align: left;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-
-    .tooltip::after {
-      content: "";
-      position: absolute;
-      top: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 8px;
-      border-style: solid;
-      border-color: transparent transparent #172b4d transparent;
+        visibility: visible;
+        opacity: 1;
     }
 
     /* Estilo do <details> para motivo */
@@ -166,7 +173,18 @@
 
   <!-- Step 1 -->
   <div id="step1" class="step">
-    <h2>1. Avaliação de Incerteza</h2>
+    <h2>1. Avaliação de Incerteza
+    <span class="help-icon" tabindex="0" aria-label="Ajuda sobre Incerteza">
+      ❔
+      <span class="tooltip">
+        🔹 <strong>Muito Baixo:</strong> Quase certeza, muito conhecido.<br>
+        🔹 <strong>Baixo:</strong> Pouca dúvida, bem compreendido.<br>
+        🔹 <strong>Médio:</strong> Existe dúvida, mas alguns dados já ajudam.<br>
+        🔹 <strong>Alto:</strong> Considerável incerteza, não temos dados sólidos.<br>
+        🔹 <strong>Muito Alto:</strong> É praticamente uma aposta, não temos dados, é um completo desconhecido.
+      </span>
+    </span>
+    </h2>
     <input type="text" id="incerteza" placeholder="Incerteza sugerida" />
     <p id="incertezaResultado"></p>
     <button onclick="analyzeImpact()">Próximo</button>
@@ -174,7 +192,18 @@
 
   <!-- Step 2 -->
   <div id="step2" class="step">
-    <h2>2. Avaliação de Impacto</h2>
+    <h2>2. Avaliação de Impacto
+      <span class="help-icon" tabindex="0" aria-label="Ajuda sobre Incerteza">
+      ❔
+      <span class="tooltip">
+        🔸 <strong>Muito Baixo:</strong> Quase não afeta a arquitetura.<br>
+        🔸 <strong>Baixo:</strong> Pequeno impacto, fácil de corrigir.<br>
+        🔸 <strong>Médio:</strong>  Afeta alguns componentes ou funcionalidades.<br>
+        🔸 <strong>Alto:</strong> Afeta partes importantes da arquitetura.<br>
+        🔸 <strong>Muito Alto:</strong> Pode comprometer completamente o sistema, inviabilizar o projeto ou gerar grandes perdas.
+      </span>
+    </span>
+    </h2>
     <input type="text" id="impacto" placeholder="Impacto sugerido" />
     <p id="impactoResultado"></p>
     <button onclick="analyzeHypothesis()">Próximo</button>
