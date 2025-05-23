@@ -3,70 +3,35 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 
 export async function handler(event) {
-    const corsResponse = handleCors(event);
-    if (corsResponse) return corsResponse;
+  const corsResponse = handleCors(event);
+  if (corsResponse) return corsResponse;
 
-    if (event.httpMethod !== "POST") {
-        return {
-            statusCode: 405,
-            headers: corsHeaders,
-            body: JSON.stringify({ error: "Method Not Allowed" }),
-        };
-    }
+  const { input } = JSON.parse(event.body);
 
-    try {
-        const { hipotese, impacto } = JSON.parse(event.body);
+  const model = new ChatGoogleGenerativeAI({
+    model: "gemini-1.5-flash",
+    apiKey: process.env.GENAI_API_KEY,
+  });
 
-        if (!hipotese || !impacto) {
-            return {
-                statusCode: 400,
-                headers: corsHeaders,
-                body: JSON.stringify({ error: "Campos 'hipotese' e 'impacto' são obrigatórios." }),
-            };
-        }
+  const prompt = ChatPromptTemplate.fromTemplate(
+    `Dada a seguinte descrição: "{input}", classifique o nível de incerteza (baixo, médio ou alto) e explique o motivo. 
+Responda no formato JSON: 
+{{"sugestao": "baixo|medio|alto", "motivo": "explicação"}}.`
+  );
 
-        const model = new ChatGoogleGenerativeAI({
-            model: "gemini-1.5-flash",
-            apiKey: process.env.GENAI_API_KEY,
-        });
+  const chain = prompt.pipe(model);
+  const result = await chain.invoke({ input });
 
-        const prompt = ChatPromptTemplate.fromTemplate(
-            `Dada a hipótese: {hipotese} com impacto classificado como {impacto}, 
-            classifique o nível de incerteza (baixo, médio ou alto) e explique o motivo da sua escolha.
-            Responda somente um JSON válido, sem quebras de linha, no formato:
-            {{"incerteza": "baixo|medio|alto", "motivo": "explicação do motivo"}}.`
-        );
+  let cleaned = result.content.trim();
+  if (cleaned.startsWith("```")) {
+    cleaned = cleaned.replace(/```json|```/gi, "").trim();
+  }
 
-        const chain = prompt.pipe(model);
-        const result = await chain.invoke({ hipotese, impacto });
+  const { sugestao, motivo } = JSON.parse(cleaned);
 
-        let parsed;
-        try {
-            parsed = JSON.parse(result.content);
-        } catch (e) {
-            console.error("Erro ao fazer parse da resposta do Gemini:", result.content);
-            return {
-                statusCode: 500,
-                headers: corsHeaders,
-                body: JSON.stringify({ error: "Erro no formato da resposta do Gemini", resposta: result.content }),
-            };
-        }
-
-        return {
-            statusCode: 200,
-            headers: corsHeaders,
-            body: JSON.stringify({
-                incerteza: parsed.incerteza,
-                motivo: parsed.motivo,
-            }),
-        };
-
-    } catch (error) {
-        console.error("Erro:", error);
-        return {
-            statusCode: 500,
-            headers: corsHeaders,
-            body: JSON.stringify({ error: error.message }),
-        };
-    }
+  return {
+    statusCode: 200,
+    headers: corsHeaders,
+    body: JSON.stringify({ sugestao, motivo }),
+  };
 }

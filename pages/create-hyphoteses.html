@@ -157,52 +157,63 @@
 </head>
 <body>
 
-  <h1>Power App - Trello + AI</h1>
-
-  <div id="step1" class="step active">
-    <h2>1. Defina sua hipótese</h2>
-    <input type="text" id="hipotese" placeholder="Digite sua hipótese" />
-    <button onclick="analyzeImpact()">Próximo</button>
-  </div>
-
-  <div id="step2" class="step">
-    <h2>2. Avaliação de Impacto<span class="help-icon" tabindex="0" aria-label="Impacto significa a gravidade das consequências da hipótese, podendo ser baixo, médio ou alto.">
-        ?
-        <span class="tooltip">
-          Impacto significa a gravidade das consequências da hipótese, podendo ser:<br>
-          <strong>Baixo:</strong> pouco impacto<br>
-          <strong>Médio:</strong> impacto moderado<br>
-          <strong>Alto:</strong> impacto significativo
-        </span>
-      </span>
-    </h2>
-    <p id="impactoResultado"></p>
-    <label>Escolha manual (opcional):
-      <select id="impactoManual">
-        <option value="">--Escolher--</option>
-        <option value="baixo">Baixo</option>
-        <option value="medio">Médio</option>
-        <option value="alto">Alto</option>
-      </select>
-    </label>
+   <!-- Step 0 -->
+  <div id="step0" class="step active">
+    <h2>🟢 Descrição do Contexto</h2>
+    <input type="text" id="contexto" placeholder="Descreva o problema, situação ou contexto" />
     <button onclick="analyzeUncertainty()">Próximo</button>
   </div>
 
-  <div id="step3" class="step">
-    <h2>3. Avaliação de Incerteza</h2>
+  <!-- Step 1 -->
+  <div id="step1" class="step">
+    <h2>1. Avaliação de Incerteza</h2>
+    <input type="text" id="incerteza" placeholder="Incerteza sugerida" />
     <p id="incertezaResultado"></p>
-    <label>Escolha manual (opcional):
-      <select id="incertezaManual">
-        <option value="">--Escolher--</option>
-        <option value="baixo">Baixo</option>
-        <option value="medio">Médio</option>
-        <option value="alto">Alto</option>
-      </select>
-    </label>
+    <button onclick="analyzeImpact()">Próximo</button>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="step2" class="step">
+    <h2>2. Avaliação de Impacto</h2>
+    <input type="text" id="impacto" placeholder="Impacto sugerido" />
+    <p id="impactoResultado"></p>
+    <button onclick="analyzeHypothesis()">Próximo</button>
+  </div>
+
+  <!-- Step 3 -->
+  <div id="step3" class="step">
+    <h2>3. Geração de Hipótese</h2>
+    <input type="text" id="hipotese" placeholder="Hipótese sugerida" />
+    <p id="hipoteseResultado"></p>
+    <button onclick="analyzeAlert()">Próximo</button>
+  </div>
+
+  <!-- Step 4 -->
+  <div id="step4" class="step">
+    <h2>4. Ponto de Alerta</h2>
+    <input type="text" id="alerta" placeholder="Ponto de alerta sugerido" />
+    <p id="alertaResultado"></p>
+    <button onclick="analyzeDomain()">Próximo</button>
+  </div>
+
+  <!-- Step 5 -->
+  <div id="step5" class="step">
+    <h2>5. Domínio do Problema</h2>
+    <input type="text" id="dominio" placeholder="Domínio sugerido" />
+    <p id="dominioResultado"></p>
+    <button onclick="analyzePlan()">Próximo</button>
+  </div>
+
+  <!-- Step 6 -->
+  <div id="step6" class="step">
+    <h2>6. Plano</h2>
+    <input type="text" id="plano" placeholder="Plano sugerido" />
+    <p id="planoResultado"></p>
     <button onclick="createCard()">Criar no Trello</button>
   </div>
 
-  <div id="step4" class="step">
+  <!-- Step 7 -->
+  <div id="step7" class="step">
     <h2>✅ Card criado no Trello!</h2>
     <p id="cardLink"></p>
   </div>
