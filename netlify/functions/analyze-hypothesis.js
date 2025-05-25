@@ -14,7 +14,9 @@ export async function handler(event) {
   });
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Dado o contexto: "{input}", gere uma hipótese que explique ou explore o problema, e explique o motivo.
+    `Dado o contexto: "{input}", gere uma hipótese que explique ou explore o problema e explique o motivo, seguindo o exemplo abaixo:
+    Incerteza: "Não sei se os usuários irão usar o recurso de upload de arquivos."
+    Hipótese: "Os usuários utilizarão o recurso de upload de arquivos pelo menos uma vez por semana."
 Responda no formato JSON: 
 {{"sugestao": "hipótese gerada", "motivo": "explicação"}}.`
   );

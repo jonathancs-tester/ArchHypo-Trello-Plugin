@@ -14,9 +14,14 @@ export async function handler(event) {
   });
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Dada a seguinte descrição: "{input}", classifique o nível de incerteza (baixo, médio ou alto) e explique o motivo. 
+    `Dada a seguinte descrição: "{input}", classifique o nível de incerteza e explique o motivo, seguindo o exemplo abaixo: 
+        Muito Baixo: Quase certeza, muito conhecido.
+        Baixo: Pouca dúvida, bem compreendido.
+        Médio: Existe dúvida, mas alguns dados já ajudam.
+        Alto: Considerável incerteza, não temos dados sólidos.
+        Muito Alto: É praticamente uma aposta, não temos dados, é um completo desconhecido.
 Responda no formato JSON: 
-{{"sugestao": "baixo|medio|alto", "motivo": "explicação"}}.`
+{{"sugestao": "Muito Baixo|Baixo|Médio|Alto|Muito Alto", "motivo": "explicação"}}.`
   );
 
   const chain = prompt.pipe(model);

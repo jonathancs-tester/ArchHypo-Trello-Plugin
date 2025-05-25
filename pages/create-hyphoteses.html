@@ -48,6 +48,19 @@
       display: block;
     }
 
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      border: 1px solid #dfe1e6;
+      border-radius: 6px;
+      overflow: auto;  /* ativa scroll se ultrapassar */
+      resize: none;    /* opcional, bloqueia redimensionamento */
+      white-space: pre-wrap; /* quebra de linha automática */
+      word-wrap: break-word; /* força quebra de palavra */
+    }
+
     input[type="text"],
     select {
       width: 100%;
@@ -167,13 +180,29 @@
    <!-- Step 0 -->
   <div id="step0" class="step active">
     <h2>🟢 Descrição do Contexto</h2>
-    <input type="text" id="contexto" placeholder="Descreva o problema, situação ou contexto" />
+    <textarea maxlength="300" id="contexto" placeholder="Descreva o problema, situação ou contexto"></textarea>
+    <button onclick="analyzeHypothesis()">Próximo</button>
+  </div>
+
+   <!-- Step 1 -->
+  <div id="step1" class="step">
+    <h2>1. Geração de Hipótese</h2>
+    <textarea maxlength="300" id="hipotese" placeholder="Hipótese sugerida"></textarea>
+    <p id="hipoteseResultado"></p>
+    <button onclick="analyzeDomain()">Próximo</button>
+  </div>
+
+   <!-- Step 2 -->
+  <div id="step2" class="step">
+    <h2>2. Domínio do Problema</h2>
+    <textarea maxlength="300" type="text" id="dominio" placeholder="Domínio sugerido"></textarea>
+    <p id="dominioResultado"></p>
     <button onclick="analyzeUncertainty()">Próximo</button>
   </div>
 
-  <!-- Step 1 -->
-  <div id="step1" class="step">
-    <h2>1. Avaliação de Incerteza
+  <!-- Step 3 -->
+  <div id="step3" class="step">
+    <h2>3. Avaliação de Incerteza
     <span class="help-icon" tabindex="0" aria-label="Ajuda sobre Incerteza">
       ❔
       <span class="tooltip">
@@ -185,14 +214,14 @@
       </span>
     </span>
     </h2>
-    <input type="text" id="incerteza" placeholder="Incerteza sugerida" />
+    <textarea maxlength="300" id="incerteza" placeholder="Incerteza sugerida"></textarea>
     <p id="incertezaResultado"></p>
     <button onclick="analyzeImpact()">Próximo</button>
   </div>
 
-  <!-- Step 2 -->
-  <div id="step2" class="step">
-    <h2>2. Avaliação de Impacto
+  <!-- Step 4 -->
+  <div id="step4" class="step">
+    <h2>4. Avaliação de Impacto
       <span class="help-icon" tabindex="0" aria-label="Ajuda sobre Incerteza">
       ❔
       <span class="tooltip">
@@ -204,39 +233,23 @@
       </span>
     </span>
     </h2>
-    <input type="text" id="impacto" placeholder="Impacto sugerido" />
+    <textarea maxlength="300" id="impacto" placeholder="Impacto sugerido"></textarea>
     <p id="impactoResultado"></p>
-    <button onclick="analyzeHypothesis()">Próximo</button>
-  </div>
-
-  <!-- Step 3 -->
-  <div id="step3" class="step">
-    <h2>3. Geração de Hipótese</h2>
-    <input type="text" id="hipotese" placeholder="Hipótese sugerida" />
-    <p id="hipoteseResultado"></p>
     <button onclick="analyzeAlert()">Próximo</button>
-  </div>
-
-  <!-- Step 4 -->
-  <div id="step4" class="step">
-    <h2>4. Ponto de Alerta</h2>
-    <input type="text" id="alerta" placeholder="Ponto de alerta sugerido" />
-    <p id="alertaResultado"></p>
-    <button onclick="analyzeDomain()">Próximo</button>
   </div>
 
   <!-- Step 5 -->
   <div id="step5" class="step">
-    <h2>5. Domínio do Problema</h2>
-    <input type="text" id="dominio" placeholder="Domínio sugerido" />
-    <p id="dominioResultado"></p>
+    <h2>5. Ponto de Alerta</h2>
+    <textarea maxlength="300" id="alerta" placeholder="Ponto de alerta sugerido"></textarea>
+    <p id="alertaResultado"></p>
     <button onclick="analyzePlan()">Próximo</button>
   </div>
 
   <!-- Step 6 -->
   <div id="step6" class="step">
-    <h2>6. Plano</h2>
-    <input type="text" id="plano" placeholder="Plano sugerido" />
+    <h2>6. Plano Técnico</h2>
+     <textarea id="plano" placeholder="Plano sugerido"></textarea>
     <p id="planoResultado"></p>
     <button onclick="createCard()">Criar no Trello</button>
   </div>

@@ -16,7 +16,7 @@ export async function handler(event) {
   const prompt = ChatPromptTemplate.fromTemplate(
     `Dado o contexto: "{input}", sugira um plano de ação para mitigar o problema ou tratar a hipótese, e explique o motivo.
 Responda no formato JSON: 
-{{"sugestao": "plano de ação em bullet points", "motivo": "explicação"}}.`
+{{"sugestao": "plano de ação em bullet points (em paragrafos separados)", "motivo": "explicação"}}.`
   );
 
   const chain = prompt.pipe(model);

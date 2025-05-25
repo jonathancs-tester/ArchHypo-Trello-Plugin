@@ -14,9 +14,12 @@ export async function handler(event) {
   });
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Dado o contexto: "{input}", descreva qual é o domínio do problema (ex: performance, segurança, disponibilidade) e explique o motivo.
+    `Dado o contexto: "{input}", identifique um ponto de alerta que represente um sinal de risco ou atenção. 
+Explique também o motivo, seguindo o exemplo abaixo:
+Hipótese: “O sistema suportará 1.000 requisições por segundo com latência média abaixo de 200ms.”
+Alerta: Se a latência média ultrapassar 180ms em testes de carga, é um sinal de que estamos chegando perto do limite e precisamos investigar.
 Responda no formato JSON: 
-{{"sugestao": "domínio do problema", "motivo": "explicação"}}.`
+{{"sugestao": "ponto de alerta", "motivo": "explicação"}}.`
   );
 
   const chain = prompt.pipe(model);

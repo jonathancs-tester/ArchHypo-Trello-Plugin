@@ -30,61 +30,25 @@ async function callEndpoint(endpoint, input) {
   return data;
 }
 
-async function analyzeUncertainty() {
-  const input = document.getElementById('contexto').value;
-  const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
-
-  state.contexto = input;
-  state.incerteza = sugestao;
-  state.incertezaMotivo = motivo;
-
-  document.getElementById('incerteza').value = sugestao;
-  document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
-
-  showStep(1);
-}
-
 async function analyzeHypothesis() {
-  const input = `Contexto: ${state.contexto}, Incerteza: ${state.incerteza}, Impacto: ${state.impacto}`;
+  const input = document.getElementById('contexto').value;
   const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
 
+  state.contexto = input;
   state.hipotese = sugestao;
   state.hipoteseMotivo = motivo;
 
   document.getElementById('hipotese').value = sugestao;
   document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
 
-  showStep(3);
-}
-
-async function analyzeImpact() {
-  const input = `Contexto: ${state.contexto}, Incerteza: ${state.incerteza}`;
-  const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
-
-  state.impacto = sugestao;
-  state.impactoMotivo = motivo;
-
-  document.getElementById('impacto').value = sugestao;
-  document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
-
-  showStep(2);
-}
-
-async function analyzeAlert() {
-  const input = `Contexto: ${state.contexto}, Incerteza: ${state.incerteza}, Impacto: ${state.impacto}, Hipótese: ${state.hipotese}`;
-  const { sugestao, motivo } = await callEndpoint('analyze-alert', input);
-
-  state.alerta = sugestao;
-  state.alertaMotivo = motivo;
-
-  document.getElementById('alerta').value = sugestao;
-  document.getElementById('alertaResultado').innerHTML = motivoHTML(motivo);
-
-  showStep(4);
+  showStep(1);
 }
 
 async function analyzeDomain() {
-  const input = `Contexto: ${state.contexto}, Incerteza: ${state.incerteza}, Impacto: ${state.impacto}, Hipótese: ${state.hipotese}, Alerta: ${state.alerta}`;
+  const input = `
+Contexto: ${state.contexto}; 
+Hipótese: ${state.hipotese};
+  `;  
   const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
 
   state.dominio = sugestao;
@@ -93,13 +57,71 @@ async function analyzeDomain() {
   document.getElementById('dominio').value = sugestao;
   document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
 
+  showStep(2);
+}
+
+async function analyzeUncertainty() {
+const input = `
+Contexto: ${state.contexto}; 
+Hipótese: ${state.hipotese};
+Domínio do Problema: ${state.dominio}; 
+  `;  
+  const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
+
+  state.incerteza = sugestao;
+  state.incertezaMotivo = motivo;
+
+  document.getElementById('incerteza').value = sugestao;
+  document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
+
+  showStep(3);
+}
+
+async function analyzeImpact() {
+const input = `
+Contexto: ${state.contexto}; 
+Hipótese: ${state.hipotese};
+Domínio do Problema: ${state.dominio}; 
+Incerteza: ${state.incerteza};
+  `;  
+  const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
+
+  state.impacto = sugestao;
+  state.impactoMotivo = motivo;
+
+  document.getElementById('impacto').value = sugestao;
+  document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
+
+  showStep(4);
+}
+
+async function analyzeAlert() {
+const input = `
+Contexto: ${state.contexto}; 
+Hipótese: ${state.hipotese};
+Domínio do Problema: ${state.dominio}; 
+Incerteza: ${state.incerteza};
+Impacto: ${state.impacto};
+  `;  
+  const { sugestao, motivo } = await callEndpoint('analyze-alert', input);
+
+  state.alerta = sugestao;
+  state.alertaMotivo = motivo;
+
+  document.getElementById('alerta').value = sugestao;
+  document.getElementById('alertaResultado').innerHTML = motivoHTML(motivo);
+
   showStep(5);
 }
 
 async function analyzePlan() {
   const input = `
-Contexto: ${state.contexto}, Incerteza: ${state.incerteza}, Impacto: ${state.impacto}, Hipótese: ${state.hipotese}, Alerta: ${state.alerta},
-Domínio: ${state.dominio}
+Contexto: ${state.contexto}; 
+Hipótese: ${state.hipotese};
+Domínio do Problema: ${state.dominio}; 
+Incerteza: ${state.incerteza};
+Impacto: ${state.impacto};
+Alerta: ${state.alerta};
   `;
 
   const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
