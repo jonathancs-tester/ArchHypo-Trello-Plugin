@@ -6,8 +6,6 @@ const state = {
   impactoMotivo: '',
   hipotese: '',
   hipoteseMotivo: '',
-  alerta: '',
-  alertaMotivo: '',
   dominio: '',
   dominioMotivo: '',
   plano: '',
@@ -95,24 +93,6 @@ Incerteza: ${state.incerteza};
   showStep(4);
 }
 
-async function analyzeAlert() {
-const input = `
-Contexto: ${state.contexto}; 
-Hipótese: ${state.hipotese};
-Domínio do Problema: ${state.dominio}; 
-Incerteza: ${state.incerteza};
-Impacto: ${state.impacto};
-  `;  
-  const { sugestao, motivo } = await callEndpoint('analyze-alert', input);
-
-  state.alerta = sugestao;
-  state.alertaMotivo = motivo;
-
-  document.getElementById('alerta').value = sugestao;
-  document.getElementById('alertaResultado').innerHTML = motivoHTML(motivo);
-
-  showStep(5);
-}
 
 async function analyzePlan() {
   const input = `
@@ -121,7 +101,6 @@ Hipótese: ${state.hipotese};
 Domínio do Problema: ${state.dominio}; 
 Incerteza: ${state.incerteza};
 Impacto: ${state.impacto};
-Alerta: ${state.alerta};
   `;
 
   const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
@@ -132,7 +111,7 @@ Alerta: ${state.alerta};
   document.getElementById('plano').value = sugestao;
   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
 
-  showStep(6);
+  showStep(5);
 }
 
 async function createCard() {
@@ -143,7 +122,6 @@ async function createCard() {
         name: "Incerteza: " + state.contexto,
         detalhes:
             "**Domínio do problema:** " + state.dominio + "\n" +
-            "**Ponto de alerta:** " + state.alerta + "\n" +
             "**Hipótese:** " + state.hipotese + "\n" +
             "**Incerteza:** " + state.incerteza + "\n" +
             "**Impacto:** " + state.impacto + "\n" +
@@ -172,7 +150,7 @@ async function createCard() {
         console.error('❌ Erro na requisição:', error);
         alert('Erro ao criar o card. Verifique o console para mais detalhes.');
     }
-    showStep(7);
+    showStep(6);
 }
 
 function motivoHTML(motivo) {
