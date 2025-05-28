@@ -33,7 +33,7 @@ async function extractTextFromPDF(filePath) {
 async function summarizeText(text) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
- const prompt = `
+  const prompt = `
 Summarize the following document by identifying relevant information about each ArchHypo pattern listed below:
 
 - Climbing on the Shoulders of Giants
@@ -96,6 +96,9 @@ ${combinedText}
   }
 }
 
+// CACHE EM MEMÓRIA — variável global no módulo
+const cachedSummaries = {};
+
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
     return {
@@ -115,7 +118,6 @@ export async function handler(event) {
     }
 
     const folderPath = path.join(__dirname, 'docs');
-    const cachePath = path.join(__dirname, 'cache-summary.json');
 
     if (!(await fs.pathExists(folderPath))) {
       return {
@@ -134,11 +136,7 @@ export async function handler(event) {
       };
     }
 
-    let cachedSummaries = {};
-    if (await fs.pathExists(cachePath)) {
-      cachedSummaries = JSON.parse(await fs.readFile(cachePath, 'utf8'));
-    }
-
+    // Usa cache em memória
     const summaries = await Promise.all(
       pdfFiles.map(async (file) => {
         if (cachedSummaries[file]) {
@@ -150,8 +148,6 @@ export async function handler(event) {
         return summary;
       })
     );
-
-    await fs.writeFile(cachePath, JSON.stringify(cachedSummaries, null, 2));
 
     const combinedText = summaries.join('\n\n---\n\n');
     const result = await classifyPattern(hypothesis, combinedText);
