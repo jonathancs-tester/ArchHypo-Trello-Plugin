@@ -25,15 +25,18 @@ async function extractTextFromPDF(filePath) {
 async function classifyPattern(hypothesis, combinedText) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-  const prompt = `
-Com base na hipótese: "${hypothesis}" e considerando o texto dos documentos abaixo, escolha **apenas um** padrão ArchHypo que melhor se aplica e explique o motivo da escolha.
+const prompt = `
+You are an assistant that must respond exclusively in English.
 
-Responda no seguinte formato JSON:
+Based on the hypothesis: "${hypothesis}" and considering the text from the documents below, choose **only one** ArchHypo pattern that best applies.
+
+The response must be **100% in English**, in the following JSON format:
 ${parser.getFormatInstructions()}
 
-Documentos:
+Documents (these documents are in English, but your response must be in English as well):
 ${combinedText}
 `;
+
 
   const body = {
     contents: [
