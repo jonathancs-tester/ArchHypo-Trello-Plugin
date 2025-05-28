@@ -26,13 +26,12 @@ async function classifyPattern(hypothesis, combinedText) {
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-  const prompt = `
-Based on the hypothesis: "${hypothesis}" and considering the text from the documents below, choose **only one** ArchHypo pattern that best applies.
-
-The response must be **100% in English**, in the following JSON format:
+const prompt = `
+Hypothesis: "${hypothesis}"
+From the documents below, select **one** ArchHypo pattern that best matches.
+Respond in JSON:
 ${parser.getFormatInstructions()}
-
-Documents
+Documents:
 ${combinedText}
 `;
 
