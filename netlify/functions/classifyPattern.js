@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import dotenv from 'dotenv';
 import axios from 'axios';
-import crypto from 'crypto';
+
 import { StructuredOutputParser } from 'langchain/output_parsers';
 
 dotenv.config();
@@ -15,62 +15,24 @@ const parser = StructuredOutputParser.fromNamesAndDescriptions({
   reason: "Motivo da escolha.",
 });
 
-function cleanText(text) {
-  return text
-    .replace(/\s+/g, ' ')
-    .replace(/-{2,}/g, ' ')
-    .replace(/\n/g, ' ')
-    .replace(/\s{2,}/g, ' ')
-    .replace(/Page\s\d+/gi, '')
-    .trim();
-}
-
-function getFileHash(filePath) {
-  const fileBuffer = fs.readFileSync(filePath);
-  const hashSum = crypto.createHash('sha256');
-  hashSum.update(fileBuffer);
-  return hashSum.digest('hex');
-}
-
-async function extractTextFromPDFWithCache(filePath) {
-  const cacheDir = path.join(__dirname, 'cache');
-  await fs.ensureDir(cacheDir);
-
-  const fileHash = getFileHash(filePath);
-  const cacheFile = path.join(cacheDir, `${path.basename(filePath)}.json`);
-
-  if (await fs.pathExists(cacheFile)) {
-    const cached = JSON.parse(await fs.readFile(cacheFile, 'utf8'));
-    if (cached.hash === fileHash) {
-      console.log(`✅ Cache hit for ${path.basename(filePath)}`);
-      return cached.text;
-    }
-  }
-
-  console.log(`⏳ Parsing ${path.basename(filePath)}...`);
+async function extractTextFromPDF(filePath) {
   const dataBuffer = await fs.readFile(filePath);
   const data = await pdf(dataBuffer);
-  const cleaned = cleanText(data.text);
-
-  const cacheData = {
-    hash: fileHash,
-    text: cleaned,
-  };
-
-  await fs.writeFile(cacheFile, JSON.stringify(cacheData, null, 2));
-  console.log(`💾 Cached ${path.basename(filePath)}`);
-  return cleaned;
+  return data.text;
 }
 
 async function classifyPattern(hypothesis, combinedText) {
+  console.time('⏱️ Montagem do prompt + Chamada da API');
+
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
   const prompt = `
 Based on the hypothesis: "${hypothesis}" and considering the text from the documents below, choose **only one** ArchHypo pattern that best applies.
+
 The response must be **100% in English**, in the following JSON format:
 ${parser.getFormatInstructions()}
 
-Documents:
+Documents
 ${combinedText}
 `;
 
@@ -85,22 +47,26 @@ ${combinedText}
   const response = await axios.post(url, body);
   const raw = response.data.candidates[0].content.parts[0].text.trim();
 
+  console.timeEnd('⏱️ Montagem do prompt + Chamada da API');
+
+  console.time('⏱️ Parse da resposta');
   const cleaned = raw
     .replace(/^```json\s*/i, '')
     .replace(/```$/i, '')
     .trim();
 
   try {
-    return parser.parse(cleaned);
+    const parsed = parser.parse(cleaned);
+    console.timeEnd('⏱️ Parse da resposta');
+    return parsed;
   } catch (error) {
-    console.error('❌ Error parsing JSON:', cleaned);
+    console.timeEnd('⏱️ Parse da resposta');
+    console.error('Erro ao fazer parse do JSON:', cleaned);
     throw error;
   }
 }
 
 export async function handler(event) {
-  const startTime = Date.now();
-
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -109,9 +75,9 @@ export async function handler(event) {
   }
 
   try {
-    const parseStart = Date.now();
+    console.time('🔍 Tempo total');
+
     const { hypothesis } = JSON.parse(event.body);
-    console.log(`Parse Event Body: ${(Date.now() - parseStart) / 1000}s`);
 
     if (!hypothesis) {
       return {
@@ -129,8 +95,10 @@ export async function handler(event) {
       };
     }
 
+    console.time('📄 Leitura dos arquivos PDF');
     const files = await fs.readdir(folderPath);
     const pdfFiles = files.filter((file) => file.endsWith('.pdf'));
+    console.timeEnd('📄 Leitura dos arquivos PDF');
 
     if (pdfFiles.length === 0) {
       return {
@@ -139,29 +107,24 @@ export async function handler(event) {
       };
     }
 
-    const readStart = Date.now();
+    console.time('📝 Extração de texto dos PDFs');
     const texts = await Promise.all(
-      pdfFiles.map(async (file) => {
-        return extractTextFromPDFWithCache(path.join(folderPath, file));
-      })
+      pdfFiles.map((file) => extractTextFromPDF(path.join(folderPath, file)))
     );
-    console.log(`Read PDFs & Cache: ${(Date.now() - readStart) / 1000}s`);
+    console.timeEnd('📝 Extração de texto dos PDFs');
 
     const combinedText = texts.join('\n\n---\n\n');
-    console.log('Texts combined.');
 
-    const classifyStart = Date.now();
     const result = await classifyPattern(hypothesis, combinedText);
-    console.log(`Classify Pattern: ${(Date.now() - classifyStart) / 1000}s`);
 
-    console.log(`Total Handler Time: ${(Date.now() - startTime) / 1000}s`);
+    console.timeEnd('🔍 Tempo total');
 
     return {
       statusCode: 200,
       body: JSON.stringify(result),
     };
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),
