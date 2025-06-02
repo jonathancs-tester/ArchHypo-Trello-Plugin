@@ -24,14 +24,25 @@ async function extractTextFromPDF(filePath) {
 async function classifyPattern(hypothesis, combinedText) {
   console.time('⏱️ Montagem do prompt + Chamada da API');
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent?key=${API_KEY}`;
 
 const prompt = `
-Hypothesis: "${hypothesis}"
-From the documents below, select **one** ArchHypo pattern that best matches.
-Respond in JSON:
+You are an expert in software architecture and must respond ONLY in English.
+
+Task:
+Given the hypothesis below and the document content, select the **single most appropriate ArchHypo pattern** that matches the hypothesis.
+
+**Important clarifications:**
+- If the goal is to test, experiment, or discard after learning (e.g., testing a technology, framework, or concept), then it is an **Architectural Spike**.
+
+Respond **ONLY** in valid JSON with this format:
 ${parser.getFormatInstructions()}
-Documents:
+
+Do not add explanations, comments, or any extra text. Only the JSON.
+Hypothesis:
+"${hypothesis}"
+
+Document content:
 ${combinedText}
 `;
 
@@ -47,7 +58,6 @@ ${combinedText}
   const raw = response.data.candidates[0].content.parts[0].text.trim();
 
   console.timeEnd('⏱️ Montagem do prompt + Chamada da API');
-
   console.time('⏱️ Parse da resposta');
   const cleaned = raw
     .replace(/^```json\s*/i, '')
