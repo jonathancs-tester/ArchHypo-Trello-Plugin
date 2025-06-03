@@ -53,7 +53,7 @@ async function classifyPattern(hypothesis, combinedDocs) {
     embeddings
   );
 
-  const relevantDocs = await vectorStore.similaritySearch(hypothesis, 10);
+  const relevantDocs = await vectorStore.similaritySearch(hypothesis, 20);
 
   const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
