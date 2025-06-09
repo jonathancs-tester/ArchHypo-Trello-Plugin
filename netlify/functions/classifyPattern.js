@@ -61,15 +61,18 @@ async function classifyPattern(hypothesis, combinedDocs) {
 You are an expert in software architecture and must respond ONLY in English.
 
 Task:
-Given the hypothesis below and the document content, select the **single most appropriate ArchHypo pattern** that matches the hypothesis.
+Given the hypothesis and the document content below, select the **single most appropriate ArchHypo pattern** that matches the hypothesis.
 
-Respond **ONLY** in valid JSON with this format:
+Do NOT invent, assume, or suggest any pattern not present in the document content.
+
+Respond ONLY with valid JSON using this format:
 ${parser.getFormatInstructions()}
-
-Do not add explanations, comments, or any extra text. Only the JSON.
 
 Hypothesis:
 "${hypothesis}"
+
+Pattern clarification examples:
+- "Tracer Bullets": when the hypothesis involves building a minimal, functional implementation to quickly test feasibility or integration in practice.
 
 Document content:
 ${context}
