@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ArchHypo Metrics</title>
+  <title>ArchHypo - Trello Power App</title>
   <style>
     .popup-content {
       text-align: center;
@@ -27,9 +27,9 @@
               return t.card('name') // Obtém o título do card
                 .then(function (card) {
                   if (!card || !card.name) {
-                    console.error("Erro: Não foi possível obter o título do card.");
+                    console.error("Error: Unable to get the card title.");
                     return t.alert({
-                      message: "Erro ao obter o título do card!",
+                      message: "Error getting the card title!",
                       duration: 3,
                       display: "error"
                     });
@@ -64,7 +64,7 @@
                           plano
                         }).then(function () {
                           return t.alert({
-                            message: "Campos adicionados com sucesso!",
+                            message: "Fields added successfully!",
                             duration: 3,
                             display: "success"
                           });
@@ -75,18 +75,18 @@
                         function extrairValorTask(chave) {
                           const regex = new RegExp(`\\b${chave}\\s*:\\s*(.+)`, "i");
                           const match = descricao.match(regex);
-                          return match ? match[1].trim() : "Não encontrado";
+                          return match ? match[1].trim() : "Not found";
                         }
 
-                        const requisito_nao_funcional = extrairValorTask("Requisito Não Funcional");
-                        const pattern = extrairValorTask("Pattern");
+                        const requisito_nao_funcional = extrairValorTask("Non Functional Requirement");
+                        const pattern = extrairValorTask("ArchHypo Pattern");
 
                         return t.set('card', 'shared', {
                           requisito_nao_funcional,
                           pattern
                         }).then(function () {
                           return t.alert({
-                            message: "Campos adicionados com sucesso!",
+                            message: "Fields added successfully!",
                             duration: 3,
                             display: "success"
                           });
@@ -95,9 +95,9 @@
                     });
                 })
                 .catch(function (error) {
-                  console.error("Erro ao processar o card:", error);
+                  console.error("Error processing the card:", error);
                   return t.alert({
-                    message: "Erro inesperado!",
+                    message: "Unexpected error!",
                     duration: 3,
                     display: "error"
                   });
@@ -235,34 +235,54 @@
               return t.cards('all').then(function (cards) {
                 if (!cards || cards.length === 0) {
                   return t.popup({
-                    title: 'Erro',
+                    title: 'Error',
                     items: [{ text: 'Nenhum cartão encontrado!', interactive: false }]
                   });
                 }
 
-                let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+                let levels = ["Very Low","Low","Medium","High","Very High"];
 
                 // Contadores para as novas categorias
-                let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
-                let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+                let countIncerteza = { "Very Low": 0,"Low": 0,"Medium": 0,"High": 0,"Very High": 0 };
+                let countImpacto = { "Very Low": 0,"Low": 0,"Medium": 0,"High": 0,"Very High": 0 };
 
                 // Novos valores possíveis para 'não funcional' e 'pattern'
                 let countNaoFuncional = {
                   "Performance": 0,
-                  "Segurança": 0,
-                  "Confiabilidade": 0,
-                  "Flexibilidade": 0,
-                  "Usabilidade": 0,
-                  "Produtividade": 0
+                  "Security": 0,
+                  "Reliability": 0,
+                  "Flexibility": 0,
+                  "Usability": 0,
+                  "Productivity": 0
                 };
 
                 let countPattern = {
-                  "Software Analytics": 0,
+                  "Architectural Hypotheses": 0,
                   "Architectural Spike": 0,
-                  "Tracer Bullet": 0,
                   "Architectural Trigger": 0,
-                  "Solution Candidate": 0,
-                  "GuideLine Implementation": 0
+                  "Architecture In The Backlog": 0,
+                  "Bring The Specialist": 0,
+                  "Choose The Means": 0,
+                  "Climbing On The Shoulders Of Giants": 0,
+                  "Continuous Inspection": 0,
+                  "Define Quality Standards": 0,
+                  "Find Where It Hurts": 0,
+                  "Hypothesis Impact": 0,
+                  "Learning From Experiments": 0,
+                  "Plan Analytics Implementation": 0,
+                  "Plan For Preparation": 0,
+                  "Plan For Responsible Moments": 0,
+                  "Postpone Uncertain Decisions": 0,
+                  "Protective Guideline": 0,
+                  "Quality Checkpoint": 0,
+                  "Reachable Goals": 0,
+                  "Small Steps For Analytics": 0,
+                  "Suspend Measurement": 0,
+                  "Technical Debt Management": 0,
+                  "Test Architecture": 0,
+                  "Tracer Bullets": 0,
+                  "Uncertainty Level": 0,
+                  "What You Need To Know": 0
                 };
 
                 let cardPromises = cards.map(function (card) {
@@ -291,7 +311,7 @@
                       countPattern[pattern]++;
                     }
                   }).catch(function (error) {
-                    console.error(`Erro ao obter valores do card ${card.id}:`, error);
+                    console.error(`Error retrieving card values ${card.id}:`, error);
                   });
                 });
 
@@ -312,7 +332,7 @@
                   });
                 });
               }).catch(function (error) {
-                console.error("Erro ao obter cartões:", error);
+                console.error("Error retrieving cards:", error);
               });
             }
           },
@@ -335,7 +355,7 @@
         return t.card('name') // Obtém o título do card
           .then(function (card) {
             if (!card || !card.name) {
-              console.error("Erro: Não foi possível obter o título do card.");
+              console.error("Error: Unable to get the card title.");
               return [];
             }
 
@@ -357,7 +377,7 @@
             });
           })
           .catch(function (error) {
-            console.error("Erro ao processar badges:", error);
+            console.error("Error processing badges:", error);
             return [];
           });
       }

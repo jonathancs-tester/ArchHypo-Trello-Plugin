@@ -17,7 +17,7 @@ export async function handler(event) {
     `Dado o contexto: "{input}", gere uma hipótese que explique o problema e o motivo, seguindo o exemplo abaixo:
     Incerteza: "Nova API de autenticação em um sistema legado."
     Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
-Responda no formato JSON and ONLY in English: 
+Responda no formato JSON e ONLY in English: 
 {{"sugestao": "hipótese gerada", "motivo": "explicação"}}.`
   );
 

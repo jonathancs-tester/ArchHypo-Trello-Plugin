@@ -27,7 +27,7 @@ async function criarCard(bulletPoint, urlDoCard, boardId) {
         // Atualiza a mensagem de sucesso com os detalhes gerados
         console.log(`✅ Detalhes gerados:\n${detalhes}`)
 
-        const response = await fetch(`/.netlify/functions/criar-card?boardId=${boardId}`, {
+        const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

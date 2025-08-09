@@ -15,14 +15,16 @@ export async function handler(event) {
   });
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Dado o contexto: "{input}", classifique o impacto e explique o motivo, seguindo a regra abaixo: 
-    Muito Baixo: Quase não afeta a arquitetura.
-    Baixo: Pequeno impacto, fácil de corrigir.
-    Médio:Afeta alguns componentes ou funcionalidades.
-    Alto: Afeta partes importantes da arquitetura.
-    Muito Alto: Pode comprometer completamente o sistema, inviabilizar o projeto ou gerar grandes perdas.
+    `Dado o contexto: "{input}", classifique o impacto e explique o motivo utilizando o Impact Historical: 
+    -------------------------------------------------------------
+  Caso o Impact Historical não tenha informação, seguir a regra abaixo:  
+  Very Low: Hardly affects the architecture.
+  Low: Small impact, easy to fix.
+  Medium: Affects some components or functionalities.
+  High: Affects important parts of the architecture.
+  Very High: Could completely compromise the system, jeopardize the project, or cause major losses.
 Responda no formato JSON: 
-{{"sugestao": "Muito Baixo|Baixo|Médio|Alto|Muito Alto", "motivo": "explicação"}}.`
+{{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
   );
 
   const chain = prompt.pipe(model);

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Power App - Trello com AI</title>
+  <title>ArchHypo - Trello Power App</title>
   <style>
     /* Reset básico */
     * {
@@ -179,61 +179,61 @@
 
    <!-- Step 0 -->
   <div id="step0" class="step active">
-    <h2>🟢 Descrição da Incerteza</h2>
-    <textarea maxlength="300" id="contexto" placeholder="Descreva o problema, situação ou contexto..."></textarea>
+    <h2>🟢 Uncertainty</h2>
+    <textarea maxlength="300" id="contexto" placeholder="Describe the uncertainty, situation, or context in detail..."></textarea>
     <button onclick="analyzeHypothesis()">Next</button>
   </div>
 
    <!-- Step 1 -->
   <div id="step1" class="step">
-    <h2>1. Geração de Hipótese</h2>
-    <textarea maxlength="300" id="hipotese" placeholder="Hipótese sugerida"></textarea>
+    <h2>1. Hypothesis</h2>
+    <textarea maxlength="300" id="hipotese"></textarea>
     <p id="hipoteseResultado"></p>
     <button onclick="analyzeDomain()">Next</button>
   </div>
 
    <!-- Step 2 -->
   <div id="step2" class="step">
-    <h2>2. Domínio do Problema</h2>
-    <textarea maxlength="300" type="text" id="dominio" placeholder="Domínio sugerido"></textarea>
+    <h2>2. Non Functional Requirement (NFR)</h2>
+    <textarea maxlength="300" type="text" id="dominio"></textarea>
     <p id="dominioResultado"></p>
     <button onclick="analyzeUncertainty()">Next</button>
   </div>
 
   <!-- Step 3 -->
   <div id="step3" class="step">
-    <h2>3. Avaliação de Incerteza
-    <span class="help-icon" tabindex="0" aria-label="Ajuda sobre Incerteza">
+    <h2>3. Uncertainty Assessment
+    <span class="help-icon" tabindex="0" aria-label="Help">
       ❔
       <span class="tooltip">
-        🔹 <strong>Muito Baixo:</strong> Quase certeza, muito conhecido.<br>
-        🔹 <strong>Baixo:</strong> Pouca dúvida, bem compreendido.<br>
-        🔹 <strong>Médio:</strong> Existe dúvida, mas alguns dados já ajudam.<br>
-        🔹 <strong>Alto:</strong> Considerável incerteza, não temos dados sólidos.<br>
-        🔹 <strong>Muito Alto:</strong> É praticamente uma aposta, não temos dados, é um completo desconhecido.
+        🔹 <strong>Very Low:</strong> Almost certain, well known.<br>
+        🔹 <strong>Low:</strong> Little doubt, well understood.<br>
+        🔹 <strong>Medium:</strong> Some doubt exists, but some data helps.<br>
+        🔹 <strong>High:</strong> Considerable uncertainty, no solid data.<br>
+        🔹 <strong>Very High:</strong> It's practically a guess, no data, a complete unknown.
       </span>
     </span>
     </h2>
-    <textarea maxlength="300" id="incerteza" placeholder="Incerteza sugerida"></textarea>
+    <textarea maxlength="300" id="incerteza"></textarea>
     <p id="incertezaResultado"></p>
     <button onclick="analyzeImpact()">Next</button>
   </div>
 
   <!-- Step 4 -->
   <div id="step4" class="step">
-    <h2>4. Avaliação de Impacto
-      <span class="help-icon" tabindex="0" aria-label="Ajuda sobre Incerteza">
+    <h2>4. Impact Assessment
+      <span class="help-icon" tabindex="0" aria-label="Help">
       ❔
       <span class="tooltip">
-        🔸 <strong>Muito Baixo:</strong> Quase não afeta a arquitetura.<br>
-        🔸 <strong>Baixo:</strong> Pequeno impacto, fácil de corrigir.<br>
-        🔸 <strong>Médio:</strong>  Afeta alguns componentes ou funcionalidades.<br>
-        🔸 <strong>Alto:</strong> Afeta partes importantes da arquitetura.<br>
-        🔸 <strong>Muito Alto:</strong> Pode comprometer completamente o sistema, inviabilizar o projeto ou gerar grandes perdas.
+      🔸 <strong>Very Low:</strong> Hardly affects the architecture.<br>
+      🔸 <strong>Low:</strong> Small impact, easy to fix.<br>
+      🔸 <strong>Medium:</strong> Affects some components or functionalities.<br>
+      🔸 <strong>High:</strong> Affects important parts of the architecture.<br>
+      🔸 <strong>Very High:</strong> Could completely compromise the system, jeopardize the project, or cause major losses.
       </span>
     </span>
     </h2>
-    <textarea maxlength="300" id="impacto" placeholder="Impacto sugerido"></textarea>
+    <textarea maxlength="300" id="impacto"></textarea>
     <p id="impactoResultado"></p>
     <button onclick="classifyPattern()">Next</button>
   </div>
@@ -241,22 +241,22 @@
   <!-- Step 5 -->
   <div id="step5" class="step">
     <h2>5. ArchHypo Pattern</h2>
-     <textarea id="pattern" placeholder="ArchHypo Pattern"></textarea>
+     <textarea id="pattern"></textarea>
     <p id="patternResultado"></p>
     <button onclick="analyzePlan()">Next</button>
   </div>
 
   <!-- Step 6 -->
   <div id="step6" class="step">
-    <h2>6. Plano Técnico</h2>
-     <textarea id="plano" placeholder="Plano sugerido"></textarea>
+    <h2>6. Technical Plan</h2>
+     <textarea id="plano"></textarea>
     <p id="planoResultado"></p>
-    <button onclick="createCard()">Criar no Trello</button>
+    <button onclick="createCard()">Create</button>
   </div>
 
   <!-- Step 7 -->
   <div id="step7" class="step">
-    <h2>✅ Card criado no Trello!</h2>
+    <h2>✅ Card created!</h2>
     <p id="cardLink"></p>
   </div>
 

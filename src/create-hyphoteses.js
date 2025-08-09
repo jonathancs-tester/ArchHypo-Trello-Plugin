@@ -35,9 +35,6 @@ async function callEndpoint(endpoint, input, query) {
 
 async function analyzeHypothesis() {
   const input = document.getElementById('contexto').value;
-  const boardId = getBoardIdFromUrl();
-  console.log('Board ID is:', boardId);
-  const query = `boardId=${boardId} `; 
   const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input, query);
   state.contexto = input;
   state.hipotese = sugestao;
@@ -187,7 +184,7 @@ async function createCard() {
     };
 
     try {
-        const res = await fetch(`/.netlify/functions/criar-card?boardId=${boardId}`, {
+        const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -196,7 +193,7 @@ async function createCard() {
         const result = await res.json();
 
         if (!res.ok) {
-            alert(`Erro ao criar card: ${result.erro || result.error || 'Erro desconhecido'}`);
+            alert(`Error creating card: ${result.error || result.erro || 'Unknown error'}`);
             return;
         }
 
@@ -205,8 +202,8 @@ async function createCard() {
         document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">Open Card</a>`;
         showStep(7);
     } catch (error) {
-        console.error('❌ Erro na requisição:', error);
-        alert('Erro ao criar o card. Verifique o console para mais detalhes.');
+        console.error('❌ Request error:', error);
+        alert('Error creating the card. Check the console for more details.');
     }
     showStep(7);
 }
@@ -214,7 +211,7 @@ async function createCard() {
 function motivoHTML(motivo) {
   return `
     <details>
-      <summary><em>Reason: (more details)</em></summary>
+      <summary><em>Reason: (click here)</em></summary>
       <p>${motivo}</p>
     </details>
   `;

@@ -24,13 +24,12 @@ export async function handler(event) {
 
     try {
         const { responseCardId, urlDoCard } = JSON.parse(event.body);
-        console.log("Recebido responseCardId:", responseCardId, "e urlDoCard:", urlDoCard);
 
         if (!responseCardId || !urlDoCard) {
             return {
                 statusCode: 400,
                 headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ erro: "Os campos 'responseCardId' e 'urlDoCard' são obrigatórios." }),
+                body: JSON.stringify({ erro: "The fields 'responseCardId' and 'urlDoCard' are required." }),
             };
         }
 
@@ -43,12 +42,12 @@ export async function handler(event) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 url: urlDoCard,
-                name: "Link para Incerteza",
+                name: "Uncertainty Link",
             })
         });
 
         if (!attachmentResponse.ok) {
-            throw new Error(`Erro da API Trello: ${attachmentResponse.status} ${attachmentResponse.statusText}`);
+            throw new Error(`API Trello Error: ${attachmentResponse.status} ${attachmentResponse.statusText}`);
         }
 
         const data = await attachmentResponse.json();
@@ -56,11 +55,11 @@ export async function handler(event) {
         return {
             statusCode: 200,
             headers: { "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ mensagem: "Anexo adicionado com sucesso!", data }),
+            body: JSON.stringify({ mensagem: "Attachment added!", data }),
         };
 
     } catch (error) {
-        console.error("❌ Erro ao adicionar anexo:", error.message);
+        console.error("❌ Error adding attachment:", error.message);
         return {
             statusCode: 500,
             headers: { "Access-Control-Allow-Origin": "*" },

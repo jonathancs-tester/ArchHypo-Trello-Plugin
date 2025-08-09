@@ -21,7 +21,7 @@ export async function handler(event) {
         return {
             statusCode: 405,
             headers: { "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ erro: "Método não permitido" }),
+            body: JSON.stringify({ erro: "Method Not Allowed" }),
         };
     }
 
@@ -32,7 +32,7 @@ export async function handler(event) {
             return {
                 statusCode: 400,
                 headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ erro: "O parâmetro boardId é obrigatório." }),
+                body: JSON.stringify({ erro: "The parameter boardId is required." }),
             };
         }
 
@@ -43,7 +43,7 @@ export async function handler(event) {
         );
 
         if (!cardsRes.ok) {
-            throw new Error(`Erro ao buscar cards: ${cardsRes.status} ${cardsRes.statusText}`);
+            throw new Error(`Error fetching cards: ${cardsRes.status} ${cardsRes.statusText}`);
         }
 
         const cards = await cardsRes.json();
@@ -77,7 +77,7 @@ export async function handler(event) {
         };
 
     } catch (error) {
-        console.error("❌ Erro:", error.message);
+        console.error("❌ Error:", error.message);
         return {
             statusCode: 500,
             headers: { "Access-Control-Allow-Origin": "*" },

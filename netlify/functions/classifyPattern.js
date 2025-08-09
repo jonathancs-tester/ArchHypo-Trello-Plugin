@@ -14,8 +14,8 @@ const API_KEY = process.env.GENAI_API_KEY;
 
 // 🔧 Parser do JSON
 const parser = StructuredOutputParser.fromNamesAndDescriptions({
-  pattern: "Nome do padrão ArchHypo escolhido.",
-  reason: "Motivo da escolha.",
+  pattern: "Name of the chosen ArchHypo pattern.",
+  reason: "Reason for the choice.",
 });
 
 // 🔍 Função para extrair texto dos PDFs
@@ -91,7 +91,7 @@ ${context}
     const parsed = await parser.parse(cleaned);
     return parsed;
   } catch (error) {
-    console.error('❌ Erro ao fazer parse do JSON:', cleaned);
+    console.error('❌ Parser JSON Error:', cleaned);
     throw error;
   }
 }
@@ -106,7 +106,7 @@ export async function handler(event) {
   }
 
   try {
-    console.time('🔍 Tempo total');
+    console.time('🔍 Total Time');
 
     const { hypothesis } = JSON.parse(event.body);
 
@@ -126,10 +126,10 @@ export async function handler(event) {
       };
     }
 
-    console.time('📄 Leitura dos arquivos PDF');
+    console.time('📄 Reading PDF files');
     const files = await fs.readdir(folderPath);
     const pdfFiles = files.filter((file) => file.endsWith('.pdf'));
-    console.timeEnd('📄 Leitura dos arquivos PDF');
+    console.timeEnd('📄 Reading PDF files');
 
     if (pdfFiles.length === 0) {
       return {
@@ -138,15 +138,15 @@ export async function handler(event) {
       };
     }
 
-    console.time('📝 Extração de texto dos PDFs');
+    console.time('📝 Extract PDFs info');
     const texts = await Promise.all(
       pdfFiles.map((file) => extractTextFromPDF(path.join(folderPath, file)))
     );
-    console.timeEnd('📝 Extração de texto dos PDFs');
+    console.timeEnd('📝 Extract PDFs info');
 
     const result = await classifyPattern(hypothesis, texts);
 
-    console.timeEnd('🔍 Tempo total');
+    console.timeEnd('🔍 Total Time');
 
     return {
       statusCode: 200,

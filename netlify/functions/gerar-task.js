@@ -23,7 +23,7 @@ export async function handler(event) {
         return {
             statusCode: 405,
             headers: { "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ erro: "Método não permitido" }),
+            body: JSON.stringify({ erro: "Method Not Allowed" }),
         };
     }
 
@@ -34,7 +34,7 @@ export async function handler(event) {
             return {
                 statusCode: 400,
                 headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ erro: "O campo 'campoPlano' é obrigatório." }),
+                body: JSON.stringify({ erro: "The field 'campoPlano' is required." }),
             };
         }
 
@@ -43,9 +43,9 @@ export async function handler(event) {
                 parts: [{
                     text: `Crie uma task unica baseado em cada tópico do plano tecnico: ${campoPlano} com somente os campos (sem tabela e sem negrito):
                     Task: 
-                    - Objetivo: (como deve ser realizado a task)
-                    - Requisito Não Funcional(${NON_FUNCTIONAL}): somente um valor
-                    - Pattern (${PATTERN}): somente um valor`
+                    - Goal: (como deve ser realizado a task)
+                    - Non Functional Requirement(${NON_FUNCTIONAL}): somente um valor
+                    - ArchHypo Pattern (${PATTERN}): somente um valor`
                 }]
             }]
         };
@@ -57,13 +57,13 @@ export async function handler(event) {
         });
 
         if (!response.ok) {
-            throw new Error(`Erro da API: ${response.status} ${response.statusText}`);
+            throw new Error(`API Error: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
 
         if (!data.candidates || !data.candidates[0]?.content?.parts[0]?.text) {
-            throw new Error("Resposta inesperada da API");
+            throw new Error("Unexpected API response");
         }
 
         return {
@@ -73,7 +73,7 @@ export async function handler(event) {
         };
 
     } catch (error) {
-        console.error("❌ Erro ao gerar card:", error.message);
+        console.error("❌ Error generating card:", error.message);
         return {
             statusCode: 500,
             headers: { "Access-Control-Allow-Origin": "*" },
