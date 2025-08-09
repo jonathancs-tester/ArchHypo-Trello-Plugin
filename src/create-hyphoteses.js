@@ -44,8 +44,8 @@ async function analyzeHypothesis() {
 
 async function analyzeDomain() {
   const input = `
-Contexto: ${state.contexto}; 
-Hipótese: ${state.hipotese};
+Context: ${state.contexto}; 
+Hypothesis: ${state.hipotese};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
 
@@ -60,9 +60,9 @@ Hipótese: ${state.hipotese};
 
 async function analyzeUncertainty() {
 const input = `
-Contexto: ${state.contexto}; 
-Hipótese: ${state.hipotese};
-Domínio do Problema: ${state.dominio}; 
+Context: ${state.contexto}; 
+Hypothesis: ${state.hipotese};
+Non Functional Requirement: ${state.dominio}; 
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
@@ -77,10 +77,10 @@ Domínio do Problema: ${state.dominio};
 
 async function analyzeImpact() {
 const input = `
-Contexto: ${state.contexto}; 
-Hipótese: ${state.hipotese};
-Domínio do Problema: ${state.dominio}; 
-Incerteza: ${state.incerteza};
+Context: ${state.contexto}; 
+Hypothesis: ${state.hipotese};
+Non Functional Requirement: ${state.dominio}; 
+Uncertainty: ${state.incerteza};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
 
@@ -94,13 +94,30 @@ Incerteza: ${state.incerteza};
 }
 
 
+async function classifyPattern() {
+  const input = `
+hypothesis: ${state.hipotese};
+  `;
+
+  const { sugestao, motivo } = await callEndpoint('classifyPattern', input);
+
+  state.pattern = sugestao;
+  state.patternMotivo = motivo;
+
+  document.getElementById('pattern').value = sugestao;
+  document.getElementById('patternMotivo').innerHTML = motivoHTML(motivo);
+
+  showStep(5);
+}
+
 async function analyzePlan() {
   const input = `
-Contexto: ${state.contexto}; 
-Hipótese: ${state.hipotese};
-Domínio do Problema: ${state.dominio}; 
-Incerteza: ${state.incerteza};
+Context: ${state.contexto}; 
+Hypothesis: ${state.hipotese};
+Non Functional Requirement: ${state.dominio}; 
+Uncertainty: ${state.incerteza};
 Impacto: ${state.impacto};
+ArchHypo Pattern: ${state.pattern};
   `;
 
   const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
@@ -111,7 +128,7 @@ Impacto: ${state.impacto};
   document.getElementById('plano').value = sugestao;
   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
 
-  showStep(5);
+  showStep(6);
 }
 
 async function createCard() {
@@ -119,13 +136,14 @@ async function createCard() {
     const boardId = urlParams.get('boardId');  // Obtém o boardId da URL
 
     const data = {
-        name: "Incerteza: " + state.contexto,
+        name: "Uncertainty: " + state.contexto,
         detalhes:
-            "**Domínio do problema:** " + state.dominio + "\n" +
-            "**Hipótese:** " + state.hipotese + "\n" +
-            "**Incerteza:** " + state.incerteza + "\n" +
+            "**Non Functional Requirement:** " + state.dominio + "\n" +
+            "**Hypothesis:** " + state.hipotese + "\n" +
+            "**Uncertainty:** " + state.incerteza + "\n" +
             "**Impacto:** " + state.impacto + "\n" +
-            "**Plano:** " + state.plano
+            "**ArchHypo Pattern:** " + state.pattern + "\n" +
+            "**Technical Plan:** " + state.plano
     };
 
     try {
@@ -144,7 +162,7 @@ async function createCard() {
 
         const cardUrl = result.data.shortUrl || result.data.url;
 
-        document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">Acessar Card no Trello</a>`;
+        document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">Open Card</a>`;
         showStep(7);
     } catch (error) {
         console.error('❌ Erro na requisição:', error);
@@ -156,7 +174,7 @@ async function createCard() {
 function motivoHTML(motivo) {
   return `
     <details>
-      <summary><em>Motivo (clique para ver)</em></summary>
+      <summary><em>Reason (clique para ver)</em></summary>
       <p>${motivo}</p>
     </details>
   `;

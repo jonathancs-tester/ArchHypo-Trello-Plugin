@@ -103,123 +103,123 @@
                   });
                 });
             }
-          },
-          {
-            icon: "https://img.icons8.com/ios/50/000000/process.png",
-            text: "Criar task",
-            callback: function (t) {
-              return t.card('name') // Obtém o título do card
-                .then(function (card) {
-                  if (!card || !card.name) {
-                    console.error("Erro: Não foi possível obter o título do card.");
-                    return t.alert({
-                      message: "Erro ao obter o título do card!",
-                      duration: 3,
-                      display: "error"
-                    });
-                  }
-
-                  const titulo = card.name.trim(); // Pega o título do card e remove espaços extras
-
-                  if (titulo.startsWith("Task")) {
-                    return t.popup({
-                      title: 'Erro',
-                      items: [
-                        {
-                          icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                          text: 'Não é possível criar task de um Task Card.',
-                        }
-                      ]
-                    });
-
-                  }
-                  t.board('id').then(function (boardId) {
-                  return t.card('desc').then(function (card) {
-                    // Descrição do card
-                    const descricao = card.desc || "";
-
-                    function extrairValor(chave, descricao) {
-                      const regex = new RegExp(`${chave}:\\s*([\\s\\S]*?)(?=\\n\\w+:|$)`, "i");
-                      const match = descricao.match(regex);
-                      return match ? match[1].trim() : "";
-                    }
-                    // Extraindo os valores de "Plano" da descrição
-                    const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
-
-                    // Remover o primeiro " **" e garantir que os bullet points sejam formatados corretamente
-                    const bulletPoints = descricaoPlanoTecnico
-                      .replace(/^\*\*/, '') // Remove o excesso de "**" no início
-                      .split(/\n+/) // Divide por linhas
-                      .map(line => line.trim()) // Remove espaços extras
-                      .filter(line => line.length > 0) // Remove linhas vazias
-                      .map(line => {
-                        const match = line.match(/^(.+?):\s*(.*)/);  // Procura por "Título: descrição"
-                        if (match) {
-                          const titulo = match[1].trim();
-                          const conteudo = match[2].trim();
-                          return `- **${titulo}:** ${conteudo}`;
-                        }
-                        return `- ${line}`; // Para linhas simples, apenas cria um bullet normal
-                      });
-
-
-                    // Se não houver bullet points, exibe mensagem
-                    if (bulletPoints.length === 0) {
-                      return t.popup({
-                        title: 'Erro',
-                        items: [
-                          {
-                            icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                            text: 'Não foi possível encontrar nenhum bullet point.',
-                          }
-                        ]
-                      });
-                    }
-                    console.log("Bullet points extraídos:", bulletPoints);
-                    // Obtendo a URL da carta
-                    t.card('url').then(function (cardUrl) {
-                      const urlDoCard = cardUrl;
-                      // Para cada "bullet point", chama a função para criar uma task
-                      bulletPoints.forEach(bulletPoint => {
-                        if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
-                          createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard, boardId.id);  // Passa o bulletPoint e a URL
-                        }
-                      });
-
-                      // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
-                      return t.alert({
-                        message: "Task criada com sucesso!",
-                        duration: 3,
-                        display: "success"
-                      });
-                    }).catch(function (error) {
-                      console.error("Erro ao obter a URL do card:", error);
-                      return t.popup({
-                        title: 'Erro',
-                        items: [
-                          {
-                            icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                            text: 'Houve um erro ao gerar as tasks.',
-                          }
-                        ]
-                      });
-                    });
-                  }).catch(function (error) {
-                    console.error("Erro ao processar o card:", error);
-                    return t.popup({
-                      title: 'Erro',
-                      items: [
-                        {
-                          icon: 'https://img.icons8.com/ios/50/000000/error.png',
-                          text: 'Houve um erro ao processar o card.',
-                        }
-                      ]
-                    });
-                  });
-                });
-              });
-            }
           }
+          // {
+          //   icon: "https://img.icons8.com/ios/50/000000/process.png",
+          //   text: "Criar task",
+          //   callback: function (t) {
+          //     return t.card('name') // Obtém o título do card
+          //       .then(function (card) {
+          //         if (!card || !card.name) {
+          //           console.error("Erro: Não foi possível obter o título do card.");
+          //           return t.alert({
+          //             message: "Erro ao obter o título do card!",
+          //             duration: 3,
+          //             display: "error"
+          //           });
+          //         }
+
+          //         const titulo = card.name.trim(); // Pega o título do card e remove espaços extras
+
+          //         if (titulo.startsWith("Task")) {
+          //           return t.popup({
+          //             title: 'Erro',
+          //             items: [
+          //               {
+          //                 icon: 'https://img.icons8.com/ios/50/000000/error.png',
+          //                 text: 'Não é possível criar task de um Task Card.',
+          //               }
+          //             ]
+          //           });
+
+          //         }
+          //         t.board('id').then(function (boardId) {
+          //         return t.card('desc').then(function (card) {
+          //           // Descrição do card
+          //           const descricao = card.desc || "";
+
+          //           function extrairValor(chave, descricao) {
+          //             const regex = new RegExp(`${chave}:\\s*([\\s\\S]*?)(?=\\n\\w+:|$)`, "i");
+          //             const match = descricao.match(regex);
+          //             return match ? match[1].trim() : "";
+          //           }
+          //           // Extraindo os valores de "Plano" da descrição
+          //           const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
+
+          //           // Remover o primeiro " **" e garantir que os bullet points sejam formatados corretamente
+          //           const bulletPoints = descricaoPlanoTecnico
+          //             .replace(/^\*\*/, '') // Remove o excesso de "**" no início
+          //             .split(/\n+/) // Divide por linhas
+          //             .map(line => line.trim()) // Remove espaços extras
+          //             .filter(line => line.length > 0) // Remove linhas vazias
+          //             .map(line => {
+          //               const match = line.match(/^(.+?):\s*(.*)/);  // Procura por "Título: descrição"
+          //               if (match) {
+          //                 const titulo = match[1].trim();
+          //                 const conteudo = match[2].trim();
+          //                 return `- **${titulo}:** ${conteudo}`;
+          //               }
+          //               return `- ${line}`; // Para linhas simples, apenas cria um bullet normal
+          //             });
+
+
+          //           // Se não houver bullet points, exibe mensagem
+          //           if (bulletPoints.length === 0) {
+          //             return t.popup({
+          //               title: 'Erro',
+          //               items: [
+          //                 {
+          //                   icon: 'https://img.icons8.com/ios/50/000000/error.png',
+          //                   text: 'Não foi possível encontrar nenhum bullet point.',
+          //                 }
+          //               ]
+          //             });
+          //           }
+          //           console.log("Bullet points extraídos:", bulletPoints);
+          //           // Obtendo a URL da carta
+          //           t.card('url').then(function (cardUrl) {
+          //             const urlDoCard = cardUrl;
+          //             // Para cada "bullet point", chama a função para criar uma task
+          //             bulletPoints.forEach(bulletPoint => {
+          //               if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
+          //                 createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard, boardId.id);  // Passa o bulletPoint e a URL
+          //               }
+          //             });
+
+          //             // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
+          //             return t.alert({
+          //               message: "Task criada com sucesso!",
+          //               duration: 3,
+          //               display: "success"
+          //             });
+          //           }).catch(function (error) {
+          //             console.error("Erro ao obter a URL do card:", error);
+          //             return t.popup({
+          //               title: 'Erro',
+          //               items: [
+          //                 {
+          //                   icon: 'https://img.icons8.com/ios/50/000000/error.png',
+          //                   text: 'Houve um erro ao gerar as tasks.',
+          //                 }
+          //               ]
+          //             });
+          //           });
+          //         }).catch(function (error) {
+          //           console.error("Erro ao processar o card:", error);
+          //           return t.popup({
+          //             title: 'Erro',
+          //             items: [
+          //               {
+          //                 icon: 'https://img.icons8.com/ios/50/000000/error.png',
+          //                 text: 'Houve um erro ao processar o card.',
+          //               }
+          //             ]
+          //           });
+          //         });
+          //       });
+          //     });
+          //   }
+          // }
         ];
         function createTaskFromBulletPoint(bulletPoint, urlDoCard, boardId) {
           // Passa o bulletPoint e a URL do card para a função criarCard
@@ -345,12 +345,11 @@
 
               if (titulo.startsWith("Uncertainty")) {
                 if (data.incerteza) badges.push({ text: `Uncertainty: ${data.incerteza}`, color: 'red' });
-                if (data.impacto) badges.push({ text: `Impacto: ${data.impacto}`, color: 'blue' });
-                // Se necessário, descomente essa linha
-                // if (data.dominio_problema) badges.push({ text: `Domínio: ${data.dominio_problema}`, color: 'green' });
-              } else {
-                if (data.requisito_nao_funcional) badges.push({ text: `Requisito Não Funcional: ${data.requisito_nao_funcional}`, color: 'green' });
+                if (data.impacto) badges.push({ text: `Impact: ${data.impacto}`, color: 'blue' });
                 if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
+                if (data.dominio_problema) badges.push({ text: `NFR: ${data.dominio_problema}`, color: 'green' });
+              } else {
+                // if (data.requisito_nao_funcional) badges.push({ text: `NFR: ${data.requisito_nao_funcional}`, color: 'green' });
               }
 
               return badges;
