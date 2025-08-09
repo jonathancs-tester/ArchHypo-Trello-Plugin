@@ -22,7 +22,7 @@
         return [
           {
             icon: "https://img.icons8.com/ios/50/000000/process.png",
-            text: "Adicionar Métricas",
+            text: "Add Metrics",
             callback: function (t) {
               return t.card('name') // Obtém o título do card
                 .then(function (card) {
@@ -41,19 +41,19 @@
                     .then(function (cardDesc) {
                       const descricao = cardDesc?.desc?.trim() || "";
 
-                      if (titulo.startsWith("Incerteza")) {
+                      if (titulo.startsWith("Uncertainty")) {
 
                         function extrairValor(chave) {
                           const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
                           const match = descricao.match(regex);
                           return match ? match[1].trim() : "";
                         }
-                        const dominio_problema = extrairValor("Domínio");
-                        const ponto_alerta = extrairValor("Ponto de Alerta");
-                        const hipotese = extrairValor("Hipótese");
-                        const incerteza = extrairValor("Incerteza");
-                        const impacto = extrairValor("Impacto");
-                        const plano = extrairValor("Plano");
+                        const dominio_problema = extrairValor("Non Functional Requirement");
+                        const hipotese = extrairValor("Hypothesis");
+                        const incerteza = extrairValor("Uncertainty");
+                        const impacto = extrairValor("Impact");
+                        const pattern = extrairValor("ArchHypo Pattern");
+                        const plano = extrairValor("Technical Plan");
 
                         return t.set('card', 'shared', {
                           dominio_problema,
@@ -269,9 +269,10 @@
                   return Promise.all([
                     t.get(card.id, 'shared', 'incerteza'),
                     t.get(card.id, 'shared', 'impacto'),
+                    t.get(card.id, 'shared', 'dominio_problema'),
                     t.get(card.id, 'shared', 'requisito_nao_funcional'),
                     t.get(card.id, 'shared', 'pattern')
-                  ]).then(function ([incerteza, impacto, requisito_nao_funcional, pattern]) {
+                  ]).then(function ([incerteza, impacto, dominio_problema, requisito_nao_funcional, pattern]) {
                     // Atualiza os contadores de 'incerteza' e 'impacto'
                     if (levels.includes(incerteza)) {
                       countIncerteza[incerteza]++;
@@ -281,8 +282,8 @@
                     }
 
                     // Atualiza os contadores de 'não funcional'
-                    if (Object.keys(countNaoFuncional).includes(requisito_nao_funcional)) {
-                      countNaoFuncional[requisito_nao_funcional]++;
+                    if (Object.keys(countNaoFuncional).includes(dominio_problema)) {
+                      countNaoFuncional[dominio_problema]++;
                     }
 
                     // Atualiza os contadores de 'pattern'
