@@ -22,13 +22,13 @@ function showStep(stepId) {
   document.getElementById('step' + stepId).classList.add('active');
 }
 
-async function callEndpoint(endpoint, input, query) {
-  const res = await fetch(`/.netlify/functions/${endpoint}?`+query, {
+async function callEndpoint(endpoint, input, query) {  
+  const res = await fetch(`/.netlify/functions/${endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ input }),
   });
-
+ 
   const data = await res.json();
   return data;
 }
@@ -66,10 +66,21 @@ Hypothesis: ${state.hipotese};
 }
 
 async function analyzeUncertainty() {
+  const boardId = getBoardIdFromUrl();
+  const query = `boardId=${boardId} `;   
+
+  const res = await fetch(`/.netlify/functions/get-uncertainty?`+query, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await res.json();
+
 const input = `
 Context: ${state.contexto}; 
 Hypothesis: ${state.hipotese};
 Non Functional Requirement: ${state.dominio}; 
+Uncertainty Historical: ${data};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
@@ -83,11 +94,23 @@ Non Functional Requirement: ${state.dominio};
 }
 
 async function analyzeImpact() {
+
+  const boardId = getBoardIdFromUrl();
+  const query = `boardId=${boardId} `;   
+
+  const res = await fetch(`/.netlify/functions/get-impact?`+query, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const data = await res.json();
+
 const input = `
 Context: ${state.contexto}; 
 Hypothesis: ${state.hipotese};
 Non Functional Requirement: ${state.dominio}; 
 Uncertainty: ${state.incerteza};
+Impact Historical: ${data};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
 
