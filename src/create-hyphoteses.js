@@ -120,7 +120,7 @@ Context: ${state.contexto};
 Hypothesis: ${state.hipotese};
 Non Functional Requirement: ${state.dominio}; 
 Uncertainty: ${state.incerteza};
-Impacto: ${state.impacto};
+Impact: ${state.impacto};
 ArchHypo Pattern: ${state.pattern};
   `;
 
@@ -145,9 +145,9 @@ async function createCard() {
             "**Non Functional Requirement:** " + state.dominio + "\n" +
             "**Hypothesis:** " + state.hipotese + "\n" +
             "**Uncertainty:** " + state.incerteza + "\n" +
-            "**Impacto:** " + state.impacto + "\n" +
+            "**Impact:** " + state.impacto + "\n" +
             "**ArchHypo Pattern:** " + state.pattern + "\n" +
-            "**Technical Plan:** " + state.plano
+            "**Technical Plan:** \n" + state.plano
     };
 
     try {
@@ -178,7 +178,7 @@ async function createCard() {
 function motivoHTML(motivo) {
   return `
     <details>
-      <summary><em>Reason (clique para ver)</em></summary>
+      <summary><em>Reason: (more details)</em></summary>
       <p>${motivo}</p>
     </details>
   `;
