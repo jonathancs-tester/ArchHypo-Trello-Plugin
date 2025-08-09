@@ -12,13 +12,18 @@ const state = {
   planoMotivo: '',
 };
 
+function getBoardIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('boardId');
+}
+
 function showStep(stepId) {
   document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
   document.getElementById('step' + stepId).classList.add('active');
 }
 
-async function callEndpoint(endpoint, input) {
-  const res = await fetch(`/.netlify/functions/${endpoint}`, {
+async function callEndpoint(endpoint, input, query) {
+  const res = await fetch(`/.netlify/functions/${endpoint}?`+query, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ input }),
@@ -30,8 +35,10 @@ async function callEndpoint(endpoint, input) {
 
 async function analyzeHypothesis() {
   const input = document.getElementById('contexto').value;
-  const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
-
+  const boardId = getBoardIdFromUrl();
+  console.log('Board ID is:', boardId);
+  const query = `boardId=${boardId} `; 
+  const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input, query);
   state.contexto = input;
   state.hipotese = sugestao;
   state.hipoteseMotivo = motivo;
