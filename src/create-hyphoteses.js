@@ -109,7 +109,7 @@ async function classifyPattern() {
   state.patternMotivo = data.reason;
 
   document.getElementById('pattern').value = data.pattern;
-  document.getElementById('patternMotivo').innerHTML = motivoHTML(data.reason);
+  document.getElementById('patternResultado').innerHTML = motivoHTML(data.reason);
 
   showStep(5);
 }
