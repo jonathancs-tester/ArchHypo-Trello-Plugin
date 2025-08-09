@@ -1,6 +1,6 @@
 // Função que chama o backend para gerar os detalhes do card
 async function gerarDetalhesCard(plano) {
-    const response = await fetch(`/.netlify/functions/gerar-task`, {
+    const response = await fetch(`/.netlify/functions/generate-task`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ campoPlano: plano })
@@ -13,9 +13,8 @@ async function gerarDetalhesCard(plano) {
 // Função para criar o card no Trello
 async function criarCard(bulletPoint, urlDoCard, boardId) {
 
-    console.log(bulletPoint)
     if (!bulletPoint) {
-        console.log("❌ Por favor, forneça um bullet point.")
+        console.log("❌ Please provide a bullet point.")
         return;
     }
 
@@ -25,14 +24,14 @@ async function criarCard(bulletPoint, urlDoCard, boardId) {
         const taskMatch = detalhes.match(taskRegex);
 
         // Atualiza a mensagem de sucesso com os detalhes gerados
-        console.log(`✅ Detalhes gerados:\n${detalhes}`)
+        console.log(`✅ Generated details:\n${detalhes}`)
 
         const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 name: `${taskMatch[0]}`,
-                detalhes: `Detalhes da tarefa:\n\n ${detalhes}\n\nURL da Incerteza: ${urlDoCard.url}` // Usando os detalhes gerados
+                detalhes: `Task details:\n\n ${detalhes}\n\nUncertainty Link: ${urlDoCard.url}}` // Usando os detalhes gerados
             })
         });
         
@@ -49,17 +48,16 @@ async function criarCard(bulletPoint, urlDoCard, boardId) {
         });        
 
         // Verifica se a criação do card foi bem-sucedida
-        if (attachmentResponse.ok) {
-             console.log("✅ Task criada no Trello com sucesso!")
-        } else {
-            throw new Error('Falha ao criar card no Trello');
-        }
-    } catch (error) {
-        console.error(error);
-         console.log("❌ Erro ao gerar/criar a task.")
-         return t.popup({
-            title: 'Erro',
-            items: [{ icon: 'https://img.icons8.com/ios/50/000000/error.png', text: `Erro ao criar task: ${error.message || 'Erro desconhecido'}` }]
+        if (attachmentResponse.ok) 
+            console.log("✅ Task created successfully on Trello!");
+        else 
+            throw new Error('Failed to create card on Trello');
+        } catch (error) {
+            console.error(error);
+            console.log("❌ Error generating/creating the task.");
+        return t.popup({
+            title: 'Error',
+            items: [{ icon: 'https://img.icons8.com/ios/50/000000/error.png', text: `Error creating task: ${error.message || 'Unknown error'}` }]
         });
     }
 }

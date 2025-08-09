@@ -22,7 +22,7 @@ export async function handler(event) {
         return {
             statusCode: 405,
             headers: { "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ erro: "Método não permitido" }),
+            body: JSON.stringify({ erro: "Method Not Allowed" }),
         };
     }
 
@@ -33,7 +33,7 @@ export async function handler(event) {
             return {
                 statusCode: 400,
                 headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ erro: "Os campos 'name' e 'detalhes' são obrigatórios." }),
+                body: JSON.stringify({ erro: "The fields 'name' and 'details' are required." }),
             };
         }
 
@@ -42,11 +42,9 @@ export async function handler(event) {
         if (!boardId) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: "O parâmetro boardId é obrigatório." })
+                body: JSON.stringify({ error: "The parameter boardId is required." })
             };
         }
-
-        console.log(`${TRELLO_API_URL}/boards/${boardId}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
 
         const idListRespose = await fetch(`${TRELLO_API_URL}/boards/${boardId}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "GET",
@@ -54,7 +52,6 @@ export async function handler(event) {
         });
         
         const idList = await idListRespose.json();
-        console.log(idList[0].id)
 
         const response = await fetch(`${TRELLO_API_URL}/cards?idList=${idList[0].id}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
             method: "POST",
@@ -66,7 +63,7 @@ export async function handler(event) {
         });
 
         if (!response.ok) {
-            throw new Error(`Erro ao criar card no Trello: ${response.status} ${response.statusText}`);
+            throw new Error(`Error creating card in Trello ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -74,11 +71,11 @@ export async function handler(event) {
         return {
             statusCode: 200,
             headers: { "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ message: "Card criado!", data }),
+            body: JSON.stringify({ message: "Card created!", data }),
         };
 
     } catch (error) {
-        console.error("❌ Erro ao criar card no Trello:", error.message);
+        console.error("❌ Error creating card in Trello:", error.message);
         return {
             statusCode: 500,
             headers: { "Access-Control-Allow-Origin": "*" },
