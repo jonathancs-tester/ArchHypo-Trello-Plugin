@@ -317,26 +317,13 @@
           },
           {
             icon: "https://img.icons8.com/ios/50/000000/plus.png",
-            text: "Nova Incerteza",
+            text: "New Uncertainty",
             callback: function (t) {
               t.board('id').then(function (boardId) {
                 return t.modal({
-                  title: "Nova Incerteza",
+                  title: "New Uncertainty",
                   url: `./pages/create-hyphoteses.html?boardId=${boardId.id}`,
                   height: 500
-                });
-              });
-            }
-          },
-          {
-            icon: "https://img.icons8.com/ios/50/000000/ai.png",
-            text: "Incerteza GenAI",
-            callback: function (t) {
-              t.board('id').then(function (boardId) {
-                return t.modal({
-                  title: "Incerteza - GenAI",
-                  url: `./pages/create-card-genai.html?boardId=${boardId.id}`,
-                  height: 250
                 });
               });
             }
@@ -356,8 +343,8 @@
             return t.get('card', 'shared').then(function (data) {
               let badges = [];
 
-              if (titulo.startsWith("Incerteza")) {
-                if (data.incerteza) badges.push({ text: `Incerteza: ${data.incerteza}`, color: 'red' });
+              if (titulo.startsWith("Uncertainty")) {
+                if (data.incerteza) badges.push({ text: `Uncertainty: ${data.incerteza}`, color: 'red' });
                 if (data.impacto) badges.push({ text: `Impacto: ${data.impacto}`, color: 'blue' });
                 // Se necessário, descomente essa linha
                 // if (data.dominio_problema) badges.push({ text: `Domínio: ${data.dominio_problema}`, color: 'green' });
