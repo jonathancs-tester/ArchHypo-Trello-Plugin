@@ -75,12 +75,15 @@ async function analyzeUncertainty() {
   });
 
   const data = await res.json();
+  const uncertaintyHistoricalStr = Array.isArray(data)
+  ? data.map(item => JSON.stringify(item)).join('; ')
+  : data;
 
 const input = `
 Context: ${state.contexto}; 
 Hypothesis: ${state.hipotese};
 Non Functional Requirement: ${state.dominio}; 
-Uncertainty Historical: ${data};
+Uncertainty Historical: ${uncertaintyHistoricalStr};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
@@ -104,13 +107,16 @@ async function analyzeImpact() {
   });
 
   const data = await res.json();
+   const impactHistoricalStr = Array.isArray(data)
+  ? data.map(item => JSON.stringify(item)).join('; ')
+  : data;
 
 const input = `
 Context: ${state.contexto}; 
 Hypothesis: ${state.hipotese};
 Non Functional Requirement: ${state.dominio}; 
 Uncertainty: ${state.incerteza};
-Impact Historical: ${data};
+Impact Historical: ${impactHistoricalStr};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
 
