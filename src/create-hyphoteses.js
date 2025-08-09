@@ -95,11 +95,9 @@ Uncertainty: ${state.incerteza};
 
 
 async function classifyPattern() {
-  const input = `
-hypothesis: ${state.hipotese};
-  `;
+  const hypothesis = `${state.hipotese}.`;
 
-  const { pattern, reason } = await callEndpoint('classifyPattern', input);
+  const { pattern, reason } = await callEndpoint('classifyPattern', hypothesis);
 
   state.pattern = pattern;
   state.patternMotivo = reason;
