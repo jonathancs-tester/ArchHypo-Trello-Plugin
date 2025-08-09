@@ -97,13 +97,19 @@ Uncertainty: ${state.incerteza};
 async function classifyPattern() {
   const hypothesis = `${state.hipotese}.`;
 
-  const { pattern, reason } = await callEndpoint('classifyPattern', hypothesis);
+  const res = await fetch(`/.netlify/functions/classifyPattern`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ hypothesis }),
+  });
 
-  state.pattern = pattern;
-  state.patternMotivo = reason;
+  const data = await res.json();
 
-  document.getElementById('pattern').value = pattern;
-  document.getElementById('patternMotivo').innerHTML = motivoHTML(reason);
+  state.pattern = data.pattern;
+  state.patternMotivo = data.reason;
+
+  document.getElementById('pattern').value = data.pattern;
+  document.getElementById('patternMotivo').innerHTML = motivoHTML(data.reason);
 
   showStep(5);
 }
