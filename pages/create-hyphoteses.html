@@ -181,7 +181,7 @@
   <div id="step0" class="step active">
     <h2>🟢 Descrição da Incerteza</h2>
     <textarea maxlength="300" id="contexto" placeholder="Descreva o problema, situação ou contexto..."></textarea>
-    <button onclick="analyzeHypothesis()">Próximo</button>
+    <button onclick="analyzeHypothesis()">Next</button>
   </div>
 
    <!-- Step 1 -->
@@ -189,7 +189,7 @@
     <h2>1. Geração de Hipótese</h2>
     <textarea maxlength="300" id="hipotese" placeholder="Hipótese sugerida"></textarea>
     <p id="hipoteseResultado"></p>
-    <button onclick="analyzeDomain()">Próximo</button>
+    <button onclick="analyzeDomain()">Next</button>
   </div>
 
    <!-- Step 2 -->
@@ -197,7 +197,7 @@
     <h2>2. Domínio do Problema</h2>
     <textarea maxlength="300" type="text" id="dominio" placeholder="Domínio sugerido"></textarea>
     <p id="dominioResultado"></p>
-    <button onclick="analyzeUncertainty()">Próximo</button>
+    <button onclick="analyzeUncertainty()">Next</button>
   </div>
 
   <!-- Step 3 -->
@@ -216,7 +216,7 @@
     </h2>
     <textarea maxlength="300" id="incerteza" placeholder="Incerteza sugerida"></textarea>
     <p id="incertezaResultado"></p>
-    <button onclick="analyzeImpact()">Próximo</button>
+    <button onclick="analyzeImpact()">Next</button>
   </div>
 
   <!-- Step 4 -->
@@ -235,12 +235,20 @@
     </h2>
     <textarea maxlength="300" id="impacto" placeholder="Impacto sugerido"></textarea>
     <p id="impactoResultado"></p>
-    <button onclick="analyzePlan()">Próximo</button>
+    <button onclick="analyzePlan()">Next</button>
   </div>
 
   <!-- Step 5 -->
   <div id="step5" class="step">
     <h2>5. Plano Técnico</h2>
+     <textarea id="pattern" placeholder="ArchHypo Pattern"></textarea>
+    <p id="patternResultado"></p>
+    <button onclick="classifyPattern()">Next</button>
+  </div>
+
+  <!-- Step 6 -->
+  <div id="step6" class="step">
+    <h2>6. Plano Técnico</h2>
      <textarea id="plano" placeholder="Plano sugerido"></textarea>
     <p id="planoResultado"></p>
     <button onclick="createCard()">Criar no Trello</button>

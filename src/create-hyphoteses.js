@@ -99,13 +99,13 @@ async function classifyPattern() {
 hypothesis: ${state.hipotese};
   `;
 
-  const { sugestao, motivo } = await callEndpoint('classifyPattern', input);
+  const { pattern, reason } = await callEndpoint('classifyPattern', input);
 
-  state.pattern = sugestao;
-  state.patternMotivo = motivo;
+  state.pattern = pattern;
+  state.patternMotivo = reason;
 
-  document.getElementById('pattern').value = sugestao;
-  document.getElementById('patternMotivo').innerHTML = motivoHTML(motivo);
+  document.getElementById('pattern').value = pattern;
+  document.getElementById('patternMotivo').innerHTML = motivoHTML(reason);
 
   showStep(5);
 }
@@ -168,7 +168,7 @@ async function createCard() {
         console.error('❌ Erro na requisição:', error);
         alert('Erro ao criar o card. Verifique o console para mais detalhes.');
     }
-    showStep(6);
+    showStep(7);
 }
 
 function motivoHTML(motivo) {
