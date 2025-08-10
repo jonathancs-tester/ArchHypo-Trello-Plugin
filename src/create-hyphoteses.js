@@ -34,13 +34,13 @@ function previousStep() {
   }
 }
 
-function showLoading() {
-  document.getElementById('loading').style.display = 'block';
+function showLoading(stepId) {
+  document.getElementById(`loading${stepId}`).style.display = 'block';
   disableButtons();
 }
 
-function hideLoading() {
-  document.getElementById('loading').style.display = 'none';
+function hideLoading(stepId) {
+  document.getElementById(`loading${stepId}`).style.display = 'none';
   enableButtons();
 }
 
@@ -53,30 +53,30 @@ function enableButtons() {
 }
 
 async function callEndpoint(endpoint, input) { 
-  showLoading(); 
   const res = await fetch(`/.netlify/functions/${endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ input }),
   });
-  hideLoading();
+
   const data = await res.json();
   return data;
 }
 
 async function analyzeHypothesis() {
+  showLoading(0); 
   const input = document.getElementById('contexto').value;
   const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
   state.contexto = input;
 
   document.getElementById('hipotese').value = sugestao;
   document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
-  
+  hideLoading(0);
   showStep(1);
 }
 
 async function analyzeDomain() {
-
+  showLoading(1);
   state.hipotese = document.getElementById('hipotese').value;
   state.hipoteseMotivo = document.getElementById('hipoteseResultado').value;
 
@@ -88,11 +88,12 @@ Hypothesis: ${state.hipotese};
 
   document.getElementById('dominio').value = sugestao;
   document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
-
+  hideLoading(1);
   showStep(2);
 }
 
 async function analyzeUncertainty() {
+  showLoading(2);
   state.dominio = document.getElementById('dominio').value;
   state.dominioMotivo = document.getElementById('dominioResultado').value;
   const boardId = getBoardIdFromUrl();
@@ -118,11 +119,12 @@ Uncertainty Historical: ${uncertaintyHistoricalStr};
 
   document.getElementById('incerteza').value = sugestao;
   document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
-  
+  hideLoading(2);
   showStep(3);
 }
 
 async function analyzeImpact() {
+  showLoading(3);
   state.incerteza = document.getElementById('incerteza').value;
   state.incertezaMotivo = document.getElementById('incertezaResultado').value;
 
@@ -150,12 +152,13 @@ Impact Historical: ${impactHistoricalStr};
 
   document.getElementById('impacto').value = sugestao;
   document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
-
+  hideLoading(3);
   showStep(4);
 }
 
 
 async function classifyPattern() {
+  showLoading(4);
   state.impacto = document.getElementById('impacto').value;
   state.impactoMotivo = document.getElementById('impactoResultado').value;
   const hypothesis = `${state.hipotese}.`;
@@ -170,11 +173,12 @@ async function classifyPattern() {
 
   document.getElementById('pattern').value = data.pattern;
   document.getElementById('patternResultado').innerHTML = motivoHTML(data.reason);
-
+  hideLoading(4);
   showStep(5);
 }
 
 async function analyzePlan() {
+  showLoading(5);
   state.pattern = document.getElementById('pattern').value;
   state.patternMotivo = document.getElementById('patternResultado').value;
   const input = `
@@ -190,11 +194,12 @@ ArchHypo Pattern: ${state.pattern};
 
   document.getElementById('plano').value = sugestao;
   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
-
+  hideLoading(5);
   showStep(6);
 }
 
 async function createCard() {
+    showLoading(6);
     state.plano = document.getElementById('plano').value;
     state.planoMotivo = document.getElementById('planoResultado').value;
 
@@ -234,6 +239,7 @@ async function createCard() {
         console.error('❌ Request error:', error);
         alert('Error creating the card. Check the console for more details.');
     }
+    hideLoading(6);
     showStep(7);
 }
 

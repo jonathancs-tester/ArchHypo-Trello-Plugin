@@ -55,6 +55,13 @@
       margin: 20px 0; 
     }
 
+    .loading-indicator {
+      display: none;
+      font-weight: bold;
+      color: #333;
+      margin-top: 10px;
+    }
+
     textarea {
       width: 100%;
       height: 150px;
@@ -189,7 +196,7 @@
     <h2>🟢 Uncertainty</h2>
     <textarea maxlength="300" id="contexto" placeholder="Describe the uncertainty, situation, or context in detail..."></textarea>
     <button onclick="analyzeHypothesis()">Next</button>
-    <div id="loading">⏳ Processing...</div>
+    <div id="loading0" class="loading-indicator">⏳ Processing...</div>
   </div>
 
    <!-- Step 1 -->
@@ -197,8 +204,9 @@
     <h2>1. Hypothesis</h2>
     <textarea maxlength="300" id="hipotese"></textarea>
     <p id="hipoteseResultado"></p>
-    <button onclick="previousStep()">Previous</button>
+    <!-- <button onclick="previousStep()">Previous</button> -->
     <button onclick="analyzeDomain()">Next</button>
+    <div id="loading1" class="loading-indicator">⏳ Processing...</div>
   </div>
 
    <!-- Step 2 -->
@@ -206,8 +214,9 @@
     <h2>2. Non Functional Requirement (NFR)</h2>
     <textarea maxlength="300" type="text" id="dominio"></textarea>
     <p id="dominioResultado"></p>
-    <button onclick="previousStep()">Previous</button>
+    <!-- <button onclick="previousStep()">Previous</button> -->
     <button onclick="analyzeUncertainty()">Next</button>
+    <div id="loading2" class="loading-indicator">⏳ Processing...</div>
   </div>
 
   <!-- Step 3 -->
@@ -226,8 +235,9 @@
     </h2>
     <textarea maxlength="300" id="incerteza"></textarea>
     <p id="incertezaResultado"></p>
-    <button onclick="previousStep()">Previous</button>
+    <!-- <button onclick="previousStep()">Previous</button> -->
     <button onclick="analyzeImpact()">Next</button>
+    <div id="loading3" class="loading-indicator">⏳ Processing...</div>
   </div>
 
   <!-- Step 4 -->
@@ -246,8 +256,9 @@
     </h2>
     <textarea maxlength="300" id="impacto"></textarea>
     <p id="impactoResultado"></p>
-    <button onclick="previousStep()">Previous</button>
+    <!-- <button onclick="previousStep()">Previous</button> -->
     <button onclick="classifyPattern()">Next</button>
+    <div id="loading4" class="loading-indicator">⏳ Processing...</div>
   </div>
 
   <!-- Step 5 -->
@@ -255,8 +266,9 @@
     <h2>5. ArchHypo Pattern</h2>
      <textarea id="pattern"></textarea>
     <p id="patternResultado"></p>
-    <button onclick="previousStep()">Previous</button>
+    <!-- <button onclick="previousStep()">Previous</button> -->
     <button onclick="analyzePlan()">Next</button>
+    <div id="loading5" class="loading-indicator">⏳ Processing...</div>
   </div>
 
   <!-- Step 6 -->
@@ -264,8 +276,9 @@
     <h2>6. Technical Plan</h2>
      <textarea id="plano"></textarea>
     <p id="planoResultado"></p>
-    <button onclick="previousStep()">Previous</button>
+    <!-- <button onclick="previousStep()">Previous</button> -->
     <button onclick="createCard()">Create</button>
+    <div id="loading6" class="loading-indicator">⏳ Processing...</div>
   </div>
 
   <!-- Step 7 -->
