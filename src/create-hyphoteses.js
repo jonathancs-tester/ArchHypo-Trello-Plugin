@@ -41,13 +41,14 @@ async function analyzeHypothesis() {
   document.getElementById('hipotese').value = sugestao;
   document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
   
-  state.hipotese = document.getElementById('hipotese').value;
-  state.hipoteseMotivo = document.getElementById('hipoteseResultado').value;;
-
   showStep(1);
 }
 
 async function analyzeDomain() {
+
+  state.hipotese = document.getElementById('hipotese').value;
+  state.hipoteseMotivo = document.getElementById('hipoteseResultado').value;
+
   const input = `
 Context: ${state.contexto}; 
 Hypothesis: ${state.hipotese};
@@ -57,13 +58,12 @@ Hypothesis: ${state.hipotese};
   document.getElementById('dominio').value = sugestao;
   document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
 
-  state.dominio = document.getElementById('dominio').value;
-  state.dominioMotivo = document.getElementById('dominioResultado').value;
-
   showStep(2);
 }
 
 async function analyzeUncertainty() {
+  state.dominio = document.getElementById('dominio').value;
+  state.dominioMotivo = document.getElementById('dominioResultado').value;
   const boardId = getBoardIdFromUrl();
   const query = `boardId=${boardId} `;   
 
@@ -88,13 +88,12 @@ Uncertainty Historical: ${uncertaintyHistoricalStr};
   document.getElementById('incerteza').value = sugestao;
   document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
   
-  state.incerteza = document.getElementById('incerteza').value;
-  state.incertezaMotivo = document.getElementById('incertezaResultado').value;
-
   showStep(3);
 }
 
 async function analyzeImpact() {
+  state.incerteza = document.getElementById('incerteza').value;
+  state.incertezaMotivo = document.getElementById('incertezaResultado').value;
 
   const boardId = getBoardIdFromUrl();
   const query = `boardId=${boardId} `;   
@@ -121,14 +120,13 @@ Impact Historical: ${impactHistoricalStr};
   document.getElementById('impacto').value = sugestao;
   document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
 
-  state.impacto = document.getElementById('impacto').value;
-  state.impactoMotivo = document.getElementById('impactoResultado').value;
-
   showStep(4);
 }
 
 
 async function classifyPattern() {
+  state.impacto = document.getElementById('impacto').value;
+  state.impactoMotivo = document.getElementById('impactoResultado').value;
   const hypothesis = `${state.hipotese}.`;
 
   const res = await fetch(`/.netlify/functions/classifyPattern`, {
@@ -142,13 +140,12 @@ async function classifyPattern() {
   document.getElementById('pattern').value = data.pattern;
   document.getElementById('patternResultado').innerHTML = motivoHTML(data.reason);
 
-  state.pattern = document.getElementById('pattern').value;
-  state.patternMotivo = document.getElementById('patternResultado').value;
-
   showStep(5);
 }
 
 async function analyzePlan() {
+  state.pattern = document.getElementById('pattern').value;
+  state.patternMotivo = document.getElementById('patternResultado').value;
   const input = `
 Context: ${state.contexto}; 
 Hypothesis: ${state.hipotese};
@@ -163,13 +160,13 @@ ArchHypo Pattern: ${state.pattern};
   document.getElementById('plano').value = sugestao;
   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
 
-  state.plano = document.getElementById('plano').value;
-  state.planoMotivo = document.getElementById('planoResultado').value;
-
   showStep(6);
 }
 
 async function createCard() {
+    state.plano = document.getElementById('plano').value;
+    state.planoMotivo = document.getElementById('planoResultado').value;
+
     const urlParams = new URLSearchParams(window.location.search);
     const boardId = urlParams.get('boardId');  // Obtém o boardId da URL
 
