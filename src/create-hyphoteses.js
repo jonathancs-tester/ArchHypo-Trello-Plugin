@@ -12,7 +12,7 @@ const state = {
   planoMotivo: '',
 };
 
-let currentStep = 5; // ou o passo inicial que você quiser
+let currentStep = 0;
 
 function getBoardIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -22,11 +22,14 @@ function getBoardIdFromUrl() {
 function showStep(stepId) {
   currentStep = stepId;
   document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-  document.getElementById('step' + stepId).classList.add('active');
+  const stepElement = document.getElementById('step' + stepId);
+  if (stepElement) {
+    stepElement.classList.add('active');
+  }
 }
 
 function previousStep() {
-  if (currentStep > 1) {
+  if (currentStep > 0) {
     showStep(currentStep - 1);
   }
 }
@@ -48,7 +51,6 @@ function disableButtons() {
 function enableButtons() {
   document.querySelectorAll('button').forEach(btn => btn.disabled = false);
 }
-
 
 async function callEndpoint(endpoint, input) { 
   showLoading(); 
