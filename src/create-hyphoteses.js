@@ -22,7 +22,7 @@ function showStep(stepId) {
   document.getElementById('step' + stepId).classList.add('active');
 }
 
-async function callEndpoint(endpoint, input, query) {  
+async function callEndpoint(endpoint, input) {  
   const res = await fetch(`/.netlify/functions/${endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

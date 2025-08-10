@@ -28,7 +28,7 @@ async function extractTextFromPDF(filePath) {
 // 🔧 Função que monta o RAG
 async function classifyPattern(hypothesis, combinedDocs) {
   const llm = new ChatGoogleGenerativeAI({
-    model: "gemini-1.5-flash-002",  // Sem o 'models/' na frente
+    model: "gemini-2.5-flash-lite",  // Sem o 'models/' na frente
     apiKey: API_KEY,
   });
 

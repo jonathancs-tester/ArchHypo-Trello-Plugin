@@ -10,7 +10,7 @@ export async function handler(event) {
   const { input } = JSON.parse(event.body);
 
   const model = new ChatGoogleGenerativeAI({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash-lite",
     apiKey: process.env.GENAI_API_KEY,
   });
 
