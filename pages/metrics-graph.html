@@ -52,7 +52,7 @@
         /* Estilo dos gráficos (canvas) */
         canvas {
             width: 100% !important;
-            max-width: 1400px; /* Aumentado de 1000px */
+            min-width: 1800px
             height: auto;
             background-color: white;
             border-radius: 8px;
@@ -67,6 +67,7 @@
         /* Adiciona uma estrutura para os gráficos */
         .chart-container {
             width: 100%;
+            overflow-x: auto;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -222,12 +223,19 @@
                 ]
             },
             options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+            responsive: true,
+            scales: {
+                x: {
+                ticks: {
+                    autoSkip: false,
+                    maxRotation: 90,
+                    minRotation: 45
                 }
+                },
+                y: {
+                beginAtZero: true
+                }
+            }
             }
         });
     </script>
