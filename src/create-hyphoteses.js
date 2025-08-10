@@ -29,7 +29,7 @@ function showStep(stepId) {
 }
 
 function previousStep() {
-  if (currentStep > 0) {
+  if (currentStep >= 0) {
     showStep(currentStep - 1);
   }
 }

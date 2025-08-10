@@ -189,8 +189,8 @@
     <h2>🟢 Uncertainty</h2>
     <textarea maxlength="300" id="contexto" placeholder="Describe the uncertainty, situation, or context in detail..."></textarea>
     <button onclick="analyzeHypothesis()">Next</button>
-    <div id="loading">⏳ Processing...</div>
   </div>
+  <div id="loading">⏳ Processing...</div>
 
    <!-- Step 1 -->
   <div id="step1" class="step">
@@ -226,6 +226,7 @@
     </h2>
     <textarea maxlength="300" id="incerteza"></textarea>
     <p id="incertezaResultado"></p>
+    <button onclick="previousStep()">Previous</button>
     <button onclick="analyzeImpact()">Next</button>
   </div>
 
@@ -245,6 +246,7 @@
     </h2>
     <textarea maxlength="300" id="impacto"></textarea>
     <p id="impactoResultado"></p>
+    <button onclick="previousStep()">Previous</button>
     <button onclick="classifyPattern()">Next</button>
   </div>
 
@@ -253,6 +255,7 @@
     <h2>5. ArchHypo Pattern</h2>
      <textarea id="pattern"></textarea>
     <p id="patternResultado"></p>
+    <button onclick="previousStep()">Previous</button>
     <button onclick="analyzePlan()">Next</button>
   </div>
 
@@ -261,6 +264,7 @@
     <h2>6. Technical Plan</h2>
      <textarea id="plano"></textarea>
     <p id="planoResultado"></p>
+    <button onclick="previousStep()">Previous</button>
     <button onclick="createCard()">Create</button>
   </div>
 
