@@ -35,7 +35,7 @@ async function callEndpoint(endpoint, input) {
 
 async function analyzeHypothesis() {
   const input = document.getElementById('contexto').value;
-  const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input, query);
+  const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
   state.contexto = input;
   state.hipotese = sugestao;
   state.hipoteseMotivo = motivo;
