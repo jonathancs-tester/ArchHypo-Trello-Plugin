@@ -37,11 +37,12 @@ async function analyzeHypothesis() {
   const input = document.getElementById('contexto').value;
   const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
   state.contexto = input;
-  state.hipotese = sugestao;
-  state.hipoteseMotivo = motivo;
 
   document.getElementById('hipotese').value = sugestao;
   document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
+  
+  state.hipotese = document.getElementById('hipotese').value;
+  state.hipoteseMotivo = document.getElementById('hipoteseResultado').value;;
 
   showStep(1);
 }
@@ -53,11 +54,11 @@ Hypothesis: ${state.hipotese};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
 
-  state.dominio = sugestao;
-  state.dominioMotivo = motivo;
-
   document.getElementById('dominio').value = sugestao;
   document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
+
+  state.dominio = document.getElementById('dominio').value;
+  state.dominioMotivo = document.getElementById('dominioResultado').value;
 
   showStep(2);
 }
@@ -84,11 +85,11 @@ Uncertainty Historical: ${uncertaintyHistoricalStr};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
-  state.incerteza = sugestao;
-  state.incertezaMotivo = motivo;
-
   document.getElementById('incerteza').value = sugestao;
   document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
+  
+  state.incerteza = document.getElementById('incerteza').value;
+  state.incertezaMotivo = document.getElementById('incertezaResultado').value;
 
   showStep(3);
 }
@@ -117,11 +118,11 @@ Impact Historical: ${impactHistoricalStr};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
 
-  state.impacto = sugestao;
-  state.impactoMotivo = motivo;
-
   document.getElementById('impacto').value = sugestao;
   document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
+
+  state.impacto = document.getElementById('impacto').value;
+  state.impactoMotivo = document.getElementById('impactoResultado').value;
 
   showStep(4);
 }
@@ -138,11 +139,11 @@ async function classifyPattern() {
 
   const data = await res.json();
 
-  state.pattern = data.pattern;
-  state.patternMotivo = data.reason;
-
   document.getElementById('pattern').value = data.pattern;
   document.getElementById('patternResultado').innerHTML = motivoHTML(data.reason);
+
+  state.pattern = document.getElementById('pattern').value;
+  state.patternMotivo = document.getElementById('patternResultado').value;
 
   showStep(5);
 }
@@ -159,11 +160,11 @@ ArchHypo Pattern: ${state.pattern};
 
   const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
 
-  state.plano = sugestao;
-  state.planoMotivo = motivo;
-
   document.getElementById('plano').value = sugestao;
   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
+
+  state.plano = document.getElementById('plano').value;
+  state.planoMotivo = document.getElementById('planoResultado').value;
 
   showStep(6);
 }
