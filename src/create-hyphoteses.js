@@ -12,23 +12,52 @@ const state = {
   planoMotivo: '',
 };
 
+let currentStep = 5; // ou o passo inicial que você quiser
+
 function getBoardIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
   return params.get('boardId');
 }
 
 function showStep(stepId) {
+  currentStep = stepId;
   document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
   document.getElementById('step' + stepId).classList.add('active');
 }
 
-async function callEndpoint(endpoint, input) {  
+function previousStep() {
+  if (currentStep > 1) {
+    showStep(currentStep - 1);
+  }
+}
+
+function showLoading() {
+  document.getElementById('loading').style.display = 'block';
+  disableButtons();
+}
+
+function hideLoading() {
+  document.getElementById('loading').style.display = 'none';
+  enableButtons();
+}
+
+function disableButtons() {
+  document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+}
+
+function enableButtons() {
+  document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+}
+
+
+async function callEndpoint(endpoint, input) { 
+  showLoading(); 
   const res = await fetch(`/.netlify/functions/${endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ input }),
   });
- 
+  hideLoading();
   const data = await res.json();
   return data;
 }
