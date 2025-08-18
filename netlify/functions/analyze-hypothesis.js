@@ -14,12 +14,15 @@ export async function handler(event) {
   });
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Dado o contexto: "{input}", gere uma hipótese que explique o problema e o motivo, seguindo o exemplo abaixo:
-    Incerteza: "Nova API de autenticação em um sistema legado."
-    Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
-Responda no formato JSON e com a lingua utilizada no input: 
-{{"sugestao": "hipótese gerada", "motivo": "explicação"}}.`
-  );
+  `Dado o contexto: "{input}", gere uma hipótese que explique o problema e o motivo, seguindo o exemplo abaixo:
+Incerteza: "Nova API de autenticação em um sistema legado."
+Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
+
+Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol).
+
+Formato esperado:
+{{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);
+
 
   const chain = prompt.pipe(model);
   const result = await chain.invoke({ input });
