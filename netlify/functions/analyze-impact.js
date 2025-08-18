@@ -25,8 +25,9 @@ export async function handler(event) {
    Very High: The situation is highly uncertain. There is no data available, and the impact may be unpredictable. It requires in-depth analysis and caution.
      
 Responda no formato JSON: 
-{{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação (**utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol))"}}.`
-  );
+{{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.
+o motivo deve **utilizar o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol)"`
+);
 
   const chain = prompt.pipe(model);
   const result = await chain.invoke({ input });

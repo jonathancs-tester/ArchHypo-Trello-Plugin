@@ -16,7 +16,8 @@ export async function handler(event) {
   const prompt = ChatPromptTemplate.fromTemplate(
     `Dado o contexto: "{input}", descreva qual é o domínio do problema (ex: "Performance", "Security", "Reliability", "Flexibility", "Usability", "Productivity") e explique o motivo.
 Responda no formato JSON:
-{{"sugestao": "domínio do problema", "motivo": "explicação (**utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol))"}}.`
+{{"sugestao": "domínio do problema", "motivo": "explicação"}}.
+o motivo deve **utilizar o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol)"`
   );
 
   const chain = prompt.pipe(model);

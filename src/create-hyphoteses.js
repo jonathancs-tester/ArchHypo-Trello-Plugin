@@ -157,51 +157,52 @@ Impact Historical: ${impactHistoricalStr};
 }
 
 
-async function classifyPattern() {
-  showLoading(4);
-  state.impacto = document.getElementById('impacto').value;
-  state.impactoMotivo = document.getElementById('impactoResultado').value;
-  const hypothesis = `${state.hipotese}.`;
+// async function classifyPattern() {
+//   showLoading(4);
+//   state.impacto = document.getElementById('impacto').value;
+//   state.impactoMotivo = document.getElementById('impactoResultado').value;
+//   const hypothesis = `${state.hipotese}.`;
 
-  const res = await fetch(`/.netlify/functions/classifyPattern`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ hypothesis }),
-  });
+//   const res = await fetch(`/.netlify/functions/classifyPattern`, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({ hypothesis }),
+//   });
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  document.getElementById('pattern').value = data.pattern;
-  document.getElementById('patternResultado').innerHTML = motivoHTML(data.reason);
-  hideLoading(4);
-  showStep(5);
-}
+//   document.getElementById('pattern').value = data.pattern;
+//   document.getElementById('patternResultado').innerHTML = motivoHTML(data.reason);
+//   hideLoading(4);
+//   showStep(5);
+// }
 
-async function analyzePlan() {
-  showLoading(5);
-  state.pattern = document.getElementById('pattern').value;
-  state.patternMotivo = document.getElementById('patternResultado').value;
-  const input = `
-Context: ${state.contexto}; 
-Hypothesis: ${state.hipotese};
-Non Functional Requirement: ${state.dominio}; 
-Uncertainty: ${state.incerteza};
-Impact: ${state.impacto};
-ArchHypo Pattern: ${state.pattern};
-  `;
+// async function analyzePlan() {
+//   showLoading(5);
+//   state.pattern = document.getElementById('pattern').value;
+//   state.patternMotivo = document.getElementById('patternResultado').value;
+//   const input = `
+// Context: ${state.contexto}; 
+// Hypothesis: ${state.hipotese};
+// Non Functional Requirement: ${state.dominio}; 
+// Uncertainty: ${state.incerteza};
+// Impact: ${state.impacto};
+//   `;
 
-  const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
+//   const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
 
-  document.getElementById('plano').value = sugestao;
-  document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
-  hideLoading(5);
-  showStep(6);
-}
+//   document.getElementById('plano').value = sugestao;
+//   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
+//   hideLoading(5);
+//   showStep(6);
+// }
 
 async function createCard() {
-    showLoading(6);
-    state.plano = document.getElementById('plano').value;
-    state.planoMotivo = document.getElementById('planoResultado').value;
+    showLoading(4);
+    state.impacto = document.getElementById('impacto').value;
+    state.impactoMotivo = document.getElementById('impactoResultado').value;
+    // state.plano = document.getElementById('plano').value;
+    // state.planoMotivo = document.getElementById('planoResultado').value;
 
     const urlParams = new URLSearchParams(window.location.search);
     const boardId = urlParams.get('boardId');  // Obtém o boardId da URL
@@ -212,9 +213,7 @@ async function createCard() {
             "**Non Functional Requirement:** " + state.dominio + "\n" +
             "**Hypothesis:** " + state.hipotese + "\n" +
             "**Uncertainty:** " + state.incerteza + "\n" +
-            "**Impact:** " + state.impacto + "\n" +
-            "**ArchHypo Pattern:** " + state.pattern + "\n" +
-            "**Technical Plan:** \n" + state.plano
+            "**Impact:** " + state.impacto
     };
 
     try {
@@ -234,13 +233,13 @@ async function createCard() {
         const cardUrl = result.data.shortUrl || result.data.url;
 
         document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">Open Card</a>`;
-        showStep(7);
+        showStep(5);
     } catch (error) {
         console.error('❌ Request error:', error);
         alert('Error creating the card. Check the console for more details.');
     }
-    hideLoading(6);
-    showStep(7);
+    hideLoading(4);
+    showStep(5);
 }
 
 function motivoHTML(motivo) {
