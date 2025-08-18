@@ -23,7 +23,7 @@ export async function handler(event) {
       High: The hypothesis is based on assumptions and little concrete evidence. The analysis requires caution and may involve risks.
       Very High: The hypothesis is highly speculative. There is no data available and the scenario is unknown, requiring in-depth investigation.
      
-Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol):
+Responda no formato JSON e usar idioma {language} como padrão: 
 {{"sugestao": "Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
   );
 

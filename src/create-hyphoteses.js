@@ -10,6 +10,7 @@ const state = {
   dominioMotivo: '',
   plano: '',
   planoMotivo: '',
+  language: 'en' 
 };
 
 let currentStep = 0;
@@ -52,11 +53,11 @@ function enableButtons() {
   document.querySelectorAll('button').forEach(btn => btn.disabled = false);
 }
 
-async function callEndpoint(endpoint, input) { 
+async function callEndpoint(endpoint, input, language) { 
   const res = await fetch(`/.netlify/functions/${endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ input }),
+    body: JSON.stringify({ input, language }),
   });
 
   const data = await res.json();
@@ -65,8 +66,9 @@ async function callEndpoint(endpoint, input) {
 
 async function analyzeHypothesis() {
   showLoading(0); 
+  state.language = document.getElementById('language').value;
   const input = document.getElementById('contexto').value;
-  const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
+  const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input, state.language);
   state.contexto = input;
 
   document.getElementById('hipotese').value = sugestao;
@@ -84,7 +86,7 @@ async function analyzeDomain() {
 Context: ${state.contexto}; 
 Hypothesis: ${state.hipotese};
   `;  
-  const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
+  const { sugestao, motivo } = await callEndpoint('analyze-domain', input, state.language);
 
   document.getElementById('dominio').value = sugestao;
   document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
@@ -115,7 +117,7 @@ Hypothesis: ${state.hipotese};
 Non Functional Requirement: ${state.dominio}; 
 Uncertainty Historical: ${uncertaintyHistoricalStr};
   `;  
-  const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
+  const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input, state.language);
 
   document.getElementById('incerteza').value = sugestao;
   document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
@@ -148,7 +150,7 @@ Non Functional Requirement: ${state.dominio};
 Uncertainty: ${state.incerteza};
 Impact Historical: ${impactHistoricalStr};
   `;  
-  const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
+  const { sugestao, motivo } = await callEndpoint('analyze-impact', input, state.language);
 
   document.getElementById('impacto').value = sugestao;
   document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
@@ -190,7 +192,7 @@ Impact: ${state.impacto};
 ArchHypo Pattern: ${state.pattern};
   `;
 
-  const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
+  const { sugestao, motivo } = await callEndpoint('analyze-plan', input, state.language);
 
   document.getElementById('plano').value = sugestao;
   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
