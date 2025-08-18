@@ -67,7 +67,7 @@ export async function handler(event) {
         }
 
         if (!response.ok) {
-            throw new Error(`Error creating card in Trello ${response.status} ${response.statusText}`);
+            throw new Error(`Failed to create list or the list created: ${nameList}`);
         }
 
         const data = await response.json();
