@@ -6,7 +6,7 @@ const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
 export async function handler(event) {
     const nomesDasListas = [
-        "UNCERTAINLY",
+        "UNCERTAINTY",
         "TECH PLAN ITEM",
         "TO DO",
         "IN PROGRESS",
@@ -34,16 +34,6 @@ export async function handler(event) {
     }
 
     try {
-        const { name, detalhes } = JSON.parse(event.body);
-
-        if (!name || !detalhes) {
-            return {
-                statusCode: 400,
-                headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ erro: "The fields 'name' and 'details' are required." }),
-            };
-        }
-
         const { boardId } = event.queryStringParameters;
 
         if (!boardId) {

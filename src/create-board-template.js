@@ -1,7 +1,4 @@
-async function createBoardTemplate() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const boardId = urlParams.get('boardId');  // Obtém o boardId da URL
-
+async function createBoardTemplate(boardId) {
     try {
         const res = await fetch(`/.netlify/functions/create-board-template?boardId=${boardId}`, {
             method: 'POST',

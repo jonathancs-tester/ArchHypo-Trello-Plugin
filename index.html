@@ -227,7 +227,7 @@
       },
       'board-buttons': function (t, options) {
         return t.lists('id', 'name').then(function (lists) {
-          const hasUncertaintyColumn = lists.some(list => list.name === 'Uncertainty');
+          const hasUncertaintyColumn = lists.some(list => list.name === 'UNCERTAINTY');
 
           const buttons = [
             {
