@@ -51,12 +51,15 @@
                         const dominio_problema = extrairValor("Non Functional Requirement");
                         const incerteza = extrairValor("Uncertainty Level");
                         const impacto = extrairValor("Impact Level");
-                        console.log(impacto)
+                        const pattern = extrairValor("ArchHypo Pattern");
+                        const plano = extrairValor("Technical Plan");
 
                         return t.set('card', 'shared', {
                           dominio_problema,
                           incerteza,
-                          impacto
+                          impacto,
+                          pattern,
+                          plano
                         }).then(function () {
                           return t.alert({
                             message: "Fields added successfully!",
@@ -359,13 +362,14 @@
             return t.get('card', 'shared').then(function (data) {
               let badges = [];
 
-              if (titulo.startsWith("Uncertainty")) {
+              if (titulo.startsWith("Hypothesis:")) {
                 if (data.incerteza) badges.push({ text: `Uncertainty: ${data.incerteza}`, color: 'red' });
                 if (data.impacto) badges.push({ text: `Impact: ${data.impacto}`, color: 'blue' });
-                if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
                 if (data.dominio_problema) badges.push({ text: `NFR: ${data.dominio_problema}`, color: 'green' });
               } else {
                 // if (data.requisito_nao_funcional) badges.push({ text: `NFR: ${data.requisito_nao_funcional}`, color: 'green' });
+                // if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
+
               }
 
               return badges;
