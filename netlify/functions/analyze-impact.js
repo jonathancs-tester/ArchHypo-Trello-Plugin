@@ -23,7 +23,7 @@ export async function handler(event) {
   Medium: Affects some components or functionalities.
   High: Affects important parts of the architecture.
   Very High: Could completely compromise the system, jeopardize the project, or cause major losses.
-Responda no formato JSON: 
+Responda no formato JSON e ONLY in English: 
 {{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
   );
 
