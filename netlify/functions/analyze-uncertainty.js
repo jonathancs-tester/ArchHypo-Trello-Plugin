@@ -22,7 +22,7 @@ export async function handler(event) {
       Medium: Some doubt exists, but some data helps.
       High: Considerable uncertainty, no solid data.
       Very High: It's practically a guess, no data, a complete unknown.
-Responda no formato JSON e ONLY in English: 
+Responda no formato JSON e **utilize o mesmo idioma do input**: 
 {{"sugestao": "Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
   );
 
