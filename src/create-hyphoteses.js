@@ -13,6 +13,7 @@ const state = {
 };
 
 let currentStep = 0;
+let sugestaoOriginal = '';
 
 function getBoardIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -69,8 +70,28 @@ async function analyzeHypothesis() {
   const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
   state.contexto = input;
 
-  document.getElementById('hipotese').value = sugestao;
+  // Atualiza sugestão e resultado
+  sugestaoOriginal = sugestao;
+  const hipoteseField = document.getElementById('hipotese');
+  const motivoField = document.getElementById('hipoteseMotivo');
+
+  hipoteseField.value = sugestao;
   document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
+  hipoteseField.style.display = 'block';
+  motivoField.style.display = 'none'; // esconde o campo de motivo inicialmente
+
+  // Adiciona listener para detectar alterações
+  hipoteseField.addEventListener('input', function () {
+    const sugestaoAtual = this.value;
+    if (sugestaoAtual !== sugestaoOriginal) {
+      motivoField.style.display = 'block';
+      motivoField.placeholder = 'Explique o motivo da alteração...';
+    } else {
+      motivoField.style.display = 'none';
+      motivoField.value = '';
+    }
+  });
+
   hideLoading(0);
   showStep(1);
 }
