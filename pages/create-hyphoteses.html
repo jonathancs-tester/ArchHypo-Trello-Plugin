@@ -212,7 +212,17 @@
    <!-- Step 2 -->
   <div id="step2" class="step">
     <h2>2. Non Functional Requirement (NFR)</h2>
-    <textarea maxlength="300" type="text" id="dominio"></textarea>
+    <label for="dominio">Select level:</label>
+    <select id="dominio">
+      <option value="">-- Select --</option>
+      <option value="Flexibility">Flexibility</option>
+      <option value="Performance">Performance</option>
+      <option value="Productivity">Productivity</option>
+      <option value="Reliability">Reliability</option>
+      <option value="Security">Security</option>
+      <option value="Usability">Usability</option>
+    </select>
+    <!-- <textarea maxlength="300" type="text" id="dominio"></textarea> -->
     <p id="dominioResultado"></p>
     <button onclick="previousStep()">Previous</button>
     <button onclick="analyzeUncertainty()">Next</button>
@@ -233,7 +243,16 @@
       </span>
     </span>
     </h2>
-    <textarea maxlength="300" id="incerteza"></textarea>
+    <label for="incerteza">Select level:</label>
+    <select id="incerteza">
+      <option value="">-- Select --</option>
+      <option value="Very Low">Very Low</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+      <option value="Very High">Very High</option>
+    </select>
+    <!-- <textarea maxlength="300" id="incerteza"></textarea> -->
     <p id="incertezaResultado"></p>
     <button onclick="previousStep()">Previous</button>
     <button onclick="analyzeImpact()">Next</button>
@@ -254,7 +273,16 @@
       </span>
     </span>
     </h2>
-    <textarea maxlength="300" id="impacto"></textarea>
+    <label for="impacto">Select level:</label>
+    <select id="impacto">
+      <option value="">-- Select --</option>
+      <option value="Very Low">Very Low</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+      <option value="Very High">Very High</option>
+    </select>
+    <!-- <textarea maxlength="300" id="impacto"></textarea> -->
     <p id="impactoResultado"></p>
     <button onclick="previousStep()">Previous</button>
     <button onclick="classifyPattern()">Next</button>
