@@ -29,7 +29,7 @@ export async function handler(event) {
         return {
             statusCode: 405,
             headers: { "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ erro: "Method Not Allowed" }),
+            body: JSON.stringify({ error: "Method Not Allowed" }),
         };
     }
 
@@ -54,6 +54,8 @@ export async function handler(event) {
             const existList = idList.some(lista => lista.name.toUpperCase() === nameList.toUpperCase());
 
         if (!existList) {
+            console.log(`Creating list: ${nameList}`);
+            console.log(`Board ID: ${boardId}`);
             var response = await fetch(`${TRELLO_API_URL}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -81,7 +83,7 @@ export async function handler(event) {
         return {
             statusCode: 500,
             headers: { "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ erro: error.message }),
+            body: JSON.stringify({ error: error.message }),
         };
     }
 }
