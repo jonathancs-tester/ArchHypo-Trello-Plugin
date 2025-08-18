@@ -18,7 +18,7 @@ export async function handler(event) {
 Incerteza: "Nova API de autenticação em um sistema legado."
 Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
 
-Responda no formato JSON e **utilize o mesmo idioma do input**: 
+Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol):
 
 Formato esperado:
 {{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);
