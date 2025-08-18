@@ -315,17 +315,19 @@
             }
           ];
 
-          // Adiciona o botão "New Uncertainty" somente se a coluna existir
           if (hasUncertaintyColumn) {
             buttons.push({
-              icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
+              icon: "https://img.icons8.com/ios-filled/50/000000/whiteboard.png",
               text: "Create Board Template",
               callback: function (t) {
                 t.board('id').then(function (boardId) {
-                  return t.modal({
-                    title: "Board Template",
-                    url: `./pages/create-board-template.html?boardId=${boardId.id}`,
-                    height: 500
+                  // Aqui você chama a função diretamente
+                  createBoardTemplate(boardId.id);
+
+                  // Se quiser mostrar um popup de confirmação ou feedback:
+                  return t.popup({
+                    title: "Board Template Created",
+                    items: [{ text: "The board template has been created successfully!", interactive: false }]
                   });
                 });
               }
