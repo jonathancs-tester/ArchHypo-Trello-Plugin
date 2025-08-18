@@ -18,33 +18,12 @@ export async function handler(event) {
     `Dado o contexto: "{input}", classifique o impacto e explique o motivo utilizando o Impact Historical: 
     -------------------------------------------------------------
   Caso o Impact Historical não tenha informação, seguir a regra abaixo:  
-  {
-  "Very Low": {
-    "impacto": "Afeta minimamente a arquitetura.",
-    "incerteza": "Quase certeza, bem conhecido.",
-    "descricao": "A situação é clara e bem compreendida. Há dados sólidos e experiências anteriores que confirmam o comportamento esperado."
-  },
-  "Low": {
-    "impacto": "Pequeno impacto, fácil de corrigir.",
-    "incerteza": "Pouca dúvida, bem entendido.",
-    "descricao": "Há poucas incertezas. O problema é conhecido e existem soluções já testadas ou documentadas."
-  },
-  "Medium": {
-    "impacto": "Afeta alguns componentes ou funcionalidades.",
-    "incerteza": "Alguma dúvida existe, mas há dados que ajudam.",
-    "descricao": "A situação apresenta complexidade moderada. Existem dados que ajudam na análise, mas ainda há pontos que precisam de validação."
-  },
-  "High": {
-    "impacto": "Afeta partes importantes da arquitetura.",
-    "incerteza": "Considerável incerteza, sem dados sólidos.",
-    "descricao": "O problema é significativo e afeta áreas críticas. Há pouca evidência concreta e a solução pode exigir investigação ou testes."
-  },
-  "Very High": {
-    "impacto": "Pode comprometer completamente o sistema, colocar o projeto em risco ou causar grandes perdas.",
-    "incerteza": "É praticamente um palpite, sem dados, completamente desconhecido.",
-    "descricao": "A situação é altamente incerta. Não há dados disponíveis e o impacto pode ser imprevisível. Requer análise profunda e cautela."
-  }
-}
+   Very Low: The situation is clear and well understood. There is solid data and previous experience that confirm the expected behavior.
+   Low: There is little uncertainty. The problem is known and there are already tested or documented solutions.
+   Medium: The situation is moderately complex. There is helpful data in the analysis, but there are still points that require validation.
+   High: The problem is significant and affects critical areas. There is little concrete evidence, and a solution may require investigation or testing.
+   Very High: The situation is highly uncertain. There is no data available, and the impact may be unpredictable. It requires in-depth analysis and caution.
+     
 Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol):
 {{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
   );
