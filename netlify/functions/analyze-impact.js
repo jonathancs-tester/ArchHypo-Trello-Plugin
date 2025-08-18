@@ -24,8 +24,8 @@ export async function handler(event) {
    High: The problem is significant and affects critical areas. There is little concrete evidence, and a solution may require investigation or testing.
    Very High: The situation is highly uncertain. There is no data available, and the impact may be unpredictable. It requires in-depth analysis and caution.
      
-Responda no formato JSON e usar idioma {language} como padrão: 
-{{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
+Responda no formato JSON: 
+{{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação (**utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol))"}}.`
   );
 
   const chain = prompt.pipe(model);
