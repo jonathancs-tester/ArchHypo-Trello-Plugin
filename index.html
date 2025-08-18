@@ -41,7 +41,7 @@
                     .then(function (cardDesc) {
                       const descricao = cardDesc?.desc?.trim() || "";
 
-                      if (titulo.startsWith("Hypothesis")) {
+                      if (titulo.startsWith("Hypothesis:")) {
 
                         function extrairValor(chave) {
                           const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
@@ -49,19 +49,14 @@
                           return match ? match[1].trim() : "";
                         }
                         const dominio_problema = extrairValor("Non Functional Requirement");
-                        const hipotese = extrairValor("Hypothesis");
                         const incerteza = extrairValor("Uncertainty Level");
                         const impacto = extrairValor("Impact Level");
-                        const pattern = extrairValor("ArchHypo Pattern");
-                        const plano = extrairValor("Technical Plan");
+                        console.log(impacto)
 
                         return t.set('card', 'shared', {
                           dominio_problema,
-                          hipotese,
                           incerteza,
-                          impacto,
-                          pattern,
-                          plano
+                          impacto
                         }).then(function () {
                           return t.alert({
                             message: "Fields added successfully!",
