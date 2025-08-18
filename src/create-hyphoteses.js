@@ -208,12 +208,12 @@ async function createCard() {
     const boardId = urlParams.get('boardId');  // Obtém o boardId da URL
 
     const data = {
-        name: "Uncertainty: " + state.contexto,
+        name: "Hypothesis: " + state.hipotese,
         detalhes:
             "**Non Functional Requirement:** " + state.dominio + "\n" +
-            "**Hypothesis:** " + state.hipotese + "\n" +
-            "**Uncertainty:** " + state.incerteza + "\n" +
-            "**Impact:** " + state.impacto
+            "**Uncertainty:** " + state.contexto + "\n" +
+            "**Uncertainty Level:** " + state.incerteza + "\n" +
+            "**Impact Level:** " + state.impacto
     };
 
     try {

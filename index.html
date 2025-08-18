@@ -41,7 +41,7 @@
                     .then(function (cardDesc) {
                       const descricao = cardDesc?.desc?.trim() || "";
 
-                      if (titulo.startsWith("Uncertainty")) {
+                      if (titulo.startsWith("Hypothesis")) {
 
                         function extrairValor(chave) {
                           const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
@@ -50,8 +50,8 @@
                         }
                         const dominio_problema = extrairValor("Non Functional Requirement");
                         const hipotese = extrairValor("Hypothesis");
-                        const incerteza = extrairValor("Uncertainty");
-                        const impacto = extrairValor("Impact");
+                        const incerteza = extrairValor("Uncertainty Level");
+                        const impacto = extrairValor("Impact Level");
                         const pattern = extrairValor("ArchHypo Pattern");
                         const plano = extrairValor("Technical Plan");
 
