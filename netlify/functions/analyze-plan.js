@@ -14,7 +14,7 @@ export async function handler(event) {
   });
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Dado o contexto: "{input}", sugira somente um plano tecnico com ate 5 items finalizados com '.' separados por '\n' e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
+    `Dado o contexto: "{input}", sugira somente um plano tecnico com ate 5 items finalizados por '\n' e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
 Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol):: 
 {{"sugestao": "plano tecnico", "motivo": "explicação"}}.`
   );
