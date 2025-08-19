@@ -29,7 +29,7 @@
                   return t.card('name').then(function (card) {
                     return t.modal({
                       title: "Generate Tech Plan",
-                      url: `./pages/create-techplan.html?boardId=${boardId.id}&&cardName=${card.name}`,
+                      url: `./pages/create-techplan.html?boardId=${boardId.id}&&cardId=${card.id}`,
                       height: 500
                     });
                   });

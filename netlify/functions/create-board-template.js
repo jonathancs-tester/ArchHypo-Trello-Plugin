@@ -54,8 +54,6 @@ export async function handler(event) {
             const existList = idList.some(lista => lista.name.toUpperCase() === nameList.toUpperCase());
 
         if (!existList) {
-            console.log(`Creating list: ${nameList}`);
-            console.log(`Board ID: ${boardId}`);
             var response = await fetch(`${TRELLO_API_URL}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

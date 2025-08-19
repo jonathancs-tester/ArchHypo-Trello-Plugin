@@ -14,9 +14,9 @@ export async function handler(event) {
   });
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Dado o contexto: "{input}", sugira um plano de ação em bullet points (em paragrafos separados) para mitigar o problema ou tratar a hipótese, e explique o motivo.
+    `Dado o contexto: "{input}", sugira um plano de tecnico com 3 a 5 items em paragrafos separados para mitigar o problema ou tratar a hipótese, e explique o motivo.
 Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol):: 
-{{"sugestao": "plano de ação em bullet points (em paragrafos separados)", "motivo": "explicação"}}.`
+{{"sugestao": "plano de ação em paragrafos separados", "motivo": "explicação"}}.`
   );
 
   const chain = prompt.pipe(model);

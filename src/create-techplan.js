@@ -14,16 +14,16 @@ const state = {
 
 let currentStep = 0;
 let sugestaoOriginal = '';
-var cardName = '';
+var cardId = '';
 
 function getBoardIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
   return params.get('boardId');
 }
 
-function getCardNameFromUrl() {
+function getCardIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  return params.get('cardName');
+  return params.get('cardId');
 }
 
 function showStep(stepId) {
@@ -70,43 +70,47 @@ async function callEndpoint(endpoint, input) {
   return data;
 }
 
-async function analyzeHypothesis() {
-  showLoading(0); 
-  const input = document.getElementById('contexto').value;
-  const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
-  state.contexto = input;
+async function analyzePlan() {
+  showLoading(0);
 
-  // Atualiza sugestão e resultado
-  sugestaoOriginal = sugestao;
-  const hipoteseField = document.getElementById('hipotese');
-  const motivoField = document.getElementById('hipoteseMotivo');
+  cardId = getCardIdFromUrl();
+  const res = await fetch(`/.netlify/functions/get-card-detail?cardId=${cardId}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+  const input = await res.json();
 
-  hipoteseField.value = sugestao;
-  document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
-  hipoteseField.style.display = 'block';
-  motivoField.style.display = 'none'; // esconde o campo de motivo inicialmente
+  const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
 
-  // Adiciona listener para detectar alterações
-  hipoteseField.addEventListener('input', function () {
-    const sugestaoAtual = this.value;
-    if (sugestaoAtual !== sugestaoOriginal) {
-      motivoField.style.display = 'block';
-      motivoField.placeholder = 'Explain the reason for the change...';
-    } else {
-      motivoField.style.display = 'none';
-      motivoField.value = '';
-    }
+  document.getElementById('plano').value = sugestao;
+  document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
+
+  
+// 🔍 Dividir os itens por linha
+  const itens = sugestao.split('\n').filter(item => item.trim() !== '');
+
+  // 🧱 Renderizar dinamicamente
+  const container = document.getElementById('planoItensContainer');
+  container.innerHTML = ''; // Limpa antes de adicionar
+
+  itens.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'plano-item';
+    div.innerHTML = `<strong>Item ${index + 1}:</strong> ${item}`;
+    container.appendChild(div);
   });
 
   hideLoading(0);
   showStep(1);
 }
 
-
 async function classifyPattern() {
-  showLoading(0);
-  cardName = getCardNameFromUrl();
-  const hypothesis = `${cardName}`;
+  showLoading(1);
+  state.plano = document.getElementById('plano').value;
+state.planoMotivo = document.getElementById('planoResultado').value;
+    const input = `
+Technical Plan: ${state.plano};
+  `;
 
   const res = await fetch(`/.netlify/functions/classifyPattern`, {
     method: 'POST',
@@ -118,32 +122,15 @@ async function classifyPattern() {
 
   document.getElementById('pattern').value = data.pattern;
   document.getElementById('patternResultado').innerHTML = motivoHTML(data.reason);
-  hideLoading(0);
-  showStep(1);
-}
-
-async function analyzePlan() {
-  showLoading(1);
-  state.pattern = document.getElementById('pattern').value;
-  state.patternMotivo = document.getElementById('patternResultado').value;
-  const input = `
-${cardName};
-ArchHypo Pattern: ${state.pattern};
-  `;
-
-  const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
-
-  document.getElementById('plano').value = sugestao;
-  document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
   hideLoading(1);
   showStep(2);
 }
 
 async function createCard() {
     showLoading(2);
-    state.plano = document.getElementById('plano').value;
-state.planoMotivo = document.getElementById('planoResultado').value;
-
+    
+  state.pattern = document.getElementById('pattern').value;
+  state.patternMotivo = document.getElementById('patternResultado').value;
 const boardId = getBoardIdFromUrl();  // Obtém o boardId da URL
 
 // Separar os bullet points (ajuste o separador conforme necessário)

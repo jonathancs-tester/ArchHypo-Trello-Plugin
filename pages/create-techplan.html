@@ -187,125 +187,38 @@
       font-size: 0.95rem;
       line-height: 1.4;
     }
+
+    .plano-item {
+      padding: 8px;
+      margin: 5px 0;
+      background-color: #f4f4f4;
+      border-left: 4px solid #007acc;
+    }
+
   </style>
 </head>
 <body>
 
-   <!-- Step 0 -->
-  <div id="step0" class="step active">
-    <h2>🟢 Uncertainty</h2>
-    <textarea maxlength="300" id="contexto" placeholder="Describe the uncertainty, situation, or context in detail..."></textarea>
-    <button onclick="analyzeHypothesis()">Next</button>
-    <div id="loading0" class="loading-indicator">⏳ Processing...</div>
-  </div>
-
-   <!-- Step 1 -->
-  <div id="step1" class="step">
-    <h2>1. Hypothesis</h2>
-    <textarea maxlength="300" id="hipotese"></textarea>
-    <textarea maxlength="300" id="hipoteseMotivo" style="display: none;"></textarea>
-    <p id="hipoteseResultado"></p>
+  <div id="step0" class="step">
+    <h2>1. Technical Plan</h2>
+    <div id="planoItensContainer"></div>
+    <p id="planoResultado"></p>
     <button onclick="previousStep()">Previous</button>
-    <button onclick="analyzeDomain()">Next</button>
+    <button onclick="analyzePlan()">Generate</button>
+    <button onclick="classifyPattern()">Next</button>
     <div id="loading1" class="loading-indicator">⏳ Processing...</div>
   </div>
 
-   <!-- Step 2 -->
-  <div id="step2" class="step">
-    <h2>2. Non Functional Requirement (NFR)</h2>
-    <select id="dominio">
-      <option value="Flexibility">Flexibility</option>
-      <option value="Performance">Performance</option>
-      <option value="Productivity">Productivity</option>
-      <option value="Reliability">Reliability</option>
-      <option value="Security">Security</option>
-      <option value="Usability">Usability</option>
-    </select>
-    <textarea maxlength="300" id="dominioMotivo" style="display: none;"></textarea>
-    <p id="dominioResultado"></p>
-    <button onclick="previousStep()">Previous</button>
-    <button onclick="analyzeUncertainty()">Next</button>
-    <div id="loading2" class="loading-indicator">⏳ Processing...</div>
-  </div>
-
-  <!-- Step 3 -->
-  <div id="step3" class="step">
-    <h2>3. Uncertainty Assessment
-    <span class="help-icon" tabindex="0" aria-label="Help">
-      ❔
-      <span class="tooltip">
-        🔹 <strong>Very Low:</strong> The hypothesis is based on solid, well-prepared information. There is high confidence in the analysis and little margin for error.<br>
-        🔹 <strong>Low:</strong> The hypothesis has a good basis of knowledge and doubt. The situation is known, and there is evidence to support the analysis.<br>
-        🔹 <strong>Medium:</strong> The hypothesis involves a certain degree of uncertainty. There is helpful data, but there are still points that require validation or investigation.<br>
-        🔹 <strong>High:</strong> The hypothesis is based on assumptions and little concrete evidence. The analysis requires caution and may involve risks.<br>
-        🔹 <strong>Very High:</strong> The hypothesis is highly speculative. There is no data available and the scenario is unknown, requiring in-depth investigation.
-      </span>
-    </span>
-    </h2>
-    <select id="incerteza">
-      <option value="Very Low">Very Low</option>
-      <option value="Low">Low</option>
-      <option value="Medium">Medium</option>
-      <option value="High">High</option>
-      <option value="Very High">Very High</option>
-    </select>
-    <textarea maxlength="300" id="incertezaMotivo" style="display: none;"></textarea>
-    <p id="incertezaResultado"></p>
-    <button onclick="previousStep()">Previous</button>
-    <button onclick="analyzeImpact()">Next</button>
-    <div id="loading3" class="loading-indicator">⏳ Processing...</div>
-  </div>
-
-  <!-- Step 4 -->
-  <div id="step4" class="step">
-    <h2>4. Impact Assessment
-      <span class="help-icon" tabindex="0" aria-label="Help">
-      ❔
-      <span class="tooltip">
-      🔸 <strong>Very Low:</strong> The situation is clear and well understood. There is solid data and previous experience that confirm the expected behavior.<br>
-      🔸 <strong>Low:</strong> There is little uncertainty. The problem is known and there are already tested or documented solutions.<br>
-      🔸 <strong>Medium:</strong> The situation is moderately complex. There is helpful data in the analysis, but there are still points that require validation.<br>
-      🔸 <strong>High:</strong> The problem is significant and affects critical areas. There is little concrete evidence, and a solution may require investigation or testing.<br>
-      🔸 <strong>Very High:</strong> The situation is highly uncertain. There is no data available, and the impact may be unpredictable. It requires in-depth analysis and caution.
-      </span>
-    </span>
-    </h2>
-    <select id="impacto">
-      <option value="Very Low">Very Low</option>
-      <option value="Low">Low</option>
-      <option value="Medium">Medium</option>
-      <option value="High">High</option>
-      <option value="Very High">Very High</option>
-    </select>
-    <textarea maxlength="300" id="impactoMotivo" style="display: none;"></textarea>
-    <p id="impactoResultado"></p>
-    <button onclick="previousStep()">Previous</button>
-    <button onclick="createCard()">Next</button>
-    <div id="loading4" class="loading-indicator">⏳ Processing...</div>
-  </div>
-
-  <!-- Step 5 -->
-  <!-- <div id="step5" class="step">
-    <h2>5. ArchHypo Pattern</h2>
+  <div id="step1" class="step">
+    <h2>2. ArchHypo Pattern</h2>
      <textarea id="pattern"></textarea>
     <p id="patternResultado"></p>
     <button onclick="previousStep()">Previous</button>
-    <button onclick="analyzePlan()">Next</button>
-    <div id="loading5" class="loading-indicator">⏳ Processing...</div>
-  </div> -->
+    <button onclick="createCard()">Next</button>
+    <div id="loading2" class="loading-indicator">⏳ Processing...</div>
+  </div>
 
-  <!-- Step 6 -->
-  <!-- <div id="step6" class="step">
-    <h2>6. Technical Plan</h2>
-     <textarea id="plano"></textarea>
-    <p id="planoResultado"></p>
-    <button onclick="previousStep()">Previous</button>
-    <button onclick="createCard()">Create</button>
-    <div id="loading6" class="loading-indicator">⏳ Processing...</div>
-  </div> -->
-
-  <!-- Step 7 -->
-  <div id="step5" class="step">
+  <div id="step3" class="step">
     <h2>✅ Card created!</h2>
     <p id="cardLink"></p>
   </div>
