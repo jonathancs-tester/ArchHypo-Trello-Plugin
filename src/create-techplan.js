@@ -161,12 +161,12 @@ async function createCard() {
       const patternText = patternItems[i].querySelector('textarea').value;
       console.log(patternText);
       // Cria o card com nome baseado no item
-      const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&collumn=1`, {
+      const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=TECH PLAN ITEM`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: itemText,
-          detalhes: `ArchHypo Pattern: ${patternText}`
+          detalhes: `Pattern: ${patternText}`
         })
       });
 
