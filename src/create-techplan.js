@@ -105,10 +105,10 @@ async function analyzePlan() {
   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);  
 
   hideLoading(0);
+  showStep(1);
 }
 
 async function classifyPattern() {
-  showStep(1);
   showLoading(1);
 
   const container = document.getElementById('planoItensContainer');
@@ -136,11 +136,11 @@ async function classifyPattern() {
   }
 
   hideLoading(1);
+  showStep(2);
 }
 
 
 async function createCard() {
-    showStep(2);
     showLoading(2);
     
   state.pattern = document.getElementById('pattern').value;
