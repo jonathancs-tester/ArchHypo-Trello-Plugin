@@ -84,6 +84,13 @@ async function analyzePlan() {
 
 // 🔍 Dividir os itens por linha
   const itens = sugestao.split('\n').filter(item => item.trim() !== '');
+  const nextButton = document.querySelector('button[onclick="classifyPattern()"]');
+
+  if (itens.length > 0) {
+    nextButton.disabled = false;
+  } else {
+    nextButton.disabled = true;
+  }
 
   // 🧱 Renderizar dinamicamente
   const container = document.getElementById('planoItensContainer');
@@ -101,28 +108,39 @@ async function analyzePlan() {
 }
 
 async function classifyPattern() {
+  showStep(1);
   showLoading(1);
-  state.plano = document.getElementById('plano').value;
-state.planoMotivo = document.getElementById('planoResultado').value;
-    const input = `
-Technical Plan: ${state.plano};
-  `;
 
-  const res = await fetch(`/.netlify/functions/classifyPattern`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ hypothesis }),
-  });
+  const container = document.getElementById('planoItensContainer');
+  const items = Array.from(container.querySelectorAll('.plano-item'));
 
-  const data = await res.json();
+  for (let i = 0; i < items.length; i++) {
+    const itemText = items[i].textContent.replace(/^Item \d+:\s*/, '').trim();
 
-  document.getElementById('pattern').value = data.pattern;
-  document.getElementById('patternResultado').innerHTML = motivoHTML(data.reason);
+    const res = await fetch(`/.netlify/functions/classifyPattern`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hypothesis: itemText }),
+    });
+
+    const data = await res.json();
+
+    const resultDiv = document.createElement('div');
+    resultDiv.className = 'pattern-result';
+    resultDiv.innerHTML = `
+      <p> Item ${i + 1}: <textarea>${data.pattern}</textarea><p>
+      ${motivoHTML(data.reason)}
+    `;
+
+    items[i].appendChild(resultDiv);
+  }
+
   hideLoading(1);
-  showStep(2);
 }
 
+
 async function createCard() {
+    showStep(2);
     showLoading(2);
     
   state.pattern = document.getElementById('pattern').value;

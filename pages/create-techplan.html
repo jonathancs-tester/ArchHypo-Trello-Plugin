@@ -197,16 +197,15 @@
     <p id="planoResultado"></p>
     <button onclick="previousStep()">Previous</button>
     <button onclick="analyzePlan()">Generate</button>
-    <button onclick="classifyPattern()">Next</button>
+    <button onclick="classifyPattern()" disabled>Next</button>
     <div id="loading0" class="loading-indicator">⏳ Processing...</div>
   </div>
 
   <div id="step1" class="step">
     <h2>2. ArchHypo Pattern</h2>
-     <textarea id="pattern"></textarea>
-    <p id="patternResultado"></p>
+    <div id="patternItensContainer"></div>
     <button onclick="previousStep()">Previous</button>
-    <button onclick="createCard()">Next</button>
+    <button onclick="createCard()">Create</button>
     <div id="loading1" class="loading-indicator">⏳ Processing...</div>
   </div>
 
