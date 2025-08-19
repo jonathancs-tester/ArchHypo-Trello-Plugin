@@ -16,7 +16,7 @@
     const prompt = ChatPromptTemplate.fromTemplate(
       `Dado o contexto: "{input}", sugira somente um plano tecnico com ate 5 items separados por '\n' e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
   Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol):: 
-  {{"sugestao": "plano tecnico", "motivo": "explicação"}}.`
+  {{"sugestao": "plano tecnico", "motivo": "explicação", "objetivo": "justificativa", "tradeoff": "quais sao os tradeoff/observações" }}.`
     );
 
     const chain = prompt.pipe(model);
@@ -27,11 +27,11 @@
       cleaned = cleaned.replace(/```json|```/gi, "").trim();
     }
 
-    const { sugestao, motivo } = JSON.parse(cleaned);
+    const { sugestao, motivo, justificativa, tradeoff } = JSON.parse(cleaned);
 
     return {
       statusCode: 200,
       headers: corsHeaders,
-      body: JSON.stringify({ sugestao, motivo }),
+      body: JSON.stringify({ sugestao, motivo, justificativa, tradeoff }),
     };
   }

@@ -1,5 +1,11 @@
+    const state = {
+      justificativa: '',
+      tradeoff: ''
+    };
+    
     let currentStep = 0;
     var cardId = '';
+
 
     function getBoardIdFromUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -65,7 +71,9 @@
         });
       const input = await res.json();
 
-      const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
+      const { sugestao, motivo, justificativa, tradeoff } = await callEndpoint('analyze-plan', input);
+      state.justificativa = justificativa;
+      state.tradeoff = tradeoff;
 
       let itens = [];
 
@@ -157,7 +165,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               name: itemText,
-              detalhes: `ArchHypo Pattern: ${patternText}`
+              detalhes: `Objetivo: ${state.justificativa}\nArchHypo Pattern: ${patternText}\nTradeoff: ${state.tradeoff}`
             })
           });
 
