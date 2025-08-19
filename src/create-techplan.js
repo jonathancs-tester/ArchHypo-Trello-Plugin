@@ -166,7 +166,7 @@ async function createCard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: itemText,
-          detalhes: `Pattern: ${patternText}`
+          detalhes: `ArchHypo Pattern: ${patternText}`
         })
       });
 

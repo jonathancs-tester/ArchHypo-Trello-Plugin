@@ -58,10 +58,10 @@ async function classifyPattern(hypothesis, combinedDocs) {
   const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
   const prompt = `
-You are an expert in software architecture and must respond ONLY in English.
+You are an expert in software architecture.
 
 Task:
-Given the hypothesis and the document content below, select the **single most appropriate ArchHypo pattern** that matches the hypothesis.
+Given the hypothesis and the document content below, select up to three most appropriate ArchHypo patterns (separated by commas) that match the hypothesis.
 
 Do NOT invent, assume, or suggest any pattern not present in the document content.
 

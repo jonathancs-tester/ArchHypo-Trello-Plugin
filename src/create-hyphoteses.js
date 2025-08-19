@@ -297,7 +297,7 @@ async function createCard() {
     };
 
     try {
-        const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&collumn=UNCERTAINTY`, {
+        const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=UNCERTAINTY`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
