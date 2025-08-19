@@ -58,7 +58,7 @@
     const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
     const prompt = `
-  You are an expert in software architecture. The explanation must be written in the same language as the Hypothesis.
+  You are an expert in software architecture.
 
   Task:
   Given the hypothesis and the document content below, select up to three ArchHypo patterns (separated by commas) that best match the hypothesis. Only include patterns below:
@@ -90,8 +90,7 @@
     "What you Need to Know"
   Do NOT invent, assume, or suggest any pattern not present in the document content.
 
-  Respond ONLY with valid JSON using this format:
-  ${parser.getFormatInstructions()}
+Respond ONLY with valid JSON using this format, and use the same language as the Hypothesis (if the hypothesis is in Portuguese, respond in Portuguese; if it's in English, respond in English).  ${parser.getFormatInstructions()}
 
   Hypothesis:
   "${hypothesis}"
