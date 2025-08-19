@@ -58,10 +58,36 @@
     const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
     const prompt = `
-  You are an expert in software architecture.
+  You are an expert in software architecture. The explanation must be written in the same language as the Hypothesis.
 
   Task:
-  Given the hypothesis and the document content below, select up to three ArchHypo patterns (separated by commas) that best match the hypothesis. Only include patterns that are explicitly present or clearly supported by the document content.
+  Given the hypothesis and the document content below, select up to three ArchHypo patterns (separated by commas) that best match the hypothesis. Only include patterns below:
+    "Architectural Hypotheses",
+    "Architectural Spike",
+    "Architectural Trigger",
+    "Architecture in the Backlog",
+    "Bring the Specialist",
+    "Choose the Means",
+    "Climbing on the Shoulders of Giants",
+    "Continuous Inspection",
+    "Define Quality Standards",
+    "Find Where it Hurts",
+    "Hypothesis Impact",
+    "Learning from Experiments",
+    "Plan Analytics Implementation",
+    "Plan for Preparation",
+    "Plan for Responsible Moments",
+    "Postpone Uncertain Decisions",
+    "Protective Guideline",
+    "Quality Checkpoint",
+    "Reachable Goals",
+    "Small Steps for Analytics",
+    "Suspend Measurement",
+    "Technical Debt Management",
+    "Test Architecture",
+    "Tracer Bullets",
+    "Uncertainty Level",
+    "What you Need to Know"
   Do NOT invent, assume, or suggest any pattern not present in the document content.
 
   Respond ONLY with valid JSON using this format:

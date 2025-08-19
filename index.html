@@ -168,13 +168,7 @@
                       if (levels.includes(incerteza)) countIncerteza[incerteza]++;
                       if (levels.includes(impacto)) countImpacto[impacto]++;
                       if (Object.keys(countNaoFuncional).includes(dominio_problema)) countNaoFuncional[dominio_problema]++;
-                      
-                      const patterns = data.pattern.split(',').map(p => p.trim()).filter(p => p !== '');
-
-                      patterns.forEach(pattern => {
-                        if (Object.keys(countPattern).includes(pattern))
-                          countPattern[pattern]++;
-                      });
+                      if (Object.keys(countPattern).includes(pattern)) countPattern[pattern]++;
                     }).catch(function (error) {
                       console.error(`Error retrieving card values ${card.id}:`, error);
                     });
