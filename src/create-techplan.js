@@ -105,14 +105,18 @@ async function analyzePlan() {
   document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);  
 
   hideLoading(0);
-  showStep(1);
 }
 
 async function classifyPattern() {
+  showStep(1);
   showLoading(1);
 
   const container = document.getElementById('planoItensContainer');
   const items = Array.from(container.querySelectorAll('.plano-item'));
+
+  // 🧱 Renderizar dinamicamente
+  const patternContainer = document.getElementById('patternItensContainer');
+  patternContainer.innerHTML = ''; // Limpa antes de adicionar
 
   for (let i = 0; i < items.length; i++) {
     const itemText = items[i].textContent.replace(/^Item \d+:\s*/, '').trim();
@@ -132,15 +136,15 @@ async function classifyPattern() {
       ${motivoHTML(data.reason)}
     `;
 
-    items[i].appendChild(resultDiv);
+    patternContainer.appendChild(resultDiv);
   }
 
   hideLoading(1);
-  showStep(2);
 }
 
 
 async function createCard() {
+    showStep(2);
     showLoading(2);
     
   state.pattern = document.getElementById('pattern').value;
