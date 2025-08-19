@@ -157,9 +157,10 @@ async function createCard() {
     const patternItems = Array.from(patternContainer.querySelectorAll('.pattern-result'));
 
     for (let i = 0; i < patternItems.length; i++) {
+      console.log(patternItems[i]);
       const itemText = patternItems[i].querySelector('p').textContent;
       const patternText = patternItems[i].querySelector('textarea').value;
-
+      console.log(patternText);
       // Cria o card com nome baseado no item
       const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&collumn=1`, {
         method: "POST",
