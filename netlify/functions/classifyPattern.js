@@ -14,7 +14,7 @@ const API_KEY = process.env.GENAI_API_KEY;
 
 // 🔧 Parser do JSON
 const parser = StructuredOutputParser.fromNamesAndDescriptions({
-  pattern: "Name of the chosen ArchHypo pattern.",
+  pattern: "Names of select up to three most appropriate ArchHypo patterns (separated by commas)",
   reason: "Reason for the choice.",
 });
 

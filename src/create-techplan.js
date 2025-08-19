@@ -82,8 +82,20 @@ async function analyzePlan() {
 
   const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
 
-// 🔍 Dividir os itens por linha
-  const itens = sugestao.split('\n').filter(item => item.trim() !== '');
+  // 🔍 Dividir os itens por linha
+  let itens = [];
+
+  if (sugestao.includes('\n')) {
+    itens = sugestao.split('\n');
+  } else if (sugestao.includes(';')) {
+    itens = sugestao.split(';');
+  } else {
+    itens = sugestao.split('.');
+  }
+
+  // Remove itens vazios ou só com espaços
+  itens = itens.map(item => item.trim()).filter(item => item !== '');
+
   const nextButton = document.querySelector('button[onclick="classifyPattern()"]');
 
   if (itens.length > 0) {

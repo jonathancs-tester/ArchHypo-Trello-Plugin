@@ -312,7 +312,7 @@ async function createCard() {
 
         const cardUrl = result.data.shortUrl || result.data.url;
 
-        document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">Open Card</a>`;
+        document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">${data.name}</a>`;
         showStep(5);
     } catch (error) {
         console.error('❌ Request error:', error);
