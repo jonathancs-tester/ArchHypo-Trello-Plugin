@@ -82,12 +82,8 @@ async function analyzePlan() {
 
   const { sugestao, motivo } = await callEndpoint('analyze-plan', input);
 
-  document.getElementById('plano').value = sugestao;
-  document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);
-
-  
 // 🔍 Dividir os itens por linha
-  const itens = sugestao.split('\n').filter(item => item.trim() !== '');
+  const itens = sugestao.split('.').filter(item => item.trim() !== '');
 
   // 🧱 Renderizar dinamicamente
   const container = document.getElementById('planoItensContainer');
@@ -99,6 +95,8 @@ async function analyzePlan() {
     div.innerHTML = `<strong>Item ${index + 1}:</strong> ${item}`;
     container.appendChild(div);
   });
+
+  document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);  
 
   hideLoading(0);
 }
