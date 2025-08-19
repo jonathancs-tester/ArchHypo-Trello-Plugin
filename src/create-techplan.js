@@ -101,7 +101,6 @@ async function analyzePlan() {
   });
 
   hideLoading(0);
-  showStep(1);
 }
 
 async function classifyPattern() {
