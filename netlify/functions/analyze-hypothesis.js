@@ -1,42 +1,42 @@
-import { handleCors, corsHeaders } from './cors.js';
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
+  import { handleCors, corsHeaders } from './cors.js';
+  import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+  import { ChatPromptTemplate } from "@langchain/core/prompts";
 
-export async function handler(event) {
-  const corsResponse = handleCors(event);
-  if (corsResponse) return corsResponse;
+  export async function handler(event) {
+    const corsResponse = handleCors(event);
+    if (corsResponse) return corsResponse;
 
-  const { input } = JSON.parse(event.body);
+    const { input } = JSON.parse(event.body);
 
-  const model = new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash-lite",
-    apiKey: process.env.GENAI_API_KEY,
-  });
+    const model = new ChatGoogleGenerativeAI({
+      model: "gemini-2.5-flash-lite",
+      apiKey: process.env.GENAI_API_KEY,
+    });
 
-  const prompt = ChatPromptTemplate.fromTemplate(
-  `Dado o contexto: "{input}", gere uma hipótese que explique o problema e o motivo, seguindo o exemplo abaixo:
-Incerteza: "Nova API de autenticação em um sistema legado."
-Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
+    const prompt = ChatPromptTemplate.fromTemplate(
+    `Dado o contexto: "{input}", gere uma hipótese que explique o problema e o motivo, seguindo o exemplo abaixo:
+  Incerteza: "Nova API de autenticação em um sistema legado."
+  Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
 
-Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol):
+  Responda no formato JSON e **utilize o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol):
 
-Formato esperado:
-{{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);
+  Formato esperado:
+  {{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);
 
 
-  const chain = prompt.pipe(model);
-  const result = await chain.invoke({ input });
+    const chain = prompt.pipe(model);
+    const result = await chain.invoke({ input });
 
-  let cleaned = result.content.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/```json|```/gi, "").trim();
+    let cleaned = result.content.trim();
+    if (cleaned.startsWith("```")) {
+      cleaned = cleaned.replace(/```json|```/gi, "").trim();
+    }
+
+    const { sugestao, motivo } = JSON.parse(cleaned);
+
+    return {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: JSON.stringify({ sugestao, motivo }),
+    };
   }
-
-  const { sugestao, motivo } = JSON.parse(cleaned);
-
-  return {
-    statusCode: 200,
-    headers: corsHeaders,
-    body: JSON.stringify({ sugestao, motivo }),
-  };
-}

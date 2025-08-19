@@ -15,20 +15,19 @@
 
 <body>
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
-  <script src="./src/create-task-genai.js"></script>
   <script src="./src/create-board-template.js"></script>
   <script>
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
         return [
           {
-              icon: "https://img.icons8.com/ios-filled/50/000000/process.png",
-              text: "Generate Tech Plan",
+              icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
+              text: "Technical Plan",
               callback: function (t) {
                 t.board('id').then(function (boardId) {     
                 return t.card('id', 'name').then(function (card) {
                     return t.modal({
-                      title: "Generate Tech Plan",
+                      title: "Generate Technical Plan",
                       url: `./pages/create-techplan.html?boardId=${boardId.id}&cardId=${card.id}`,
                       height: 500
                     });
@@ -40,7 +39,7 @@
             icon: "https://img.icons8.com/ios-filled/50/000000/process.png",
             text: "Add/Update Metrics",
             callback: function (t) {
-              return t.card('name') // Obtém o título do card
+              return t.card('name')
                 .then(function (card) {
                   if (!card || !card.name) {
                     console.error("Error: Unable to get the card title.");
@@ -51,9 +50,9 @@
                     });
                   }
 
-                  const titulo = card.name.trim(); // Pega o título do card e remove espaços extras
+                  const titulo = card.name.trim();
 
-                  return t.card('desc') // Obtém a descrição do card
+                  return t.card('desc')
                     .then(function (cardDesc) {
                       const descricao = cardDesc?.desc?.trim() || "";
 
@@ -118,127 +117,7 @@
                 });
             }
           }
-          // {
-          //   icon: "https://img.icons8.com/ios-filled/50/000000/process.png",
-          //   text: "Criar task",
-          //   callback: function (t) {
-          //     return t.card('name') // Obtém o título do card
-          //       .then(function (card) {
-          //         if (!card || !card.name) {
-          //           console.error("Erro: Não foi possível obter o título do card.");
-          //           return t.alert({
-          //             message: "Erro ao obter o título do card!",
-          //             duration: 3,
-          //             display: "error"
-          //           });
-          //         }
-
-          //         const titulo = card.name.trim(); // Pega o título do card e remove espaços extras
-
-          //         if (titulo.startsWith("Task")) {
-          //           return t.popup({
-          //             title: 'Erro',
-          //             items: [
-          //               {
-          //                 icon: 'https://img.icons8.com/ios-filled/50/000000/error.png',
-          //                 text: 'Não é possível criar task de um Task Card.',
-          //               }
-          //             ]
-          //           });
-
-          //         }
-          //         t.board('id').then(function (boardId) {
-          //         return t.card('desc').then(function (card) {
-          //           // Descrição do card
-          //           const descricao = card.desc || "";
-
-          //           function extrairValor(chave, descricao) {
-          //             const regex = new RegExp(`${chave}:\\s*([\\s\\S]*?)(?=\\n\\w+:|$)`, "i");
-          //             const match = descricao.match(regex);
-          //             return match ? match[1].trim() : "";
-          //           }
-          //           // Extraindo os valores de "Plano" da descrição
-          //           const descricaoPlanoTecnico = extrairValor("Plano", descricao) || "Não encontrado";
-
-          //           // Remover o primeiro " **" e garantir que os bullet points sejam formatados corretamente
-          //           const bulletPoints = descricaoPlanoTecnico
-          //             .replace(/^\*\*/, '') // Remove o excesso de "**" no início
-          //             .split(/\n+/) // Divide por linhas
-          //             .map(line => line.trim()) // Remove espaços extras
-          //             .filter(line => line.length > 0) // Remove linhas vazias
-          //             .map(line => {
-          //               const match = line.match(/^(.+?):\s*(.*)/);  // Procura por "Título: descrição"
-          //               if (match) {
-          //                 const titulo = match[1].trim();
-          //                 const conteudo = match[2].trim();
-          //                 return `- **${titulo}:** ${conteudo}`;
-          //               }
-          //               return `- ${line}`; // Para linhas simples, apenas cria um bullet normal
-          //             });
-
-
-          //           // Se não houver bullet points, exibe mensagem
-          //           if (bulletPoints.length === 0) {
-          //             return t.popup({
-          //               title: 'Erro',
-          //               items: [
-          //                 {
-          //                   icon: 'https://img.icons8.com/ios-filled/50/000000/error.png',
-          //                   text: 'Não foi possível encontrar nenhum bullet point.',
-          //                 }
-          //               ]
-          //             });
-          //           }
-          //           console.log("Bullet points extraídos:", bulletPoints);
-          //           // Obtendo a URL da carta
-          //           t.card('url').then(function (cardUrl) {
-          //             const urlDoCard = cardUrl;
-          //             // Para cada "bullet point", chama a função para criar uma task
-          //             bulletPoints.forEach(bulletPoint => {
-          //               if (bulletPoint.trim()) {  // Verificando se o bullet point não está vazio
-          //                 createTaskFromBulletPoint(bulletPoint.trim(), urlDoCard, boardId.id);  // Passa o bulletPoint e a URL
-          //               }
-          //             });
-
-          //             // Retorna o popup com a confirmação de que as tasks foram geradas com sucesso
-          //             return t.alert({
-          //               message: "Task criada com sucesso!",
-          //               duration: 3,
-          //               display: "success"
-          //             });
-          //           }).catch(function (error) {
-          //             console.error("Erro ao obter a URL do card:", error);
-          //             return t.popup({
-          //               title: 'Erro',
-          //               items: [
-          //                 {
-          //                   icon: 'https://img.icons8.com/ios-filled/50/000000/error.png',
-          //                   text: 'Houve um erro ao gerar as tasks.',
-          //                 }
-          //               ]
-          //             });
-          //           });
-          //         }).catch(function (error) {
-          //           console.error("Erro ao processar o card:", error);
-          //           return t.popup({
-          //             title: 'Erro',
-          //             items: [
-          //               {
-          //                 icon: 'https://img.icons8.com/ios-filled/50/000000/error.png',
-          //                 text: 'Houve um erro ao processar o card.',
-          //               }
-          //             ]
-          //           });
-          //         });
-          //       });
-          //     });
-          //   }
-          // }
         ];
-        function createTaskFromBulletPoint(bulletPoint, urlDoCard, boardId) {
-          // Passa o bulletPoint e a URL do card para a função criarCard
-          criarCard(bulletPoint, urlDoCard, boardId);
-        }
       },
       'board-buttons': function (t, options) {
         return t.lists('id', 'name').then(function (lists) {
@@ -289,7 +168,13 @@
                       if (levels.includes(incerteza)) countIncerteza[incerteza]++;
                       if (levels.includes(impacto)) countImpacto[impacto]++;
                       if (Object.keys(countNaoFuncional).includes(dominio_problema)) countNaoFuncional[dominio_problema]++;
-                      if (Object.keys(countPattern).includes(pattern)) countPattern[pattern]++;
+                      
+                      const patterns = data.pattern.split(',').map(p => p.trim()).filter(p => p !== '');
+
+                      patterns.forEach(pattern => {
+                        if (Object.keys(countPattern).includes(pattern))
+                          countPattern[pattern]++;
+                      });
                     }).catch(function (error) {
                       console.error(`Error retrieving card values ${card.id}:`, error);
                     });
@@ -336,10 +221,7 @@
               text: "Create Board Template",
               callback: function (t) {
                 t.board('id').then(function (boardId) {
-                  // Aqui você chama a função diretamente
                   createBoardTemplate(boardId.id);
-
-                  // Se quiser mostrar um popup de confirmação ou feedback:
                   return t.popup({
                     title: "Board Template Created",
                     items: [{ text: "The board template has been created successfully!", interactive: false }]
@@ -353,14 +235,14 @@
         });
       },
       'card-badges': function (t, options) {
-        return t.card('name') // Obtém o título do card
+        return t.card('name')
           .then(function (card) {
             if (!card || !card.name) {
               console.error("Error: Unable to get the card title.");
               return [];
             }
 
-            const titulo = card.name.trim(); // Remove espaços extras do título
+            const titulo = card.name.trim();
 
             return t.get('card', 'shared').then(function (data) {
               let badges = [];
