@@ -61,8 +61,7 @@ async function classifyPattern(hypothesis, combinedDocs) {
 You are an expert in software architecture.
 
 Task:
-Given the hypothesis and the document content below, select up to three most appropriate ArchHypo patterns (separated by commas) that match the hypothesis.
-
+Given the hypothesis and the document content below, select up to three ArchHypo patterns (separated by commas) that best match the hypothesis. Only include patterns that are explicitly present or clearly supported by the document content.
 Do NOT invent, assume, or suggest any pattern not present in the document content.
 
 Respond ONLY with valid JSON using this format:
