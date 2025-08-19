@@ -133,7 +133,8 @@ async function classifyPattern() {
     const resultDiv = document.createElement('div');
     resultDiv.className = 'pattern-result';
     resultDiv.innerHTML = `
-      <p> Item ${i + 1}: <textarea>${data.pattern}</textarea><p>
+      <p>Item ${i + 1}: ${itemText}</p>
+      <textarea>${data.pattern}</textarea>
       ${motivoHTML(data.reason)}
     `;
 
@@ -145,56 +146,61 @@ async function classifyPattern() {
 
 
 async function createCard() {
+  try {
     showStep(2);
     showLoading(2);
-    
-  state.pattern = document.getElementById('pattern').value;
-  state.patternMotivo = document.getElementById('patternResultado').value;
-const boardId = getBoardIdFromUrl();  // Obtém o boardId da URL
 
-// Separar os bullet points (ajuste o separador conforme necessário)
-const bulletPoints = state.plano.split('\n'); // ou use .split('•') se for esse o marcador
+    const boardId = getBoardIdFromUrl();
+    const originalCardId = getCardIdFromUrl();
 
-for (const bullet of bulletPoints) {
-    if (bullet.trim() === '') continue; // Ignora linhas vazias
-    bullet = bullet.split(':');
-    const data = {
-        name: bullet[0].trim(),
-        detalhes: bullet[1].trim()
-    };
+    const patternContainer = document.getElementById('patternItensContainer');
+    const patternItems = Array.from(patternContainer.querySelectorAll('.pattern-result'));
 
-    try {
-        const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&collumn=1`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
+    for (let i = 0; i < patternItems.length; i++) {
+      const itemText = patternItems[i].querySelector('p').textContent;
+      const patternText = patternItems[i].querySelector('textarea').value;
 
-        const result = await res.json();
+      // Cria o card com nome baseado no item
+      const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&collumn=1`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: itemText,
+          detalhes: `ArchHypo Pattern: ${patternText}`
+        })
+      });
 
-        if (!res.ok) {
-            alert(`Erro ao criar card: ${result.error || result.erro || 'Erro desconhecido'}`);
-            continue;
-        }
+      const responseData = await response.json();
+      const newCardId = responseData.data.id;
+      const newCardUrl = responseData.data.shortUrl || responseData.data.url;
 
-        const cardUrl = result.data.shortUrl || result.data.url;
+      // Anexa o card original como referência
+      await fetch(`/.netlify/functions/attachment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          responseCardId: newCardId,
+          urlDoCard: `https://trello.com/c/${originalCardId}`
+        })
+      });
 
-        // Você pode acumular os links ou exibir todos
-        const linkContainer = document.getElementById('cardLink');
-        const linkElement = document.createElement('a');
-        linkElement.href = cardUrl;
-        linkElement.target = '_blank';
-        linkElement.innerText = 'Open Card';
-        linkContainer.appendChild(linkElement);
-        linkContainer.appendChild(document.createElement('br'));
-        showStep(3);
-    } catch (error) {
-        console.error('❌ Request error:', error);
-        alert('Error creating the card. Check the console for more details.');
+      // Exibe o link do novo card
+      const linkContainer = document.getElementById('cardLink');
+      const linkElement = document.createElement('a');
+      linkElement.href = newCardUrl;
+      linkElement.target = '_blank';
+      linkElement.innerText = `Open Card ${i + 1}`;
+      linkContainer.appendChild(linkElement);
+      linkContainer.appendChild(document.createElement('br'));
     }
-  }
-    hideLoading(2);
+
     showStep(3);
+  } catch (error) {
+    console.error('❌ Erro ao criar o card:', error);
+    alert('Erro ao criar o card. Verifique o console para mais detalhes.');
+  } finally {
+    hideLoading(2);
+  }
 }
 
 function motivoHTML(motivo) {
