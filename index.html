@@ -371,8 +371,7 @@
                 if (data.dominio_problema) badges.push({ text: `NFR: ${data.dominio_problema}`, color: 'green' });
               } else {
                 // if (data.requisito_nao_funcional) badges.push({ text: `NFR: ${data.requisito_nao_funcional}`, color: 'green' });
-                // if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
-
+                if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
               }
 
               return badges;

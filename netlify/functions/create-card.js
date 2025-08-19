@@ -37,12 +37,12 @@ export async function handler(event) {
             };
         }
 
-        const { boardId } = event.queryStringParameters;
+        const { boardId, column } = event.queryStringParameters;
 
-        if (!boardId) {
+        if (!boardId || !column) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: "The parameter boardId is required." })
+                body: JSON.stringify({ error: "The parameters boardId and column are required." })
             };
         }
 
@@ -52,28 +52,40 @@ export async function handler(event) {
         });
         
         const idList = await idListRespose.json();
+        let idDaListaEncontrada = null;
 
-        const response = await fetch(`${TRELLO_API_URL}/cards?idList=${idList[0].id}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                name: name,
-                desc: detalhes,
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error creating card in Trello ${response.status} ${response.statusText}`);
+        // Verifica se existe uma lista com nome igual ao da coluna
+        for (const lista of idList) {
+        if (lista.name.toUpperCase() === column.toUpperCase()) {
+                idDaListaEncontrada = lista.id;
+                break;
+            }
         }
 
-        const data = await response.json();
+        // Se encontrou, faz o fetch usando o id da lista
+        if (idDaListaEncontrada) {
 
-        return {
-            statusCode: 200,
-            headers: { "Access-Control-Allow-Origin": "*" },
-            body: JSON.stringify({ message: "Card created!", data }),
-        };
+            const response = await fetch(`${TRELLO_API_URL}/cards?idList=${idDaListaEncontrada}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: name,
+                    desc: detalhes,
+                }),
+            });
 
+            if (!response.ok) {
+                throw new Error(`Error creating card in Trello ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            return {
+                statusCode: 200,
+                headers: { "Access-Control-Allow-Origin": "*" },
+                body: JSON.stringify({ message: "Card created!", data }),
+            };
+        }
     } catch (error) {
         console.error("❌ Error creating card in Trello:", error.message);
         return {

@@ -189,7 +189,7 @@ async function createCard() {
       const linkElement = document.createElement('a');
       linkElement.href = newCardUrl;
       linkElement.target = '_blank';
-      linkElement.innerText = `Open Card ${i + 1}`;
+      linkElement.innerText = itemText;
       linkContainer.appendChild(linkElement);
       linkContainer.appendChild(document.createElement('br'));
     }
