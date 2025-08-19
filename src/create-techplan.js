@@ -84,6 +84,13 @@ async function analyzePlan() {
 
 // 🔍 Dividir os itens por linha
   const itens = sugestao.split('\n').filter(item => item.trim() !== '');
+  const nextButton = document.querySelector('button[onclick="classifyPattern()"]');
+
+  if (itens.length > 0) {
+    nextButton.disabled = false;
+  } else {
+    nextButton.disabled = true;
+  }
 
   // 🧱 Renderizar dinamicamente
   const container = document.getElementById('planoItensContainer');
@@ -91,6 +98,7 @@ async function analyzePlan() {
 
   itens.forEach((item, index) => {
     const div = document.createElement('div');
+    div.className = 'plano-item'; 
     div.innerHTML = `<textarea>Item ${index + 1}:${item}</textarea>`;
     container.appendChild(div);
   });
@@ -103,13 +111,13 @@ async function analyzePlan() {
 async function classifyPattern() {
   showStep(1);
   showLoading(1);
-console.log("classifyPattern foi chamado");
+
   const container = document.getElementById('planoItensContainer');
   const items = Array.from(container.querySelectorAll('.plano-item'));
 
   // 🧱 Renderizar dinamicamente
-  const patternContainer = document.getElementById('patternItensContainer');
-  patternContainer.innerHTML = ''; // Limpa antes de adicionar
+    const patternContainer = document.getElementById('patternItensContainer');
+    patternContainer.innerHTML = ''; // Limpa antes de adicionar
 
   for (let i = 0; i < items.length; i++) {
     const itemText = items[i].textContent.replace(/^Item \d+:\s*/, '').trim();
