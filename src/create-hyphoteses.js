@@ -85,7 +85,7 @@ async function analyzeHypothesis() {
     const sugestaoAtual = this.value;
     if (sugestaoAtual !== sugestaoOriginal) {
       motivoField.style.display = 'block';
-      motivoField.placeholder = 'Explique o motivo da alteração...';
+      motivoField.placeholder = 'Explain the reason for the change...';
     } else {
       motivoField.style.display = 'none';
       motivoField.value = '';
@@ -122,7 +122,7 @@ Hypothesis: ${state.hipotese};
     const sugestaoAtual = this.value;
     if (sugestaoAtual !== sugestaoOriginal) {
       motivoField.style.display = 'block';
-      motivoField.placeholder = 'Explique o motivo da alteração...';
+      motivoField.placeholder = 'Explain the reason for the change...';
     } else {
       motivoField.style.display = 'none';
       motivoField.value = '';
@@ -173,7 +173,7 @@ Uncertainty Historical: ${uncertaintyHistoricalStr};
     const sugestaoAtual = this.value;
     if (sugestaoAtual !== sugestaoOriginal) {
       motivoField.style.display = 'block';
-      motivoField.placeholder = 'Explique o motivo da alteração...';
+      motivoField.placeholder = 'Explain the reason for the change...';
     } else {
       motivoField.style.display = 'none';
       motivoField.value = '';
@@ -225,13 +225,13 @@ Impact Historical: ${impactHistoricalStr};
     const sugestaoAtual = this.value;
     if (sugestaoAtual !== sugestaoOriginal) {
       motivoField.style.display = 'block';
-      motivoField.placeholder = 'Explique o motivo da alteração...';
+      motivoField.placeholder = 'Explain the reason for the change...';
     } else {
       motivoField.style.display = 'none';
       motivoField.value = '';
     }
   });
-  
+
   hideLoading(3);
   showStep(4);
 }
