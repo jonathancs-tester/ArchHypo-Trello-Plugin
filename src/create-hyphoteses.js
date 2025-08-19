@@ -107,8 +107,28 @@ Hypothesis: ${state.hipotese};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
 
-  document.getElementById('dominio').value = sugestao;
+  // Atualiza sugestão e resultado
+  sugestaoOriginal = sugestao;
+  const dominioField = document.getElementById('dominio');
+  const motivoField = document.getElementById('dominioMotivo');
+
+  dominioField.value = sugestao;
   document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
+  dominioField.style.display = 'block';
+  motivoField.style.display = 'none'; // esconde o campo de motivo inicialmente
+
+  // Adiciona listener para detectar alterações
+  dominioField.addEventListener('input', function () {
+    const sugestaoAtual = this.value;
+    if (sugestaoAtual !== sugestaoOriginal) {
+      motivoField.style.display = 'block';
+      motivoField.placeholder = 'Explique o motivo da alteração...';
+    } else {
+      motivoField.style.display = 'none';
+      motivoField.value = '';
+    }
+  });
+
   hideLoading(1);
   showStep(2);
 }
@@ -138,8 +158,27 @@ Uncertainty Historical: ${uncertaintyHistoricalStr};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
-  document.getElementById('incerteza').value = sugestao;
+  // Atualiza sugestão e resultado
+  sugestaoOriginal = sugestao;
+  const incertezaField = document.getElementById('incerteza');
+  const motivoField = document.getElementById('incertezaMotivo');
+
+  incertezaField.value = sugestao;
   document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
+  incertezaField.style.display = 'block';
+  motivoField.style.display = 'none'; // esconde o campo de motivo inicialmente
+
+  // Adiciona listener para detectar alterações
+  incertezaField.addEventListener('input', function () {
+    const sugestaoAtual = this.value;
+    if (sugestaoAtual !== sugestaoOriginal) {
+      motivoField.style.display = 'block';
+      motivoField.placeholder = 'Explique o motivo da alteração...';
+    } else {
+      motivoField.style.display = 'none';
+      motivoField.value = '';
+    }
+  });
   hideLoading(2);
   showStep(3);
 }
@@ -171,8 +210,28 @@ Impact Historical: ${impactHistoricalStr};
   `;  
   const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
 
-  document.getElementById('impacto').value = sugestao;
+   // Atualiza sugestão e resultado
+  sugestaoOriginal = sugestao;
+  const impactoField = document.getElementById('impacto');
+  const motivoField = document.getElementById('impactoMotivo');
+
+  impactoField.value = sugestao;
   document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
+  impactoField.style.display = 'block';
+  motivoField.style.display = 'none'; // esconde o campo de motivo inicialmente
+
+  // Adiciona listener para detectar alterações
+  impactoField.addEventListener('input', function () {
+    const sugestaoAtual = this.value;
+    if (sugestaoAtual !== sugestaoOriginal) {
+      motivoField.style.display = 'block';
+      motivoField.placeholder = 'Explique o motivo da alteração...';
+    } else {
+      motivoField.style.display = 'none';
+      motivoField.value = '';
+    }
+  });
+  
   hideLoading(3);
   showStep(4);
 }
