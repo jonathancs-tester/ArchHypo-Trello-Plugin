@@ -147,8 +147,7 @@ async function classifyPattern() {
 
 async function createCard() {
   try {
-    showStep(2);
-    showLoading(2);
+    showLoading(1);
 
     const boardId = getBoardIdFromUrl();
     const originalCardId = getCardIdFromUrl();
@@ -195,12 +194,14 @@ async function createCard() {
       linkContainer.appendChild(document.createElement('br'));
     }
 
-    showStep(3);
+    showStep(2);
+  
   } catch (error) {
-    console.error('❌ Erro ao criar o card:', error);
-    alert('Erro ao criar o card. Verifique o console para mais detalhes.');
-  } finally {
-    hideLoading(2);
+    console.error('❌ Erro ao criar o card:', error.message || error);
+    alert(`Erro ao criar o card: ${error.message || 'Verifique o console para mais detalhes.'}`);
+  }
+ finally {
+    hideLoading(1);
   }
 }
 
