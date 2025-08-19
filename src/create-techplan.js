@@ -84,13 +84,6 @@ async function analyzePlan() {
 
 // 🔍 Dividir os itens por linha
   const itens = sugestao.split('\n').filter(item => item.trim() !== '');
-  const nextButton = document.querySelector('button[onclick="classifyPattern()"]');
-
-  if (itens.length > 0) {
-    nextButton.disabled = false;
-  } else {
-    nextButton.disabled = true;
-  }
 
   // 🧱 Renderizar dinamicamente
   const container = document.getElementById('planoItensContainer');
@@ -110,7 +103,7 @@ async function analyzePlan() {
 async function classifyPattern() {
   showStep(1);
   showLoading(1);
-
+console.log("classifyPattern foi chamado");
   const container = document.getElementById('planoItensContainer');
   const items = Array.from(container.querySelectorAll('.plano-item'));
 
