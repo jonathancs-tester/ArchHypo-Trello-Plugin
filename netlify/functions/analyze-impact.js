@@ -18,7 +18,7 @@
     const idioma = franc(input);
     const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
     const prompt = ChatPromptTemplate.fromTemplate(
-      `Dado o contexto: "{input}", classifique o impacto e explique o motivo utilizando o Impact Historical: 
+      `Dado o contexto: "{input}", classifique o impacto ("Very Low", "Low", "Medium", "High", "Very High") e explique o motivo utilizando o Impact Historical: 
       -------------------------------------------------------------
     Caso o Impact Historical não tenha informação, seguir a regra abaixo:  
     Very Low: The situation is clear and well understood. There is solid data and previous experience that confirm the expected behavior.
@@ -30,7 +30,7 @@
     **Responda em: ${idiomaTexto}**
 
   Responda no formato JSON: 
-  {{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
+  {{"sugestao": "impacto", "motivo": "explicação"}}.`
   );
 
     const chain = prompt.pipe(model);
