@@ -7,9 +7,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
+    "franc": "^6.2.0",
     "fs-extra": "^11.3.0",
     "langchain": "^0.3.27",
-    "langdetect": "^0.2.1",
     "node-fetch": "^3.3.2",
     "pdf-parse": "^1.1.1"
   },

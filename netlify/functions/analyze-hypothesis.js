@@ -1,7 +1,7 @@
   import { handleCors, corsHeaders } from './cors.js';
   import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
   import { ChatPromptTemplate } from "@langchain/core/prompts";
-  import { detect } from 'langdetect';
+  import franc from 'franc';
 
   export async function handler(event) {
     const corsResponse = handleCors(event);
@@ -14,7 +14,7 @@
       apiKey: process.env.GENAI_API_KEY,
     });
 
-    const idioma = detect(input);
+    const idioma = franc(input); // Ex: 'por', 'eng'
 
     const prompt = ChatPromptTemplate.fromTemplate(
     `Dado o contexto: "{input}", gere uma hipótese que explique o problema e o motivo, seguindo o exemplo abaixo:
