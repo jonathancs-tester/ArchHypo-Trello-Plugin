@@ -26,10 +26,10 @@
     High: The problem is significant and affects critical areas. There is little concrete evidence, and a solution may require investigation or testing.
     Very High: The situation is highly uncertain. There is no data available, and the impact may be unpredictable. It requires in-depth analysis and caution.
     
-    Responda o motivo em: ${idioma}
+    Responda em: ${idioma}
 
   Responda no formato JSON: 
-  {{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
+  {{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação em: ${idioma}"}}.`
   );
 
     const chain = prompt.pipe(model);

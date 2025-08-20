@@ -26,56 +26,73 @@
         }
 
         try {
-            const { boardId } = event.queryStringParameters || {};
+            const { boardId, column } = event.queryStringParameters;
 
-            if (!boardId) {
+            if (!boardId || !column) {
                 return {
                     statusCode: 400,
-                    headers: { "Access-Control-Allow-Origin": "*" },
-                    body: JSON.stringify({ erro: "The parameter boardId is required." }),
+                    body: JSON.stringify({ error: "The parameters boardId and column are required." })
                 };
             }
 
-            // 1️⃣ Pega todos os cards do board
-            const cardsRes = await fetch(
-                `${TRELLO_API_URL}/boards/${boardId}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`,
-                { method: "GET" }
-            );
+            const idListRespose = await fetch(`${TRELLO_API_URL}/boards/${boardId}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            
+            const idList = await idListRespose.json();
+            let idDaListaEncontrada = null;
 
-            if (!cardsRes.ok) {
-                throw new Error(`Error fetching cards: ${cardsRes.status} ${cardsRes.statusText}`);
+            // Verifica se existe uma lista com nome igual ao da coluna
+            for (const lista of idList) {
+            if (lista.name.toUpperCase() === column.toUpperCase()) {
+                    idDaListaEncontrada = lista.id;
+                    break;
+                }
             }
 
-            const cards = await cardsRes.json();
+            // Se encontrou, faz o fetch usando o id da lista
+            if (idDaListaEncontrada) {
 
-            if (!cards.length) {
+                const cardsRes = await fetch(
+                    `${TRELLO_API_URL}/boards/${boardId}/cards?idList=${idDaListaEncontrada}&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`,
+                    { method: "GET" }
+                );
+
+                if (!cardsRes.ok) {
+                    throw new Error(`Error fetching cards: ${cardsRes.status} ${cardsRes.statusText}`);
+                }
+
+                const cards = await cardsRes.json();
+
+                if (!cards.length) {
+                    return {
+                        statusCode: 200,
+                        headers: { "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify(null),
+                    };
+                }
+
+                // 2️⃣ Pega apenas os 10 primeiros
+                const firstTen = cards.slice(0, 10);
+
+                // 3️⃣ Extrai "hipotese" e "impact" do campo desc (ou de labels se você armazenar lá)
+                const result = firstTen.map(card => {
+                    const hypoMatch = card.desc.match(/Hypothesis\s*:\s*(.+)/i);
+                    const uncertaintyMatch = card.desc.match(/Uncertainty\s*:\s*(.+)/i);
+
+                    return {
+                        hipotese: hypoMatch ? hypoMatch[1].trim() : null,
+                        impacto: uncertaintyMatch ? uncertaintyMatch[1].trim() : null
+                    };
+                });
+
                 return {
                     statusCode: 200,
                     headers: { "Access-Control-Allow-Origin": "*" },
-                    body: JSON.stringify(null),
+                    body: JSON.stringify(result),
                 };
             }
-
-            // 2️⃣ Pega apenas os 10 primeiros
-            const firstTen = cards.slice(0, 10);
-
-            // 3️⃣ Extrai "hipotese" e "impact" do campo desc (ou de labels se você armazenar lá)
-            const result = firstTen.map(card => {
-                const hypoMatch = card.desc.match(/Hypothesis\s*:\s*(.+)/i);
-                const uncertaintyMatch = card.desc.match(/Uncertainty\s*:\s*(.+)/i);
-
-                return {
-                    hipotese: hypoMatch ? hypoMatch[1].trim() : null,
-                    impacto: uncertaintyMatch ? uncertaintyMatch[1].trim() : null
-                };
-            });
-
-            return {
-                statusCode: 200,
-                headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify(result),
-            };
-
         } catch (error) {
             console.error("❌ Error:", error.message);
             return {

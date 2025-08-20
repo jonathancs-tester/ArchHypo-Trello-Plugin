@@ -1,20 +1,18 @@
   import { handleCors, corsHeaders } from './cors.js';
   import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
   import { ChatPromptTemplate } from "@langchain/core/prompts";
-  import { franc } from 'franc';
 
   export async function handler(event) {
     const corsResponse = handleCors(event);
     if (corsResponse) return corsResponse;
 
-    const { input } = JSON.parse(event.body);
+    const { input, idioma } = JSON.parse(event.body);
 
     const model = new ChatGoogleGenerativeAI({
       model: "gemini-2.5-flash-lite",
       apiKey: process.env.GENAI_API_KEY,
     });
 
-    const idioma = franc(input); // Ex: 'por', 'eng'
     const prompt = ChatPromptTemplate.fromTemplate(
       `Dado o contexto: "{input}", sugira somente um plano tecnico com ate 5 items separados **obrigatoriamente** por '\n' e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
       

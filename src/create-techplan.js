@@ -1,3 +1,5 @@
+    import { franc } from 'franc';
+
     const state = {
       justificativa: '',
       tradeoff: ''
@@ -5,7 +7,6 @@
     
     let currentStep = 0;
     var cardId = '';
-
 
     function getBoardIdFromUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -50,11 +51,11 @@
       document.querySelectorAll('button').forEach(btn => btn.disabled = false);
     }
 
-    async function callEndpoint(endpoint, input) { 
+    async function callEndpoint(endpoint, input, idioma) { 
       const res = await fetch(`/.netlify/functions/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input }),
+        body: JSON.stringify({ input, idioma }),
       });
 
       const data = await res.json();
@@ -70,8 +71,9 @@
           headers: { 'Content-Type': 'application/json' },
         });
       const input = await res.json();
+      const idioma = franc(input);
 
-      const { sugestao, motivo, justificativa, tradeoff } = await callEndpoint('analyze-plan', input);
+      const { sugestao, motivo, justificativa, tradeoff } = await callEndpoint('analyze-plan', input,idioma);
       state.justificativa = justificativa;
       state.tradeoff = tradeoff;
 
