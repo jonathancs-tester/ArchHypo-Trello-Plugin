@@ -26,11 +26,12 @@
 
   Responda no formato JSON :
   {{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);
+
     
+    console.log(prompt.promptMessages[0].prompt.template);
     const chain = prompt.pipe(model);
     const result = await chain.invoke({ input });
-    idioma = ''
-    idiomaTexto = ''
+
     let cleaned = result.content.trim();
     if (cleaned.startsWith("```")) {
       cleaned = cleaned.replace(/```json|```/gi, "").trim();

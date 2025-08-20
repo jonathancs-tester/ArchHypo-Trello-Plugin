@@ -72,19 +72,19 @@
                     };
                 }
 
-                // 2️⃣ Pega apenas os 10 primeiros
-                const firstTen = cards.slice(0, 10);
-
-                // 3️⃣ Extrai "hipotese" e "impact" do campo desc (ou de labels se você armazenar lá)
-                const result = firstTen.map(card => {
+                const result = cards
+                .map(card => {
                     const hypoMatch = card.name.match(/Hypothesis\s*:\s*(.+)/i);
-                    const impactMatch = card.desc.match(/Impact Level\s*:\s*(.+)/i);
+                    const uncertaintyMatch = card.desc.match(/Impact Level\s*:\s*(.+)/i);
 
                     return {
                         hipotese: hypoMatch ? hypoMatch[1].trim() : null,
-                        impacto: impactMatch ? impactMatch[1].trim() : null
+                        impacto: uncertaintyMatch ? uncertaintyMatch[1].trim() : null
                     };
-                });
+                })
+                .filter(item => item.hipotese !== null && item.impacto !== null)
+                .slice(0, 10); // pega os 10 primeiros válidos
+
 
                 return {
                     statusCode: 200,

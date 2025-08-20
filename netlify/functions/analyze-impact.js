@@ -8,13 +8,15 @@
     const corsResponse = handleCors(event);
     if (corsResponse) return corsResponse;
 
-    const { input, idioma } = JSON.parse(event.body);
+    const { input } = JSON.parse(event.body);
 
     const model = new ChatGoogleGenerativeAI({
       model: "gemini-2.5-flash-lite",
       apiKey: process.env.GENAI_API_KEY,
     });
-
+    
+    const idioma = franc(input);
+    const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
     const prompt = ChatPromptTemplate.fromTemplate(
       `Dado o contexto: "{input}", classifique o impacto ("Very Low", "Low", "Medium", "High", "Very High") e explique o motivo utilizando o Impact Historical: 
       -------------------------------------------------------------
