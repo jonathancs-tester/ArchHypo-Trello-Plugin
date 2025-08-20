@@ -14,10 +14,14 @@
     });
 
     const prompt = ChatPromptTemplate.fromTemplate(
-      `Dado o contexto: "{input}", descreva qual é o domínio do problema ("Performance", "Security", "Reliability", "Flexibility", "Usability", "Productivity") e explique o motivo.
-  Responda no formato JSON e o motivo deve **utilizar o mesmo idioma do input**:
-  {{"sugestao": "domínio do problema", "motivo": "explicação"}}.`
-    );
+    `Dado o contexto: "{input}", identifique o domínio do problema ("Performance", "Security", "Reliability", "Flexibility", "Usability", "Productivity") e explique o motivo.
+
+    Detecte o idioma do input (português ou inglês) e **responda no mesmo idioma**.
+
+    Formato da resposta (em JSON):
+    {{"sugestao": "domínio do problema", "motivo": "explicação no mesmo idioma do input"}}.`
+   );
+
 
     const chain = prompt.pipe(model);
     const result = await chain.invoke({ input });
