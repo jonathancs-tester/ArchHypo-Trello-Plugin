@@ -85,7 +85,6 @@
                 .filter(item => item.hipotese !== null && item.impacto !== null)
                 .slice(0, 10); // pega os 10 primeiros válidos
 
-
                 return {
                     statusCode: 200,
                     headers: { "Access-Control-Allow-Origin": "*" },
