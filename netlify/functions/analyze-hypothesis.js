@@ -27,8 +27,6 @@
   Responda no formato JSON :
   {{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);
 
-    
-    console.log(prompt.promptMessages[0].prompt.template);
     const chain = prompt.pipe(model);
     const result = await chain.invoke({ input });
 

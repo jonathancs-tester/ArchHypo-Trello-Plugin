@@ -77,13 +77,15 @@
                     const hypoMatch = card.name.match(/Hypothesis\s*:\s*(.+)/i);
                     const uncertaintyMatch = card.desc.match(/Impact Level\s*:\s*(.+)/i);
 
+                    const clean = str => str.replace(/[*]+/g, '').trim(); // remove asteriscos e espaços extras
+
                     return {
-                        hipotese: hypoMatch ? hypoMatch[1].trim() : null,
-                        impacto: uncertaintyMatch ? uncertaintyMatch[1].trim() : null
+                        hipotese: hypoMatch ? clean(hypoMatch[1]) : null,
+                        impacto: uncertaintyMatch ? clean(uncertaintyMatch[1]) : null
                     };
                 })
                 .filter(item => item.hipotese !== null && item.impacto !== null)
-                .slice(0, 10); // pega os 10 primeiros válidos
+                .slice(0, 10);
 
                 return {
                     statusCode: 200,
