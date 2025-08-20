@@ -78,7 +78,7 @@
 
                 // 3️⃣ Extrai "hipotese" e "impact" do campo desc (ou de labels se você armazenar lá)
                 const result = firstTen.map(card => {
-                    const hypoMatch = card.desc.match(/Hypothesis\s*:\s*(.+)/i);
+                    const hypoMatch = card.name.match(/Hypothesis\s*:\s*(.+)/i);
                     const uncertaintyMatch = card.desc.match(/Uncertainty\s*:\s*(.+)/i);
 
                     return {
