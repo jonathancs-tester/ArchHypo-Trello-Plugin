@@ -21,12 +21,12 @@
   Incerteza: "Nova API de autenticação em um sistema legado."
   Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
 
-  Responda em: ${idioma}
+  ** Responda em: ${idioma} **
 
   Responda no formato JSON :
   {{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);
 
-
+      console.log(prompt)
     const chain = prompt.pipe(model);
     const result = await chain.invoke({ input });
 
