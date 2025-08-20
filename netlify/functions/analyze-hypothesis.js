@@ -1,7 +1,7 @@
   import { handleCors, corsHeaders } from './cors.js';
   import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
   import { ChatPromptTemplate } from "@langchain/core/prompts";
-  import franc from 'franc';
+  import { franc } from 'franc';
 
   export async function handler(event) {
     const corsResponse = handleCors(event);
