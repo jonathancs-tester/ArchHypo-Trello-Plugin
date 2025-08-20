@@ -56,7 +56,7 @@
 
     const relevantDocs = await vectorStore.similaritySearch(hypothesis, 20);
     const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
-    const idioma = franc(input);
+    const idioma = franc(hypothesis);
     const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
 
     const prompt = `

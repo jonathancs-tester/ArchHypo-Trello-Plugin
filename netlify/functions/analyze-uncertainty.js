@@ -26,8 +26,10 @@
         High: The hypothesis is based on assumptions and little concrete evidence. The analysis requires caution and may involve risks.
         Very High: The hypothesis is highly speculative. There is no data available and the scenario is unknown, requiring in-depth investigation.
       
+      **Responda em: ${idiomaTexto}**
+      
   Responda no formato JSON:
-  {{"sugestao": "Very Low|Low|Medium|High|Very High", "motivo": "explicação em: **${idiomaTexto}**"}}.`
+  {{"sugestao": "Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
     );
 
     const chain = prompt.pipe(model);
