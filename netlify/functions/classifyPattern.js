@@ -7,6 +7,7 @@
   import { Document } from 'langchain/document';
   import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
   import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+  import { franc } from 'franc';
 
   dotenv.config();
 
@@ -54,9 +55,9 @@
     );
 
     const relevantDocs = await vectorStore.similaritySearch(hypothesis, 20);
-
     const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
-
+    const idioma = franc(input);
+    
     const prompt = `
   You are an expert in software architecture.
 
@@ -90,7 +91,8 @@
     "What you Need to Know"
   Do NOT invent, assume, or suggest any pattern not present in the document content.
 
-Respond ONLY with valid JSON using this format, and use the same language as the Hypothesis (if the hypothesis is in Portuguese, respond in Portuguese; if it's in English, respond in English).  ${parser.getFormatInstructions()}
+Respond in ${idioma} with valid JSON using this format:
+ ${parser.getFormatInstructions()}
 
   Hypothesis:
   "${hypothesis}"

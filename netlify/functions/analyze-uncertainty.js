@@ -1,6 +1,7 @@
   import { handleCors, corsHeaders } from './cors.js';
   import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
   import { ChatPromptTemplate } from "@langchain/core/prompts";
+  import { franc } from 'franc';
 
   export async function handler(event) {
     const corsResponse = handleCors(event);
@@ -12,7 +13,8 @@
       model: "gemini-2.5-flash-lite",
       apiKey: process.env.GENAI_API_KEY,
     });
-
+    
+    const idioma = franc(input);
     const prompt = ChatPromptTemplate.fromTemplate(
       `Dada a seguinte descrição: "{input}", classifique o nível de incerteza e explique o motivo utilizando o Uncertainty Historical
       -------------------------------------------------------------
@@ -23,9 +25,10 @@
         High: The hypothesis is based on assumptions and little concrete evidence. The analysis requires caution and may involve risks.
         Very High: The hypothesis is highly speculative. There is no data available and the scenario is unknown, requiring in-depth investigation.
       
+        Responda o motivo em: ${idioma}
+
   Responda no formato JSON:
-  {{"sugestao": "Very Low|Low|Medium|High|Very High", "motivo": "explicação "}}.
-  o motivo deve **utilizar o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol)"`
+  {{"sugestao": "Very Low|Low|Medium|High|Very High", "motivo": "explicação "}}.`
     );
 
     const chain = prompt.pipe(model);

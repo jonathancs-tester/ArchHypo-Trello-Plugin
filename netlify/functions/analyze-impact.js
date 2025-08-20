@@ -2,6 +2,7 @@
   import { handleCors, corsHeaders } from './cors.js';
   import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
   import { ChatPromptTemplate } from "@langchain/core/prompts";
+  import { franc } from 'franc';
 
   export async function handler(event) {
     const corsResponse = handleCors(event);
@@ -13,7 +14,8 @@
       model: "gemini-2.5-flash-lite",
       apiKey: process.env.GENAI_API_KEY,
     });
-
+    
+    const idioma = franc(input);
     const prompt = ChatPromptTemplate.fromTemplate(
       `Dado o contexto: "{input}", classifique o impacto e explique o motivo utilizando o Impact Historical: 
       -------------------------------------------------------------
@@ -23,10 +25,11 @@
     Medium: The situation is moderately complex. There is helpful data in the analysis, but there are still points that require validation.
     High: The problem is significant and affects critical areas. There is little concrete evidence, and a solution may require investigation or testing.
     Very High: The situation is highly uncertain. There is no data available, and the impact may be unpredictable. It requires in-depth analysis and caution.
-      
+    
+    Responda o motivo em: ${idioma}
+
   Responda no formato JSON: 
-  {{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.
-  o motivo deve **utilizar o mesmo idioma do input** (por exemplo, se o input estiver em inglês, responda em inglês; se estiver em português, responda em português; se estiver em espanhol, responda em espanhol)"`
+  {{"sugestao": Very Low|Low|Medium|High|Very High", "motivo": "explicação"}}.`
   );
 
     const chain = prompt.pipe(model);
