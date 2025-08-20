@@ -165,7 +165,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               name: itemText,
-              detalhes: `**Objetivo**: ${state.justificativa}\n**ArchHypo Pattern**: ${patternText}\n**Tradeoff**: ${state.tradeoff}`
+              detalhes: `**Objetivo:** ${state.justificativa}\n**ArchHypo Pattern:** ${patternText}\n**Tradeoff:** ${state.tradeoff}`
             })
           });
 
