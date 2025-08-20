@@ -20,18 +20,18 @@
       `Dado o contexto: "{input}", classifique o nível de incerteza ("Very Low", "Low", "Medium", "High", "Very High") e explique o motivo utilizando o Uncertainty Historical:
       -------------------------------------------------------------
       Caso o Uncertainty Historical não tem informação, seguir a regra abaixo: 
-        Very Low: The hypothesis is based on solid, well-prepared information. There is high confidence in the analysis and little margin for error.
-        Low: The hypothesis has a good basis of knowledge and doubt. The situation is known, and there is evidence to support the analysis.
-        Medium: The hypothesis involves a certain degree of uncertainty. There is helpful data, but there are still points that require validation or investigation.
-        High: The hypothesis is based on assumptions and little concrete evidence. The analysis requires caution and may involve risks.
-        Very High: The hypothesis is highly speculative. There is no data available and the scenario is unknown, requiring in-depth investigation.
-      
+        Very Low: A hipótese é baseada em informações sólidas e bem preparadas. Há alta confiança na análise e pouca margem para erro.
+        Low: A hipótese possui uma boa base de conhecimento e dúvida. A situação é conhecida e há evidências que sustentam a análise.
+        Medium: A hipótese envolve certo grau de incerteza. Existem dados úteis, mas ainda há pontos que requerem validação ou investigação.
+        High: A hipótese é baseada em suposições e poucas evidências concretas. A análise exige cautela e pode envolver riscos.
+        Very High: A hipótese é altamente especulativa. Não há dados disponíveis e o cenário é desconhecido, exigindo investigação aprofundada.
+        
       **Responda em: ${idiomaTexto}**
 
   Responda no formato JSON:
   {{"sugestao": "incerteza", "motivo": "explicação"}}.`
     );
-
+    console.log(prompt.promptMessages[0].prompt.template);
     const chain = prompt.pipe(model);
     const result = await chain.invoke({ input });
 
