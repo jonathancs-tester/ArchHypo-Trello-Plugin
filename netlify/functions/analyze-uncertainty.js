@@ -15,6 +15,7 @@
     });
 
     const idioma = franc(input);
+    const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
     const prompt = ChatPromptTemplate.fromTemplate(
       `Dado o contexto: "{input}", classifique o nível de incerteza e explique o motivo utilizando o Uncertainty Historical:
       -------------------------------------------------------------
@@ -26,7 +27,7 @@
         Very High: The hypothesis is highly speculative. There is no data available and the scenario is unknown, requiring in-depth investigation.
       
   Responda no formato JSON:
-  {{"sugestao": "Very Low|Low|Medium|High|Very High", "motivo": "explicação em: ${idioma}"}}.`
+  {{"sugestao": "Very Low|Low|Medium|High|Very High", "motivo": "explicação em: **${idiomaTexto}**"}}.`
     );
 
     const chain = prompt.pipe(model);

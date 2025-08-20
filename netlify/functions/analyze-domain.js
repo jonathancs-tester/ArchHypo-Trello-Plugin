@@ -14,12 +14,13 @@
       apiKey: process.env.GENAI_API_KEY,
     });
 
-    const idioma = franc(input); 
+    const idioma = franc(input);
+    const idiomaTexto = idioma === 'por' ? 'português' : 'inglês' 
 
     const prompt = ChatPromptTemplate.fromTemplate(
     `Dado o contexto: "{input}", identifique o domínio do problema ("Performance", "Security", "Reliability", "Flexibility", "Usability", "Productivity") e explique o motivo.
 
-    Responda em: ${idioma}
+    **Responda em: ${idiomaTexto}**
 
     Formato da resposta (em JSON):
     {{"sugestao": "domínio do problema", "motivo": "explicação no mesmo idioma do input"}}.`

@@ -22,7 +22,7 @@
   Incerteza: "Nova API de autenticação em um sistema legado."
   Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
 
-  ** Responda em: ${idiomaTexto} **
+  **Responda em: ${idiomaTexto}**
 
   Responda no formato JSON :
   {{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);

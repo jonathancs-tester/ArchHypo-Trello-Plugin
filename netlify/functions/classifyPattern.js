@@ -57,7 +57,8 @@
     const relevantDocs = await vectorStore.similaritySearch(hypothesis, 20);
     const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
     const idioma = franc(input);
-    
+    const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
+
     const prompt = `
   You are an expert in software architecture.
 
@@ -91,7 +92,7 @@
     "What you Need to Know"
   Do NOT invent, assume, or suggest any pattern not present in the document content.
 
-Respond in ${idioma} with valid JSON using this format:
+Respond in **${idiomaTexto}** with valid JSON using this format:
  ${parser.getFormatInstructions()}
 
   Hypothesis:
