@@ -76,13 +76,14 @@
 
       let itens = [];
 
-      if (sugestao.includes('\n')) {
+      if (sugestao.includes('\n'))
         itens = sugestao.split('\n');
-      } else if (sugestao.includes(';')) {
+      else if (sugestao.includes(';'))
         itens = sugestao.split(';');
-      } else {
+      else if (sugestao.includes('.')) 
         itens = sugestao.split('.');
-      }
+      else 
+        itens = sugestao.split("'");
 
       itens = itens.map(item => item.trim()).filter(item => item !== '');
 
