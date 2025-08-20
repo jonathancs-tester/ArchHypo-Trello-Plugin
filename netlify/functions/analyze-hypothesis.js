@@ -15,13 +15,14 @@
     });
 
     const idioma = franc(input); // Ex: 'por', 'eng'
+    const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
 
     const prompt = ChatPromptTemplate.fromTemplate(
     `Dado o contexto: "{input}", gere uma hipótese que explique o problema e o motivo, seguindo o exemplo abaixo:
   Incerteza: "Nova API de autenticação em um sistema legado."
   Hipótese: "Precisamos validar rapidamente se a nova API de autenticação se integra corretamente ao sistema legado para liberar o deploy da versão atual."
 
-  ** Responda em: {idioma} **
+  ** Responda em: ${idiomaTexto} **
 
   Responda no formato JSON :
   {{"sugestao": "hipótese gerada", "motivo": "explicação"}}`);
