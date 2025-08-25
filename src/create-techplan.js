@@ -74,7 +74,7 @@
       const input = await res.json();
       const match = input.title?.match(/H\d+\s*:\s*(.+)/i);
       const clean = str => str.replace(/[*]+/g, '').trim(); // remove asteriscos e espaços extras
-      state.title = match ? clean(match[1]) : null;
+      state.title = match ? clean(match[0]) : null;
 
       const { sugestao, motivo, justificativa, descricao, tradeoff } = await callEndpoint('analyze-plan', input);
       state.justificativa = justificativa;
