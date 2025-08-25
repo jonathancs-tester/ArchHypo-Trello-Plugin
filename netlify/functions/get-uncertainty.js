@@ -64,10 +64,8 @@
                 }
 
                 const cards = await cardsRes.json();
-                console.log(cards);
-
-                const cardsArray = Array.isArray(cards) ? cards : cards.cards || [];
-                console.log(cardsArray.length);
+                const cardsArray = Object.values(cards).filter(item => typeof item === 'object' && item !== null && !Array.isArray(item));
+                console.log(cardsArray.length); // Agora deve retornar 1
                 const cardsLength = cardsArray.length;
 
                 if (!cardsLength) {
