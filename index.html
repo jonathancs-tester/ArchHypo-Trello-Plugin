@@ -225,21 +225,7 @@
                   const board = await t.board('id');
                   await createBoardTemplate(board.id);
 
-                  await t.popup({
-                    title: "Board Template Created",
-                    items: [
-                      {
-                        text: "The board template has been created successfully!",
-                        callback: () => {}
-                      }
-                    ]
-                  });
-
-                  // ✅ Remove o botão da interface (se tiver um id definido)
-                  const btn = document.getElementById("create-template-btn");
-                  if (btn) {
-                    btn.remove(); // ou btn.style.display = "none";
-                  };
+                  window.location.reload();
 
                 } catch (error) {
                   console.error("❌ Error creating board template:", error);
