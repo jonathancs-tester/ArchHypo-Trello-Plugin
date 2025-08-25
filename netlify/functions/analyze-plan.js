@@ -22,7 +22,7 @@
       **Responda em: ${idiomaTexto}**
 
       Responda no formato JSON: 
-  {{"sugestao": "plano tecnico", "motivo": "explicação", "justificativa": "objetivo", "tradeoff": "quais sao os tradeoff/observações" }}.`
+  {{"sugestao": "plano tecnico", "motivo": "explicação", "justificativa": "objetivo", "descricao": "o que deve ser feito", "tradeoff": "quais sao os tradeoff/observações" }}.`
     );
 
     const chain = prompt.pipe(model);

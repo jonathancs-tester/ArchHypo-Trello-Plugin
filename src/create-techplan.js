@@ -122,6 +122,10 @@
         patternContainer.innerHTML = '';
 
       for (let i = 0; i < items.length; i++) {
+        
+        const loadingElement = document.getElementById("loading1");
+        loadingElement.textContent += ` - Item ${i + 1} (Estimated wait: 10 seconds)`;
+
         const itemText = items[i].textContent.replace(/^Item \d+:\s*/, '').trim();
 
         const res = await fetch(`/.netlify/functions/classifyPattern`, {
@@ -166,7 +170,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               name: itemText,
-              detalhes: `**Objetivo:** ${state.justificativa}\n**ArchHypo Pattern:** ${patternText}\n**Tradeoff:** ${state.tradeoff}`
+              detalhes: `**Objetivo:** ${state.justificativa}\n**Descrição:** ${state.descricao}\n**ArchHypo Pattern:** ${patternText}\n**Tradeoff:** ${state.tradeoff}`
             })
           });
 

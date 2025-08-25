@@ -63,7 +63,7 @@
   You are an expert in software architecture.
 
   Task:
-  Given the hypothesis and the document content below, select up to three ArchHypo patterns (separated by commas) that best match the hypothesis. Only include patterns below:
+  Given the hypothesis and the document content below, select up to one ArchHypo pattern that best match the hypothesis. Only include patterns below:
     "Architectural Hypotheses",
     "Architectural Spike",
     "Architectural Trigger",

@@ -254,12 +254,14 @@
                 if (data.dominio_problema) badges.push({ text: `NFR: ${data.dominio_problema}`, color: 'green' });
               } else {
                 // if (data.requisito_nao_funcional) badges.push({ text: `NFR: ${data.requisito_nao_funcional}`, color: 'green' });
-                if (data.pattern) {
-                  const patterns = data.pattern.split(',').map(p => p.trim()).filter(p => p !== '');
-                  patterns.forEach(pattern => {
-                    badges.push({ text: `Pattern: ${pattern}`, color: 'yellow' });
-                  });
-                }
+                if (data.pattern) badges.push({ text: `Pattern: ${data.pattern}`, color: 'yellow' });
+
+                // if (data.pattern) {
+                //   const patterns = data.pattern.split(',').map(p => p.trim()).filter(p => p !== '');
+                //   patterns.forEach(pattern => {
+                //     badges.push({ text: `Pattern: ${pattern}`, color: 'yellow' });
+                //   });
+                // }
               }
 
               return badges;
