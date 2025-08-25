@@ -105,7 +105,7 @@
             const impacto = JSON.parse(urlParams.get('impacto'));
 
             // Dados para o gráfico de Incerteza
-            let levelsIncertezaImpacto = ["Very Low","Low","Medium","High","Very High"];
+            let levelsIncertezaImpacto = ["Muito Baixo","Baixo","Médio","Alto","Muito Alto"];
             let incertezaValues = levelsIncertezaImpacto.map(l => incerteza[l] || 0);
             let impactoValues = levelsIncertezaImpacto.map(l => impacto[l] || 0);
 
@@ -145,7 +145,7 @@
             const naoFuncional = JSON.parse(urlParams.get('naoFuncional'));
 
             // Dados para o gráfico de Requisito Não Funcional
-            let levelsNaoFuncional = ["Performance", "Security", "Reliability", "Flexibility", "Usability", "Productivity"];
+            let levelsNaoFuncional = ["Desempenho", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Productividade"];
             let naoFuncionalValues = levelsNaoFuncional.map(l => naoFuncional[l] || 0);
 
             let ctxNaoFuncional = document.getElementById('naoFuncionalChart').getContext('2d');

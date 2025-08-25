@@ -6,11 +6,11 @@ const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
 export async function handler(event) {
 const nomesDasListas = [
-"DONE",
-"IN PROGRESS",
-"TO DO",
-"TECH PLAN ITEM",
-"UNCERTAINTY",
+"CONCLUIDO",
+"EM ANDAMENTO",
+"A FAZER",
+"PLANO TECNICO ITEM",
+"INCERTEZA",
 ];
 
 // Suporte ao CORS

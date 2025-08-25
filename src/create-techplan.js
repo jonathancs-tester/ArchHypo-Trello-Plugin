@@ -174,7 +174,7 @@
           const itemText = patternItems[i].querySelector('p').textContent;
           const patternText = patternItems[i].querySelector('textarea').value;
 
-          const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=TECH PLAN ITEM`, {
+          const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=PLANO TECNICO ITEM`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

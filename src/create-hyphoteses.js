@@ -134,7 +134,7 @@
     state.dominio = document.getElementById('dominio').value;
     state.dominioMotivo = document.getElementById('dominioResultado').value;
     const boardId = getBoardIdFromUrl();
-    const query = `boardId=${boardId}&column=UNCERTAINTY`;   
+    const query = `boardId=${boardId}&column=INCERTEZA`;   
 
     const res = await fetch(`/.netlify/functions/get-uncertainty?`+query, {
       method: 'GET',
@@ -191,7 +191,7 @@
     state.incertezaMotivo = document.getElementById('incertezaResultado').value;
 
     const boardId = getBoardIdFromUrl();
-    const query = `boardId=${boardId}&column=UNCERTAINTY`;   
+    const query = `boardId=${boardId}&column=INCERTEZA`;   
 
     const res = await fetch(`/.netlify/functions/get-impact?`+query, {
       method: 'GET',
@@ -254,7 +254,7 @@
       };
 
       try {
-          const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=UNCERTAINTY`, {
+          const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=INCERTEZA`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(data)

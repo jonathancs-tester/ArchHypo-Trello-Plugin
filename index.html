@@ -120,7 +120,7 @@
       },
       'board-buttons': function (t, options) {
         return t.lists('id', 'name').then(function (lists) {
-          const hasUncertaintyColumn = lists.some(list => list.name === 'UNCERTAINTY');
+          const hasUncertaintyColumn = lists.some(list => list.name === 'INCERTEZA');
 
           const buttons = [
             {
@@ -135,12 +135,12 @@
                     });
                   }
 
-                  let levels = ["Very Low", "Low", "Medium", "High", "Very High"];
-                  let countIncerteza = { "Very Low": 0, "Low": 0, "Medium": 0, "High": 0, "Very High": 0 };
-                  let countImpacto = { "Very Low": 0, "Low": 0, "Medium": 0, "High": 0, "Very High": 0 };
+                  let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+                  let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+                  let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
                   let countNaoFuncional = {
-                    "Performance": 0, "Security": 0, "Reliability": 0,
-                    "Flexibility": 0, "Usability": 0, "Productivity": 0
+                    "Desempenho": 0, "Segurança": 0, "Confiabilidade": 0,
+                    "Flexibilidade": 0, "Usabilidade": 0, "Productividade": 0
                   };
                   let countPattern = {
                     "Architectural Hypotheses": 0, "Architectural Spike": 0, "Architectural Trigger": 0,

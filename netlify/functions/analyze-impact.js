@@ -18,14 +18,14 @@
     const idioma = franc(input);
     const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
     const prompt = ChatPromptTemplate.fromTemplate(
-      `Dado o contexto: "{input}", classifique o impacto ("Very Low", "Low", "Medium", "High", "Very High") e explique o motivo utilizando o Impact Historical: 
+      `Dado o contexto: "{input}", classifique o impacto ("Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto") e explique o motivo utilizando o Impact Historical: 
       -------------------------------------------------------------
     Caso o Impact Historical não tenha informação, seguir a regra abaixo:  
-    Very Low: The situation is clear and well understood. There is solid data and previous experience that confirm the expected behavior.
-    Low: There is little uncertainty. The problem is known and there are already tested or documented solutions.
-    Medium: The situation is moderately complex. There is helpful data in the analysis, but there are still points that require validation.
-    High: The problem is significant and affects critical areas. There is little concrete evidence, and a solution may require investigation or testing.
-    Very High: The situation is highly uncertain. There is no data available, and the impact may be unpredictable. It requires in-depth analysis and caution.
+      Muito Baixo: A situação é clara e bem compreendida. Há dados sólidos e experiência anterior que confirmam o comportamento esperado.
+      Baixo: Há pouca incerteza. O problema é conhecido e já existem soluções testadas ou documentadas.
+      Médio: A situação é moderadamente complexa. Existem dados úteis na análise, mas ainda há pontos que requerem validação.
+      Alto: O problema é significativo e afeta áreas críticas. Há poucas evidências concretas, e uma solução pode exigir investigação ou testes.
+      Muito Alto: A situação é altamente incerta. Não há dados disponíveis, e o impacto pode ser imprevisível. Exige análise aprofundada e cautela.
     
     **Responda em: ${idiomaTexto}**
 
