@@ -53,29 +53,26 @@
             for (const nameList of nomesDasListas) {
                 const existList = idList.some(lista => lista.name.toUpperCase() === nameList.toUpperCase());
 
-            if (!existList) {
-                var response = await fetch(`${TRELLO_API_URL}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        name: nameList,
-                        idBoard: boardId
-                    })
-                });
+                if (!existList) {
+                    var response = await fetch(`${TRELLO_API_URL}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            name: nameList,
+                            idBoard: boardId
+                        })
+                    });
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Failed to create list or the list created: ${nameList}`);
+                }
             }
-
-            if (!response.ok) {
-                throw new Error(`Failed to create list or the list created: ${nameList}`);
-            }
-
-            const data = await response.json();
-
             return {
                 statusCode: 200,
                 headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ message: "Card created!", data }),
+                body: JSON.stringify({ message: "Lists verified/created successfully!" }),
             };
-        }
         } catch (error) {
             console.error("❌ Error creating card in Trello:", error.message);
             return {

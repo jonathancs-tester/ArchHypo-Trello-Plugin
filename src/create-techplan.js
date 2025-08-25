@@ -1,5 +1,6 @@
    const state = {
       justificativa: '',
+      descricao: '',
       tradeoff: ''
     };
     
@@ -71,8 +72,9 @@
         });
       const input = await res.json();
 
-      const { sugestao, motivo, justificativa, tradeoff } = await callEndpoint('analyze-plan', input);
+      const { sugestao, motivo, justificativa, descricao, tradeoff } = await callEndpoint('analyze-plan', input);
       state.justificativa = justificativa;
+      state.descricao = descricao;
       state.tradeoff = tradeoff;
 
       let itens = [];
@@ -145,6 +147,7 @@
         `;
 
         patternContainer.appendChild(resultDiv);
+        loadingElement.textContent = "";
       }
 
       hideLoading(1);

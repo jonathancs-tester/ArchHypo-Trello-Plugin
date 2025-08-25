@@ -17,8 +17,8 @@
     const idioma = franc(input.description); // Ex: 'por', 'eng'
     const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
     const prompt = ChatPromptTemplate.fromTemplate(
-      `Dado o contexto: "{input}", sugira somente um plano tecnico com ate 5 items separados **obrigatoriamente** por '\n' e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
-      
+      `Dado o contexto: "{input}", sugira somente um plano tecnico com 3 a 5 items separados **obrigatoriamente** por '\n' e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
+
       **Responda em: ${idiomaTexto}**
 
       Responda no formato JSON: 
