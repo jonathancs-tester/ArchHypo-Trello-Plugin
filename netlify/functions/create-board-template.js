@@ -10,7 +10,7 @@
             "IN PROGRESS",
             "TO DO",
             "TECH PLAN ITEM",
-            "UNCERTAINTY",
+            "UNCERTAINTY"
         ];
         // Permitir requisições OPTIONS para suporte ao CORS
         if (event.httpMethod === "OPTIONS") {
