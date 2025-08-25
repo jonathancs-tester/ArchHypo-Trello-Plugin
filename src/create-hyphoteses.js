@@ -140,12 +140,12 @@
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
-
-  
+ 
       const data = await res.json();
-
+      console.log(data)
       // Extrai o valor de totalCards e atribui ao estado
       state.incertezaTotal = data.totalCards || 0;
+      console.log(state.incertezaTotal);
 
       // Remove totalCards da string de histórico
       const uncertaintyHistoricalStr = Array.isArray(data)
@@ -244,7 +244,7 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       const boardId = urlParams.get('boardId');  
-
+      console.log(state.incertezaTotal);
       const data = {
           name: "H"+(state.incertezaTotal+1)+": " + state.hipotese,
           detalhes:
