@@ -33,11 +33,11 @@
       cleaned = cleaned.replace(/```json|```/gi, "").trim();
     }
 
-    const { sugestao, motivo, justificativa, tradeoff } = JSON.parse(cleaned);
+    const { sugestao, motivo, justificativa, descricao, tradeoff } = JSON.parse(cleaned);
 
     return {
       statusCode: 200,
       headers: corsHeaders,
-      body: JSON.stringify({ sugestao, motivo, justificativa, tradeoff }),
+      body: JSON.stringify({ sugestao, motivo, justificativa, descricao, tradeoff }),
     };
   }
