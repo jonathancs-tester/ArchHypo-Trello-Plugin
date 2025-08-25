@@ -1,5 +1,3 @@
-import { stat } from "fs-extra";
-
   const state = {
     contexto: '',
     incertezaTotal: 0,
