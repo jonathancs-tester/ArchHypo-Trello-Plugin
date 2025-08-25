@@ -85,6 +85,8 @@
         itens = sugestao.split(';');
       else if (sugestao.includes('.')) 
         itens = sugestao.split('.');
+      else if (sugestao.includes(',')) 
+        itens = sugestao.split(',');
       else 
         itens = sugestao.split("'");
 
@@ -126,7 +128,7 @@
       for (let i = 0; i < items.length; i++) {
         
         const loadingElement = document.getElementById("loading1");
-        loadingElement.textContent += ` - Item ${i + 1} (Estimated wait: 10 seconds)`;
+        loadingElement.textContent += ` - Item ${i + 1} (Estimated wait: 15 seconds)`;
 
         const itemText = items[i].textContent.replace(/^Item \d+:\s*/, '').trim();
 

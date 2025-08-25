@@ -12,8 +12,6 @@
                 return;
             }
 
-            window.location.reload();
-
             } catch (error) {
             console.error('❌ Request error:', error);
             alert('Error creating the card. Check the console for more details.');
