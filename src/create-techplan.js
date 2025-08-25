@@ -72,7 +72,8 @@
           headers: { 'Content-Type': 'application/json' },
         });
       const input = await res.json();
-      state.title = input.title ? input.title.split(':').map(part => part.trim()) : [];
+      const match = input.title?.match(/H\d+\s*:\s*(.+)/i);
+      state.title = match ? clean(match[1]) : null;
 
       const { sugestao, motivo, justificativa, descricao, tradeoff } = await callEndpoint('analyze-plan', input);
       state.justificativa = justificativa;
