@@ -128,10 +128,11 @@
 
         const patternContainer = document.getElementById('patternItensContainer');
         patternContainer.innerHTML = '';
+        const loadingElement = document.getElementById("loading1");
+        const textoInicial = loadingElement.textContent;
 
       for (let i = 0; i < items.length; i++) {
         
-        const loadingElement = document.getElementById("loading1");
         loadingElement.textContent += ` - Item ${i + 1} (Espera estimada: 15 segundos)`;
 
         const itemText = items[i].textContent.replace(/^Item \d+:\s*/, '').trim();
@@ -153,7 +154,7 @@
         `;
 
         patternContainer.appendChild(resultDiv);
-        loadingElement.textContent = "";
+        loadingElement.textContent = textoInicial;
       }
 
       hideLoading(1);
