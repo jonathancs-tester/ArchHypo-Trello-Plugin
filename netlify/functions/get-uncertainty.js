@@ -64,6 +64,7 @@
                 }
 
                 const cards = await cardsRes.json();
+                console.log(cards);
                 const cardsLength = cards.length;
 
                 if (!cardsLength) {

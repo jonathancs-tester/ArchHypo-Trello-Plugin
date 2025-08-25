@@ -141,16 +141,19 @@
       headers: { 'Content-Type': 'application/json' },
     });
 
-    const data = await res.json();
-    state.incertezaTotal = data.totalCards || 0;
-    const uncertaintyHistoricalStr = Array.isArray(data)
-  ? data.map(item => {
-      const filtered = Object.fromEntries(
-        Object.entries(item).filter(([key]) => !key.startsWith('totalCards'))
-      );
-      return JSON.stringify(filtered);
-    }).join('; ')
-  : data;
+  
+      const data = await res.json();
+
+      // Extrai o valor de totalCards e atribui ao estado
+      state.incertezaTotal = data.totalCards || 0;
+
+      // Remove totalCards da string de histórico
+      const uncertaintyHistoricalStr = Array.isArray(data)
+        ? data.map(item => {
+            const { totalCards, ...rest } = item; // Remove totalCards
+            return JSON.stringify(rest);
+          }).join('; ')
+        : data;
 
   const input = `
   Context: ${state.contexto}; 
