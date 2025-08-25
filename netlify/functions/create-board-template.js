@@ -9,7 +9,7 @@ const nomesDasListas = [
 "CONCLUIDO",
 "EM ANDAMENTO",
 "A FAZER",
-"PLANO TECNICO ITEM",
+"ITEM PLANO TECNICO",
 "INCERTEZA",
 ];
 

@@ -199,7 +199,7 @@
     });
 
     const allData = await res.json();
-    const data = allData.slice(0, 10); // pega os dois primeiros elemento
+    const data = allData ? allData.slice(0, 10) : [];
     const impactHistoricalStr = Array.isArray(data)
     ? data.map(item => JSON.stringify(item)).join('; ')
     : data;
