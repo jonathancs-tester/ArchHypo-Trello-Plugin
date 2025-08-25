@@ -64,8 +64,9 @@
                 }
 
                 const cards = await cardsRes.json();
-                console.log( cardsRes.length);
-                const cardsLength = cardsRes.length;
+                console.log(cards); // ✅ aqui sim você acessa o tamanho do array
+                console.log(cards.length); // ✅ aqui sim você acessa o tamanho do array
+                const cardsLength = cards
 
                 if (!cardsLength) {
                     return {
