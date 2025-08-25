@@ -144,7 +144,7 @@
       const allData = await res.json();
       // Extrai o valor de totalCards e atribui ao estado
       state.incertezaTotal = allData?.length || 0;
-      const data = allData.slice(0, 10); // pega os dois primeiros elemento
+      const data = allData ? allData.slice(0, 10) : [];
 
       // Remove totalCards da string de histórico
       const uncertaintyHistoricalStr = Array.isArray(data)
