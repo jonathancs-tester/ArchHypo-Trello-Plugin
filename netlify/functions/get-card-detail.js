@@ -46,7 +46,6 @@
             }
 
             const card = await cardRes.json();
-            console.log(card);
 
             return {
                 statusCode: 200,

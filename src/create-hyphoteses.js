@@ -145,7 +145,6 @@
       // Extrai o valor de totalCards e atribui ao estado
       state.incertezaTotal = allData.length || 0;
       const data = allData.slice(0, 10); // pega os dois primeiros elemento
-      console.log(state.incertezaTotal);
 
       // Remove totalCards da string de histórico
       const uncertaintyHistoricalStr = Array.isArray(data)
@@ -245,7 +244,6 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       const boardId = urlParams.get('boardId');  
-      console.log(state.incertezaTotal);
       const data = {
           name: "H"+(state.incertezaTotal+1)+": " + state.hipotese,
           detalhes:

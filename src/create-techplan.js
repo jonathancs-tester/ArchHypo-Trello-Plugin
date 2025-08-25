@@ -87,8 +87,8 @@
         itens = sugestao.split('\n');
       else if (sugestao.includes(';'))
         itens = sugestao.split(';');
-      // else if (sugestao.includes('.')) 
-      //   itens = sugestao.split('.');
+      else if (sugestao.includes('.')) 
+        itens = sugestao.split('.');
       // else if (sugestao.includes(',')) 
       //   itens = sugestao.split(',');
       else 
