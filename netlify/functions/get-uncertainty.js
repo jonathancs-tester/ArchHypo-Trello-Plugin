@@ -64,9 +64,9 @@
                 }
 
                 const cards = await cardsRes.json();
-                const cardsArray = Object.values(cards).filter(item => typeof item === 'object' && item !== null && !Array.isArray(item));
-                console.log(cardsArray.length); // Agora deve retornar 1
-                const cardsLength = cardsArray.length;
+                console.log( cards);
+                console.log( cards.length);
+                const cardsLength = cards.length;
 
                 if (!cardsLength) {
                     return {
@@ -86,7 +86,6 @@
                     return {
                         hipotese: hypoMatch ? clean(hypoMatch[1]) : null,
                         impacto: uncertaintyMatch ? clean(uncertaintyMatch[1]) : null,
-                        totalCards: cardsLength
                     };
                 })
                 .filter(item => item.hipotese !== null && item.impacto !== null)
