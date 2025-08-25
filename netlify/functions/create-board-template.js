@@ -6,11 +6,11 @@
 
     export async function handler(event) {
         const nomesDasListas = [
-            "UNCERTAINTY",
-            "TECH PLAN ITEM",
-            "TO DO",
+            "DONE",
             "IN PROGRESS",
-            "DONE"
+            "TO DO",
+            "TECH PLAN ITEM",
+            "UNCERTAINTY",
         ];
         // Permitir requisições OPTIONS para suporte ao CORS
         if (event.httpMethod === "OPTIONS") {

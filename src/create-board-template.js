@@ -1,5 +1,7 @@
     async function createBoardTemplate(boardId) {
         try {
+            console.log("🚀 Chamando a função createBoardTemplate...");
+
             const res = await fetch(`/.netlify/functions/create-board-template?boardId=${boardId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -12,7 +14,7 @@
                 return;
             }
 
-            } catch (error) {
+        } catch (error) {
             console.error('❌ Request error:', error);
             alert('Error creating the card. Check the console for more details.');
         }
