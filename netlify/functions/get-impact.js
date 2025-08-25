@@ -85,7 +85,6 @@
                     };
                 })
                 .filter(item => item.hipotese !== null && item.impacto !== null)
-                .slice(0, 10);
 
                 return {
                     statusCode: 200,

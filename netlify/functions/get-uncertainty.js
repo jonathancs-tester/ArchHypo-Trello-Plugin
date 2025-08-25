@@ -64,11 +64,8 @@
                 }
 
                 const cards = await cardsRes.json();
-                console.log( cards);
-                console.log( cards.length);
-                const cardsLength = cards.length;
 
-                if (!cardsLength) {
+                if (!cards.length) {
                     return {
                         statusCode: 200,
                         headers: { "Access-Control-Allow-Origin": "*" },
@@ -89,7 +86,6 @@
                     };
                 })
                 .filter(item => item.hipotese !== null && item.impacto !== null)
-                .slice(0, 10);
 
                 return {
                     statusCode: 200,

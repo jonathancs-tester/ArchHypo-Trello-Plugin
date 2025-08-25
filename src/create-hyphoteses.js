@@ -141,10 +141,10 @@
       headers: { 'Content-Type': 'application/json' },
     });
  
-      const data = await res.json();
-      console.log(data)
+      const allData = await res.json();
       // Extrai o valor de totalCards e atribui ao estado
-      state.incertezaTotal = data.totalCards || 0;
+      state.incertezaTotal = allData.length || 0;
+      const data = allData.slice(0, 10); // pega os dois primeiros elemento
       console.log(state.incertezaTotal);
 
       // Remove totalCards da string de histórico
@@ -199,7 +199,8 @@
       headers: { 'Content-Type': 'application/json' },
     });
 
-    const data = await res.json();
+    const allData = await res.json();
+    const data = allData.slice(0, 10); // pega os dois primeiros elemento
     const impactHistoricalStr = Array.isArray(data)
     ? data.map(item => JSON.stringify(item)).join('; ')
     : data;
