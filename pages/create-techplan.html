@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ArchHypo - Generate Tech Plan</title>
+    <title>ArchHypo.AI - Plano Técnico</title>
     <style>
       /* Reset básico */
       * {
@@ -197,24 +197,24 @@
   <body>
 
     <div id="step0" class="step active">
-      <h2>1. Technical Plan</h2>
+      <h2>1. Plano Técnico</h2>
       <div id="planoItensContainer"></div>
       <p id="planoResultado"></p>
-      <button onclick="analyzePlan()">Generate</button>
-      <button onclick="classifyPattern()" disabled>Next</button>
-      <div id="loading0" class="loading-indicator">⏳ Processing...</div>
+      <button onclick="analyzePlan()">Gerar</button>
+      <button onclick="classifyPattern()" disabled>Próximo</button>
+      <div id="loading0" class="loading-indicator">⏳ Processando...</div>
     </div>
 
     <div id="step1" class="step">
-      <h2>2. ArchHypo Pattern</h2>
+      <h2>2. Padrão ArchHypo</h2>
       <div id="patternItensContainer"></div>
-      <div id="loading1" class="loading-indicator">⏳ Processing...</div>
-      <button onclick="previousStep()">Previous</button>
-      <button onclick="createCard()">Create</button>
+      <div id="loading1" class="loading-indicator">⏳ Processando...</div>
+      <button onclick="previousStep()">Anterior</button>
+      <button onclick="createCard()">Criar</button>
     </div>
 
     <div id="step2" class="step">
-      <h2>✅ Tech Plan Items created!</h2>
+      <h2>✅ Itens do Plano Técnico criados!</h2>
       <p id="cardLink"></p>
     </div>
 

@@ -82,7 +82,7 @@
       const sugestaoAtual = this.value;
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
-        motivoField.placeholder = 'Explain the reason for the change...';
+        motivoField.placeholder = 'Justifique a alteração...';
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
@@ -117,7 +117,7 @@
       const sugestaoAtual = this.value;
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
-        motivoField.placeholder = 'Explain the reason for the change...';
+        motivoField.placeholder = 'Justifique a alteração...';
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
@@ -166,7 +166,7 @@
       const sugestaoAtual = this.value;
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
-        motivoField.placeholder = 'Explain the reason for the change...';
+        motivoField.placeholder = 'Justifique a alteração...';
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
@@ -216,7 +216,7 @@
       const sugestaoAtual = this.value;
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
-        motivoField.placeholder = 'Explain the reason for the change...';
+        motivoField.placeholder = 'Justifique a alteração...';
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
@@ -236,12 +236,12 @@
       const boardId = urlParams.get('boardId');  
 
       const data = {
-          name: "Hypothesis: " + state.hipotese,
+          name: "Hipótese: " + state.hipotese,
           detalhes:
-              "**Non Functional Requirement:** " + state.dominio + "\n" +
-              "**Uncertainty:** " + state.contexto + "\n" +
-              "**Uncertainty Level:** " + state.incerteza + "\n" +
-              "**Impact Level:** " + state.impacto
+              "**Requisitos Não Funcionais:** " + state.dominio + "\n" +
+              "**Incerteza:** " + state.contexto + "\n" +
+              "**Nível de Incerteza:** " + state.incerteza + "\n" +
+              "**Nível de Impacto:** " + state.impacto
       };
 
       try {
@@ -273,7 +273,7 @@
   function motivoHTML(motivo) {
     return `
       <details>
-        <summary><em>Reason: (click here)</em></summary>
+        <summary><em>Justificativa: (clique aqui)</em></summary>
         <p>${motivo}</p>
       </details>
     `;

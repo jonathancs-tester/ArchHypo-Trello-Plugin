@@ -128,7 +128,7 @@
       for (let i = 0; i < items.length; i++) {
         
         const loadingElement = document.getElementById("loading1");
-        loadingElement.textContent += ` - Item ${i + 1} (Estimated wait: 15 seconds)`;
+        loadingElement.textContent += ` - Item ${i + 1} (Espera estimada: 15 segundos)`;
 
         const itemText = items[i].textContent.replace(/^Item \d+:\s*/, '').trim();
 
@@ -175,7 +175,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               name: itemText,
-              detalhes: `**Objetivo:** ${state.justificativa}\n**Descrição:** ${state.descricao}\n**ArchHypo Pattern:** ${patternText}\n**Tradeoff:** ${state.tradeoff}`
+              detalhes: `**Objetivo:** ${state.justificativa}\n**Descrição:** ${state.descricao}\n**Padrão ArchHypo:** ${patternText}\n**Tradeoff:** ${state.tradeoff}`
             })
           });
 
@@ -215,7 +215,7 @@
     function motivoHTML(motivo) {
       return `
         <details>
-          <summary><em>Reason: (click here)</em></summary>
+          <summary><em>Justificativa: (clique aqui)</em></summary>
           <p>${motivo}</p>
         </details>
       `;
