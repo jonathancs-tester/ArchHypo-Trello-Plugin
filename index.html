@@ -19,23 +19,28 @@
   <script>
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
-        return [
-          {
+        return t.card('id', 'name').then(function (card) {
+          const buttons = [];
+
+          // Botão "Plano Técnico" só aparece se o título do card tiver "Item"
+          if (card.name && !card.name.includes("Item")) {
+            buttons.push({
               icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
               text: "Plano Técnico",
               callback: function (t) {
-                t.board('id').then(function (boardId) {     
-                return t.card('id', 'name').then(function (card) {
-                    return t.modal({
-                      title: "Gerar Plano Técnico",
-                      url: `./pages/create-techplan.html?boardId=${boardId.id}&cardId=${card.id}`,
-                      height: 500
-                    });
+                return t.board('id').then(function (boardId) {
+                  return t.modal({
+                    title: "Gerar Plano Técnico",
+                    url: `./pages/create-techplan.html?boardId=${boardId.id}&cardId=${card.id}`,
+                    height: 500
                   });
                 });
               }
-          },
-          {
+            });
+          }
+
+          // Botão "Add/Atualizar Métrica" sempre aparece
+          buttons.push({
             icon: "https://img.icons8.com/ios-filled/50/000000/process.png",
             text: "Add/Atualizar Métrica",
             callback: function (t) {
@@ -115,8 +120,10 @@
                   });
                 });
             }
-          }
-        ];
+          });
+
+          return buttons;
+        });
       },
       'board-buttons': function (t, options) {
         return t.lists('id', 'name').then(function (lists) {
