@@ -160,7 +160,6 @@
       hideLoading(1);
     }
 
-
     async function createCard() {
       try {
         showLoading(1);
