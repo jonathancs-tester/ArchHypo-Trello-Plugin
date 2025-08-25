@@ -1,4 +1,5 @@
    const state = {
+      title: '',
       justificativa: '',
       descricao: '',
       tradeoff: ''
@@ -71,6 +72,7 @@
           headers: { 'Content-Type': 'application/json' },
         });
       const input = await res.json();
+      state.title = input.title.split(':');
 
       const { sugestao, motivo, justificativa, descricao, tradeoff } = await callEndpoint('analyze-plan', input);
       state.justificativa = justificativa;
@@ -106,7 +108,7 @@
       itens.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'plano-item'; 
-        div.innerHTML = `<textarea>Item ${index + 1}:${item}</textarea>`;
+        div.innerHTML = `<textarea>${state.title} - Item ${index + 1}:${item}</textarea>`;
         container.appendChild(div);
       });
 

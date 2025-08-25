@@ -64,8 +64,9 @@
                 }
 
                 const cards = await cardsRes.json();
+                const cardsLength = cards.length;
 
-                if (!cards.length) {
+                if (!cardsLength) {
                     return {
                         statusCode: 200,
                         headers: { "Access-Control-Allow-Origin": "*" },
@@ -82,7 +83,8 @@
 
                     return {
                         hipotese: hypoMatch ? clean(hypoMatch[1]) : null,
-                        impacto: uncertaintyMatch ? clean(uncertaintyMatch[1]) : null
+                        impacto: uncertaintyMatch ? clean(uncertaintyMatch[1]) : null,
+                        totalCards: cardsLength
                     };
                 })
                 .filter(item => item.hipotese !== null && item.impacto !== null)

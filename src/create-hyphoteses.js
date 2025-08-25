@@ -1,5 +1,8 @@
+import { stat } from "fs-extra";
+
   const state = {
     contexto: '',
+    incertezaTotal: 0,
     incerteza: '',
     incertezaMotivo: '',
     impacto: '',
@@ -141,9 +144,15 @@
     });
 
     const data = await res.json();
+    state.incertezaTotal = data.totalCards || 0;
     const uncertaintyHistoricalStr = Array.isArray(data)
-    ? data.map(item => JSON.stringify(item)).join('; ')
-    : data;
+  ? data.map(item => {
+      const filtered = Object.fromEntries(
+        Object.entries(item).filter(([key]) => !key.startsWith('totalCards'))
+      );
+      return JSON.stringify(filtered);
+    }).join('; ')
+  : data;
 
   const input = `
   Context: ${state.contexto}; 
@@ -236,7 +245,7 @@
       const boardId = urlParams.get('boardId');  
 
       const data = {
-          name: "Hipótese: " + state.hipotese,
+          name: "H"+(state.incertezaTotal+1)+": " + state.hipotese,
           detalhes:
               "**Requisitos Não Funcionais:** " + state.dominio + "\n" +
               "**Incerteza:** " + state.contexto + "\n" +

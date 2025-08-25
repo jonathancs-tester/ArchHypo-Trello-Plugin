@@ -56,7 +56,7 @@
                     .then(function (cardDesc) {
                       const descricao = cardDesc?.desc?.trim() || "";
 
-                      if (titulo.startsWith("Hipótese:")) {
+                      if (titulo.startsWith("H")) {
 
                         function extrairValor(chave) {
                           const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");

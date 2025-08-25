@@ -50,7 +50,7 @@
             return {
                 statusCode: 200,
                 headers: { "Access-Control-Allow-Origin": "*" },
-                body: JSON.stringify({ description: card.desc }),
+                body: JSON.stringify({ title: card.title, description: card.desc }),
             };
 
         } catch (error) {
