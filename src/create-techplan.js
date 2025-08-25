@@ -26,7 +26,8 @@
     }
 
     function previousStep() {
-      if (currentStep >= 0) {
+      const confirmLeave = window.confirm("As informações preenchidas serão perdidas. Deseja voltar mesmo assim?");
+      if (confirmLeave && currentStep >= 0) {
         showStep(currentStep - 1);
       }
     }
