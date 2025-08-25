@@ -225,8 +225,6 @@
                   const board = await t.board('id');
                   await createBoardTemplate(board.id);
 
-                  window.location.reload();
-
                 } catch (error) {
                   console.error("❌ Error creating board template:", error);
                   alert("Failed to create board template. Check the console for details.");
