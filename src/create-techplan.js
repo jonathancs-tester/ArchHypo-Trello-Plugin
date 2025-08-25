@@ -87,10 +87,10 @@
         itens = sugestao.split('\n');
       else if (sugestao.includes(';'))
         itens = sugestao.split(';');
-      else if (sugestao.includes('.')) 
-        itens = sugestao.split('.');
-      else if (sugestao.includes(',')) 
-        itens = sugestao.split(',');
+      // else if (sugestao.includes('.')) 
+      //   itens = sugestao.split('.');
+      // else if (sugestao.includes(',')) 
+      //   itens = sugestao.split(',');
       else 
         itens = sugestao.split("'");
 
@@ -147,7 +147,7 @@
         const resultDiv = document.createElement('div');
         resultDiv.className = 'pattern-result';
         resultDiv.innerHTML = `
-          <p>Item ${i + 1}: ${itemText}</p>
+          <p>${itemText}</p>
           <textarea>${data.pattern}</textarea>
           ${motivoHTML(data.reason)}
         `;
