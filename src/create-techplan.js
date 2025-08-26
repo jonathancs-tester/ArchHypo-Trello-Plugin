@@ -100,9 +100,7 @@
       const container = document.getElementById('planoItensContainer');
       container.innerHTML = '';
 
-      // Função para adicionar um item ao container
-      function addItem(text) {
-        const index = container.querySelectorAll('.plano-item').length;
+      itens.forEach((item, index) => {
         const id = `item-${index}`;
         const div = document.createElement('div');
         div.className = 'plano-item';
@@ -110,29 +108,16 @@
 
         div.innerHTML = `
           <input type="checkbox" id="${id}" class="plano-checkbox" data-index="${index}" checked />
-      <label for="${id}">${state.title} - Item ${index + 1}: ${text}</label>
-    `;
+          <label for="${id}">${state.title} - Item ${index + 1}: ${item}</label>
+        `;
 
-    container.appendChild(div);
-  }
+        container.appendChild(div);
+      });
 
-  // Adiciona os itens gerados automaticamente
-  itens.forEach(item => addItem(item));
+      document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);  
 
-  // Exemplo: botão para adicionar novos itens manualmente
-  const addButton = document.getElementById('addNewItemButton');
-  addButton.onclick = () => {
-    const newItemText = prompt('Digite o novo item:');
-    if (newItemText && newItemText.trim() !== '') {
-      addItem(newItemText.trim());
-      nextButton.disabled = false; // garante que o botão de próximo esteja habilitado
+      hideLoading(0);
     }
-  };
-
-  document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);  
-
-  hideLoading(0);
-}
 
     async function classifyPattern() {
       showStep(1);
