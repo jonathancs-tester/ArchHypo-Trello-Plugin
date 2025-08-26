@@ -169,29 +169,27 @@
       const patternContainer = document.getElementById('patternItensContainer');
       patternContainer.innerHTML = ''; // limpa resultados anteriores
 
+      const selectedIndexes = getSelectedItems();
       let itemTexts = [];
 
-      // Verifica se há checkboxes selecionados
-      const selectedCheckboxes = document.querySelectorAll('.plano-checkbox:checked');
-      if (selectedCheckboxes.length > 0) {
-        const selectedIndexes = getSelectedItems();
+      for (let i = 0; i < selectedIndexes.length; i++) {
+        const idx = selectedIndexes[i];
 
-        for (let i = 0; i < selectedIndexes.length; i++) {
-          const idx = selectedIndexes[i];
+        // Tenta encontrar o textarea correspondente
+        const textarea = document.querySelector(`.edit-plan textarea[data-index="${idx}"]`);
+        let itemText = '';
+
+        if (textarea && textarea.value.trim()) {
+          itemText = textarea.value.trim(); // Prioriza texto editado
+        } else {
           const label = document.querySelector(`.plano-checkbox[data-index="${idx}"] + label`);
           if (label) {
-            itemTexts.push(label.textContent.trim());
+            itemText = label.textContent.trim(); // Usa texto original se não houver edição
           }
         }
-      } else {
-        const editItensContainer = document.getElementById('editItensContainer');
-        const editItems = Array.from(editItensContainer.querySelectorAll('.edit-plan'));
 
-        for (let i = 0; i < editItems.length; i++) {
-          const textarea = editItems[i].querySelector('textarea');
-          if (textarea) {
-            itemTexts.push(textarea.value.trim());
-          }
+        if (itemText) {
+          itemTexts.push(itemText);
         }
       }
 
