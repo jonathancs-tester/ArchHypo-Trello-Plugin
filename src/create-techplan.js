@@ -34,6 +34,13 @@
       }
     }
 
+    function previousEditStep() {
+      const confirmLeave = window.confirm("As informações preenchidas serão perdidas. Deseja voltar mesmo assim?");
+      if (confirmLeave && currentStep >= 0) {
+        showStep(currentStep - 2);
+      }
+    }
+
     function showLoading(stepId) {
       document.getElementById(`loading${stepId}`).style.display = 'block';
       disableButtons();
@@ -108,7 +115,7 @@
 
         div.innerHTML = `
           <input type="checkbox" id="${id}" class="plano-checkbox" data-index="${index}" checked />
-          <label for="${id}">${state.title} - Item ${index + 1}: ${item}</label>
+          <label for="${id}">${state.title} - TP ${index + 1}: ${item}</label>
         `;
 
         container.appendChild(div);
@@ -193,7 +200,7 @@
       // Processa cada item
       for (let i = 0; i < itemTexts.length; i++) {
         const itemText = itemTexts[i];
-        loadingElement.textContent = `${textoInicial} - Item ${i + 1} (Espera estimada: 15 segundos)`;
+        loadingElement.textContent = `${textoInicial} - TP ${i + 1} (Espera estimada: 15 segundos)`;
 
         try {
           const res = await fetch(`/.netlify/functions/classifyPattern`, {

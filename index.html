@@ -22,8 +22,8 @@
         return t.card('id', 'name').then(function (card) {
           const buttons = [];
 
-          // Botão "Plano Técnico" só aparece se o título do card tiver "Item"
-          if (card.name && !card.name.includes("Item")) {
+          // Botão "Plano Técnico" só aparece se o título do card tiver "TP"
+          if (card.name && !card.name.includes("TP")) {
             buttons.push({
               icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
               text: "Plano Técnico",
@@ -256,7 +256,7 @@
             return t.get('card', 'shared').then(function (data) {
               let badges = [];
 
-              if (titulo.includes("Item")) {
+              if (titulo.includes("TP")) {
                 if (data.pattern) badges.push({ text: `Padrão ArchHypo: ${data.pattern}`, color: 'yellow' });
               } else {
                 if (data.incerteza) badges.push({ text: `Incerteza: ${data.incerteza}`, color: 'red' });
