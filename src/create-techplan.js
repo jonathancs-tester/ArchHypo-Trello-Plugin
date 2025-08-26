@@ -123,19 +123,25 @@
       showStep(1);
       showLoading(1);
 
-      // Pega os índices dos checkboxes selecionados
-      const selectedIndexes = getSelectedItems();
       const patternContainer = document.getElementById('patternItensContainer');
-      const items = selectedIndexes.map(idx => patternContainer.querySelector(`.plano-item:nth-child(${idx + 1})`));
-      patternContainer.innerHTML = '';
       const loadingElement = document.getElementById("loading1");
       const textoInicial = loadingElement.textContent;
 
-      for (let i = 0; i < items.length; i++) {
-        
-        loadingElement.textContent += ` - Item ${i + 1} (Espera estimada: 15 segundos)`;
+      // Pega os índices dos checkboxes selecionados
+      const selectedIndexes = getSelectedItems();
 
-        const itemText = items[i].textContent.replace(/^Item \d+:\s*/, '').trim();
+      patternContainer.innerHTML = ''; // limpa resultados anteriores
+
+      for (let i = 0; i < selectedIndexes.length; i++) {
+        const idx = selectedIndexes[i];
+
+        // Pega o label correspondente ao checkbox
+        const label = document.querySelector(`.plano-checkbox[data-index="${idx}"] + label`);
+        if (!label) continue;
+
+        const itemText = label.textContent.trim();
+
+        loadingElement.textContent = `${textoInicial} - Item ${i + 1} (Espera estimada: 15 segundos)`;
 
         const res = await fetch(`/.netlify/functions/classifyPattern`, {
           method: 'POST',
@@ -154,9 +160,9 @@
         `;
 
         patternContainer.appendChild(resultDiv);
-        loadingElement.textContent = textoInicial;
       }
 
+      loadingElement.textContent = textoInicial;
       hideLoading(1);
     }
 
