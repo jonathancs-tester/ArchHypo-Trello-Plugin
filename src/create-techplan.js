@@ -207,7 +207,7 @@
       // Processa cada item
       for (let i = 0; i < itemTexts.length; i++) {
         const itemText = itemTexts[i];
-        loadingElement.textContent = `${textoInicial} - (Espera estimada: 15 segundos)`;
+        loadingElement.textContent = `${textoInicial} (Espera estimada: 15 segundos)`;
 
         try {
           const res = await fetch(`/.netlify/functions/classifyPattern`, {
