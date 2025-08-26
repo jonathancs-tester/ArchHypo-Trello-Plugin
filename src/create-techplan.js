@@ -115,7 +115,7 @@
 
         div.innerHTML = `
           <input type="checkbox" id="${id}" class="plano-checkbox" data-index="${index}" checked />
-          <label for="${id}">${state.title} - TP ${index + 1}: ${item}</label>
+          <label for="${id}">${state.title} - TPI ${index + 1}: ${item}</label>
         `;
 
         container.appendChild(div);
@@ -134,9 +134,7 @@
       const loadingElement = document.getElementById("loading1");
       const textoInicial = loadingElement.textContent;
 
-      // Pega os índices dos checkboxes selecionados
       const selectedIndexes = getSelectedItems();
-
       editContainer.innerHTML = ''; // limpa resultados anteriores
 
       for (let i = 0; i < selectedIndexes.length; i++) {
@@ -151,7 +149,7 @@
         const resultDiv = document.createElement('div');
         resultDiv.className = 'edit-plan';
         resultDiv.innerHTML = `
-          <textarea>${itemText}</textarea>
+          <textarea data-index="${idx}">${itemText}</textarea>
         `;
 
         editContainer.appendChild(resultDiv);
@@ -200,7 +198,7 @@
       // Processa cada item
       for (let i = 0; i < itemTexts.length; i++) {
         const itemText = itemTexts[i];
-        loadingElement.textContent = `${textoInicial} - TP ${i + 1} (Espera estimada: 15 segundos)`;
+        loadingElement.textContent = `${textoInicial} - TPI ${i + 1} (Espera estimada: 15 segundos)`;
 
         try {
           const res = await fetch(`/.netlify/functions/classifyPattern`, {
