@@ -68,12 +68,12 @@
 
       cardId = getCardIdFromUrl();
       const res = await fetch(`/.netlify/functions/get-card-detail?cardId=${cardId}`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
       const input = await res.json();
       const match = input.title?.match(/^(H\d+)\s*:/i);
-      const clean = str => str.replace(/[*]+/g, '').trim(); // remove asteriscos e espaços extras
+      const clean = str => str.replace(/[*]+/g, '').trim();
       state.title = match ? clean(match[1]) : null;
 
       const { sugestao, motivo, justificativa, descricao, tradeoff } = await callEndpoint('analyze-plan', input);
@@ -89,28 +89,28 @@
         itens = sugestao.split(';');
       else if (sugestao.includes('.')) 
         itens = sugestao.split('.');
-      // else if (sugestao.includes(',')) 
-      //   itens = sugestao.split(',');
       else 
         itens = sugestao.split("'");
 
       itens = itens.map(item => item.trim()).filter(item => item !== '');
 
       const nextButton = document.querySelector('button[onclick="classifyPattern()"]');
-
-      if (itens.length > 0) {
-        nextButton.disabled = false;
-      } else {
-        nextButton.disabled = true;
-      }
+      nextButton.disabled = itens.length === 0;
 
       const container = document.getElementById('planoItensContainer');
       container.innerHTML = '';
 
       itens.forEach((item, index) => {
+        const id = `item-${index}`;
         const div = document.createElement('div');
-        div.className = 'plano-item'; 
-        div.innerHTML = `<textarea>${state.title} - Item ${index + 1}:${item}</textarea>`;
+        div.className = 'plano-item';
+        div.style.marginBottom = '0.5rem';
+
+        div.innerHTML = `
+          <input type="checkbox" id="${id}" class="plano-checkbox" data-index="${index}" checked />
+          <label for="${id}">${state.title} - Item ${index + 1}: ${item}</label>
+        `;
+
         container.appendChild(div);
       });
 
@@ -123,13 +123,13 @@
       showStep(1);
       showLoading(1);
 
-      const container = document.getElementById('planoItensContainer');
-      const items = Array.from(container.querySelectorAll('.plano-item'));
-
-        const patternContainer = document.getElementById('patternItensContainer');
-        patternContainer.innerHTML = '';
-        const loadingElement = document.getElementById("loading1");
-        const textoInicial = loadingElement.textContent;
+      // Pega os índices dos checkboxes selecionados
+      const selectedIndexes = getSelectedItems();
+      const patternContainer = document.getElementById('patternItensContainer');
+      const items = selectedIndexes.map(idx => patternContainer.querySelector(`.plano-item:nth-child(${idx + 1})`));
+      patternContainer.innerHTML = '';
+      const loadingElement = document.getElementById("loading1");
+      const textoInicial = loadingElement.textContent;
 
       for (let i = 0; i < items.length; i++) {
         
@@ -223,4 +223,15 @@
           <p>${motivo}</p>
         </details>
       `;
+    }
+
+    // Função para pegar somente os itens selecionados antes de enviar para o próximo passo
+    function getSelectedItems() {
+      const selected = [...document.querySelectorAll('.plano-checkbox')]
+        .filter(chk => chk.checked)
+        .map(chk => {
+          const idx = Number(chk.dataset.index);
+          return idx;
+        });
+      return selected;
     }
