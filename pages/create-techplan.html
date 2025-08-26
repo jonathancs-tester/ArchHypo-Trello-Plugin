@@ -201,19 +201,28 @@
       <div id="planoItensContainer"></div>
       <p id="planoResultado"></p>
       <button onclick="analyzePlan()">Gerar</button>
+      <button onclick="editPlan()" disabled>Editar</button>
       <button onclick="classifyPattern()" disabled>Próximo</button>
       <div id="loading0" class="loading-indicator">⏳ Processando...</div>
     </div>
 
     <div id="step1" class="step">
+      <h2>1. Editar Plano Técnico</h2>
+      <div id="editItensContainer"></div>
+      <div id="loading1" class="loading-indicator">⏳ Processando...</div>
+      <button onclick="previousStep()">Anterior</button>
+      <button onclick="classifyPattern()">Próximo</button>
+    </div>
+
+    <div id="step2" class="step">
       <h2>2. Padrão ArchHypo</h2>
       <div id="patternItensContainer"></div>
-      <div id="loading1" class="loading-indicator">⏳ Processando...</div>
+      <div id="loading2" class="loading-indicator">⏳ Processando...</div>
       <button onclick="previousStep()">Anterior</button>
       <button onclick="createCard()">Criar</button>
     </div>
 
-    <div id="step2" class="step">
+    <div id="step3" class="step">
       <h2>✅ Itens do Plano Técnico criados!</h2>
       <p id="cardLink"></p>
     </div>

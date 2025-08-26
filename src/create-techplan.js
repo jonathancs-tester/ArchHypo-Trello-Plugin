@@ -119,18 +119,18 @@
       hideLoading(0);
     }
 
-    async function classifyPattern() {
+    async function editPlan() {
       showStep(1);
       showLoading(1);
 
-      const patternContainer = document.getElementById('patternItensContainer');
+      const editContainer = document.getElementById('editItensContainer');
       const loadingElement = document.getElementById("loading1");
       const textoInicial = loadingElement.textContent;
 
       // Pega os índices dos checkboxes selecionados
       const selectedIndexes = getSelectedItems();
 
-      patternContainer.innerHTML = ''; // limpa resultados anteriores
+      editContainer.innerHTML = ''; // limpa resultados anteriores
 
       for (let i = 0; i < selectedIndexes.length; i++) {
         const idx = selectedIndexes[i];
@@ -141,34 +141,90 @@
 
         const itemText = label.textContent.trim();
 
-        loadingElement.textContent = `${textoInicial} - Item ${i + 1} (Espera estimada: 15 segundos)`;
-
-        const res = await fetch(`/.netlify/functions/classifyPattern`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hypothesis: itemText }),
-        });
-
-        const data = await res.json();
-
         const resultDiv = document.createElement('div');
-        resultDiv.className = 'pattern-result';
+        resultDiv.className = 'edit-plan';
         resultDiv.innerHTML = `
-          <p>${itemText}</p>
-          <textarea>${data.pattern}</textarea>
-          ${motivoHTML(data.reason)}
+          <textarea>${itemText}</textarea>
         `;
 
-        patternContainer.appendChild(resultDiv);
+        editContainer.appendChild(resultDiv);
       }
 
       loadingElement.textContent = textoInicial;
       hideLoading(1);
     }
 
+    async function classifyPattern() {
+      showStep(2);
+      showLoading(2);
+
+      const loadingElement = document.getElementById("loading2");
+      const textoInicial = loadingElement.textContent;
+
+      const patternContainer = document.getElementById('patternItensContainer');
+      patternContainer.innerHTML = ''; // limpa resultados anteriores
+
+      let itemTexts = [];
+
+      // Verifica se há checkboxes selecionados
+      const selectedCheckboxes = document.querySelectorAll('.plano-checkbox:checked');
+      if (selectedCheckboxes.length > 0) {
+        const selectedIndexes = getSelectedItems();
+
+        for (let i = 0; i < selectedIndexes.length; i++) {
+          const idx = selectedIndexes[i];
+          const label = document.querySelector(`.plano-checkbox[data-index="${idx}"] + label`);
+          if (label) {
+            itemTexts.push(label.textContent.trim());
+          }
+        }
+      } else {
+        const editItensContainer = document.getElementById('editItensContainer');
+        const editItems = Array.from(editItensContainer.querySelectorAll('.edit-plan'));
+
+        for (let i = 0; i < editItems.length; i++) {
+          const textarea = editItems[i].querySelector('textarea');
+          if (textarea) {
+            itemTexts.push(textarea.value.trim());
+          }
+        }
+      }
+
+      // Processa cada item
+      for (let i = 0; i < itemTexts.length; i++) {
+        const itemText = itemTexts[i];
+        loadingElement.textContent = `${textoInicial} - Item ${i + 1} (Espera estimada: 15 segundos)`;
+
+        try {
+          const res = await fetch(`/.netlify/functions/classifyPattern`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ hypothesis: itemText }),
+          });
+
+          const data = await res.json();
+
+          const resultDiv = document.createElement('div');
+          resultDiv.className = 'pattern-result';
+          resultDiv.innerHTML = `
+            <p>${itemText}</p>
+            <textarea>${data.pattern}</textarea>
+            ${motivoHTML(data.reason)}
+          `;
+
+          patternContainer.appendChild(resultDiv);
+        } catch (error) {
+          console.error('Erro ao classificar o item:', error);
+        }
+      }
+
+      loadingElement.textContent = textoInicial;
+      hideLoading(2);
+    }
+
     async function createCard() {
       try {
-        showLoading(1);
+        showLoading(2);
 
         const boardId = getBoardIdFromUrl();
         const originalCardId = getCardIdFromUrl();
@@ -211,14 +267,14 @@
           linkContainer.appendChild(document.createElement('br'));
         }
 
-        showStep(2);
+        showStep(3);
       
       } catch (error) {
         console.error('❌ Erro ao criar o card:', error.message || error);
         alert(`Erro ao criar o card: ${error.message || 'Verifique o console para mais detalhes.'}`);
       }
     finally {
-        hideLoading(1);
+        hideLoading(2);
       }
     }
 
