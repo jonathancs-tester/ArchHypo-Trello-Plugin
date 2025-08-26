@@ -127,6 +127,12 @@
     }
 
     async function editPlan() {
+      const selectedCheckboxes = document.querySelectorAll('.plano-checkbox:checked');
+        if (selectedCheckboxes.length === 0) {
+          alert('Por favor, selecione pelo menos um item do plano para editar.');
+          return;
+        }
+
       showStep(1);
       showLoading(1);
 
@@ -160,6 +166,11 @@
     }
 
     async function classifyPattern() {
+      const selectedCheckboxes = document.querySelectorAll('.plano-checkbox:checked');
+        if (selectedCheckboxes.length === 0) {
+          alert('Por favor, selecione pelo menos um item do plano para editar.');
+          return;
+        }
       showStep(2);
       showLoading(2);
 
@@ -196,7 +207,7 @@
       // Processa cada item
       for (let i = 0; i < itemTexts.length; i++) {
         const itemText = itemTexts[i];
-        loadingElement.textContent = `${textoInicial} - TPI ${i + 1} (Espera estimada: 15 segundos)`;
+        loadingElement.textContent = `${textoInicial} - (Espera estimada: 15 segundos)`;
 
         try {
           const res = await fetch(`/.netlify/functions/classifyPattern`, {
