@@ -10,7 +10,7 @@ Plugin para Trello que integra funcionalidades de arquitetura hipotética (ArchH
 
 
 ![Build](https://img.shields.io/badge/build-passed-brightgreen)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/5fe0636c-5fe3-4cdc-9c25-17b7464cf841/deploy-status)](https://app.netlify.com/projects/archhypo/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/5fe0636c-5fe3-4cdc-9c25-17b7464cf841/deploy-status?branch=main)](https://app.netlify.com/projects/archhypo/deploys)
 
 ---
 

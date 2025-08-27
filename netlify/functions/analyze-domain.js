@@ -18,10 +18,17 @@
     const idiomaTexto = idioma === 'por' ? 'português' : 'inglês' 
 
     const prompt = ChatPromptTemplate.fromTemplate(
-    `Dado o contexto: "{input}", identifique o domínio do problema e explique o motivo.
+    `Dado o contexto: "{input}", identifique o domínio do problema ("Desempenho", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Productividade") e explique o motivo.
 
-    ** O domínio do problema somente deve ser identificado como um dos seguintes: "Desempenho", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Productividade".**
     **Responda em: ${idiomaTexto}**
+
+    Use este mapeamento para traduzir o domínio do problema para português, se necessário:
+    - Performance → Desempenho
+    - Security → Segurança
+    - Reliability → Confiabilidade
+    - Flexibility → Flexibilidade
+    - Usability → Usabilidade
+    - Productivity → Produtividade
 
     Formato da resposta (em JSON):
     {{"sugestao": "domínio do problema", "motivo": "explicação no mesmo idioma do input"}}.`
