@@ -263,7 +263,7 @@
 
         for (let i = 0; i < patternItems.length; i++) {
           const itemText = patternItems[i].querySelector('p').textContent;
-          const patternText = patternItems[i].querySelector('textarea').value;
+          const patternText = patternItems[i].querySelector('select').value;
 
           const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=ITEM PLANO TECNICO`, {
             method: "POST",
