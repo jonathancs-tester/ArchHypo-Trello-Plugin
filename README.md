@@ -37,7 +37,13 @@ Plugin para Trello que integra funcionalidades de arquitetura hipotética (ArchH
 ### 🔑 Principais Ações
 
 #### 🗂️ Criar um Board Template  
-Adicione hipóteses diretamente aos cards do Trello com campos personalizados para iniciar seu fluxo de trabalho.
+Adicione as colunas obrigatórias necessárias (ex: INCERTEZA, ITEM PLANO TECNICO, A FAZER, EM ANDAMENTO CONCLUIDO) para utilizar a gestão de hipóteses e decisões arquiteturais .
+
+![Add Board Template](image-1.png)
+
+![Board Template](image.png)
+
+Lembrando que você pode criar outras colunas personalizadas.
 
 #### ❓ Criar uma Incerteza  
 Ao registrar uma **Incerteza**, o LLM sugere uma **Hipótese** e sua classificação (pode ser ajustada pelo usuário).
