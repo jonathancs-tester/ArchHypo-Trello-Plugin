@@ -15,12 +15,13 @@ Plugin para Trello que integra funcionalidades de arquitetura hipotética (ArchH
 
 # 📑 Sumário
 - [📖 User Guide](#-user-guide)
-  - [Funcionalidades Principais](#funcionalidades-principais)
-    - [Criação de Hipóteses Arquiteturais](#criação-de-hipóteses-arquiteturais)
-    - [Classificação e Priorização](#classificação-e-priorização)
-    - [Histórico de Decisões](#histórico-de-decisões)
-    - [Integração com Labels e Checklists](#integração-com-labels-e-checklists)
-  - [Como Usar](#como-usar)
+  - [Principais Ações](#-principais-ações)
+    - [Criar um Board Template](#%EF%B8%8F-criar-um-board-template)
+    - [Criar uma Incerteza](#-criar-uma-incerteza)
+    - [Criar Plano Técnico](#-criar-plano-técnico)
+    - [Add/Atualizar Métricas](#-addatualizar-métricas)
+    - [ArchHypo Métricas](#-archhypo-métricas)
+  - [Como Usar (Passo a Passo)](#-como-usar-passo-a-passo)
 - [🛠️ Rodando Localmente](#️-rodando-localmente)
   - [Pré-requisitos](#-pré-requisitos)
   - [Instalação](#-instalação)
@@ -41,7 +42,7 @@ Adicione as colunas obrigatórias necessárias (ex: INCERTEZA, ITEM PLANO TECNIC
 
 ![Add Board Template](img/image-1.png)
 
-![Board Template](image.png)
+![Board Template](img/image.png)
 
 Lembrando que você pode criar outras colunas personalizadas.
 
