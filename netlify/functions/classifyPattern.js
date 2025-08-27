@@ -1,189 +1,197 @@
-  import pdf from 'pdf-parse/lib/pdf-parse.js';
-  import fs from 'fs-extra';
-  import path from 'path';
-  import dotenv from 'dotenv';
-  import { ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-  import { StructuredOutputParser } from 'langchain/output_parsers';
-  import { Document } from 'langchain/document';
-  import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-  import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-  import { franc } from 'franc';
+import pdf from 'pdf-parse/lib/pdf-parse.js';
+import fs from 'fs-extra';
+import path from 'path';
+import dotenv from 'dotenv';
+import { ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { StructuredOutputParser } from 'langchain/output_parsers';
+import { Document } from 'langchain/document';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { FAISS } from "@langchain/community/vectorstores/faiss";
+import { franc } from 'franc';
 
-  dotenv.config();
+dotenv.config();
 
-  const API_KEY = process.env.GENAI_API_KEY;
+const API_KEY = process.env.GENAI_API_KEY;
 
-  // 🔧 Parser do JSON
-  const parser = StructuredOutputParser.fromNamesAndDescriptions({
-    pattern: "Names of select up to three most appropriate ArchHypo patterns (separated by commas)",
-    reason: "Reason for the choice.",
+// 🔧 Parser do JSON
+const parser = StructuredOutputParser.fromNamesAndDescriptions({
+  pattern: "Names of select the most appropriate ArchHypo patterns",
+  reason: "Reason for the choice.",
+});
+
+// 🔍 Função para extrair texto dos PDFs
+async function extractTextFromPDF(filePath) {
+  const dataBuffer = await fs.readFile(filePath);
+  const data = await pdf(dataBuffer);
+  return data.text;
+}
+
+// 🔧 Função para criar ou carregar FAISS
+async function getVectorStore(texts, embeddings) {
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 2000,
+    chunkOverlap: 200,
   });
 
-  // 🔍 Função para extrair texto dos PDFs
-  async function extractTextFromPDF(filePath) {
-    const dataBuffer = await fs.readFile(filePath);
-    const data = await pdf(dataBuffer);
-    return data.text;
+  const docs = texts.map((text) => new Document({ pageContent: text }));
+  const splitDocs = await splitter.splitDocuments(docs);
+
+  const faissPath = path.join(__dirname, 'faiss_index');
+
+  if (await fs.pathExists(faissPath)) {
+    return await FAISS.load(faissPath, embeddings);
   }
 
-  // 🔧 Função que monta o RAG
-  async function classifyPattern(hypothesis, combinedDocs) {
-    const llm = new ChatGoogleGenerativeAI({
-      model: "gemini-2.5-flash",  // Sem o 'models/' na frente
-      apiKey: API_KEY,
-    });
+  const vectorStore = await FAISS.fromDocuments(splitDocs, embeddings);
+  await vectorStore.save(faissPath);
 
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 2000,
-      chunkOverlap: 200,
-    });
+  return vectorStore;
+}
 
-    const docs = combinedDocs.map(
-      (text) => new Document({ pageContent: text })
-    );
+// 🔧 Função que monta o RAG
+async function classifyPattern(hypothesis, combinedDocs) {
+  const llm = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash",
+    apiKey: API_KEY,
+  });
 
-    const splitDocs = await splitter.splitDocuments(docs);
+  const embeddings = new GoogleGenerativeAIEmbeddings({
+    apiKey: API_KEY,
+    model: "models/embedding-001",
+  });
 
-    const embeddings = new GoogleGenerativeAIEmbeddings({
-      apiKey: API_KEY,
-      model: "models/embedding-001",
-    });
+  const vectorStore = await getVectorStore(combinedDocs, embeddings);
 
-    const vectorStore = await MemoryVectorStore.fromDocuments(
-      splitDocs,
-      embeddings
-    );
+  const relevantDocs = await vectorStore.similaritySearch(hypothesis, 20);
+  const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
 
-    const relevantDocs = await vectorStore.similaritySearch(hypothesis, 20);
-    const context = relevantDocs.map((doc) => doc.pageContent).join("\n\n---\n\n");
-    const idioma = franc(hypothesis);
-    const idiomaTexto = idioma === 'por' ? 'português' : 'inglês'
+  const idioma = franc(hypothesis);
+  const idiomaTexto = idioma === 'por' ? 'português' : 'inglês';
 
-    const prompt = `
-  You are an expert in software architecture.
+  const prompt = `
+You are an expert in software architecture.
 
-  Task:
-  Given the hypothesis and the document content below, select up to one ArchHypo pattern that best match the hypothesis. Only include patterns below:
-    "Architectural Hypotheses",
-    "Architectural Spike",
-    "Architectural Trigger",
-    "Architecture in the Backlog",
-    "Bring the Specialist",
-    "Choose the Means",
-    "Climbing on the Shoulders of Giants",
-    "Continuous Inspection",
-    "Define Quality Standards",
-    "Find Where it Hurts",
-    "Hypothesis Impact",
-    "Learning from Experiments",
-    "Plan Analytics Implementation",
-    "Plan for Preparation",
-    "Plan for Responsible Moments",
-    "Postpone Uncertain Decisions",
-    "Protective Guideline",
-    "Quality Checkpoint",
-    "Reachable Goals",
-    "Small Steps for Analytics",
-    "Suspend Measurement",
-    "Technical Debt Management",
-    "Test Architecture",
-    "Tracer Bullets",
-    "Uncertainty Level",
-    "What you Need to Know"
-  Do NOT invent, assume, or suggest any pattern not present in the document content.
+Task:
+Given the hypothesis and the document content below, select up to one ArchHypo pattern that best match the hypothesis. Only include patterns below:
+  "Architectural Hypotheses",
+  "Architectural Spike",
+  "Architectural Trigger",
+  "Architecture in the Backlog",
+  "Bring the Specialist",
+  "Choose the Means",
+  "Climbing on the Shoulders of Giants",
+  "Continuous Inspection",
+  "Define Quality Standards",
+  "Find Where it Hurts",
+  "Hypothesis Impact",
+  "Learning from Experiments",
+  "Plan Analytics Implementation",
+  "Plan for Preparation",
+  "Plan for Responsible Moments",
+  "Postpone Uncertain Decisions",
+  "Protective Guideline",
+  "Quality Checkpoint",
+  "Reachable Goals",
+  "Small Steps for Analytics",
+  "Suspend Measurement",
+  "Technical Debt Management",
+  "Test Architecture",
+  "Tracer Bullets",
+  "Uncertainty Level",
+  "What you Need to Know"
+Do NOT invent, assume, or suggest any pattern not present in the document content.
 
 Respond in **${idiomaTexto}** with valid JSON using this format:
- ${parser.getFormatInstructions()}
+${parser.getFormatInstructions()}
 
-  Hypothesis:
-  "${hypothesis}"
+Hypothesis:
+"${hypothesis}"
 
-  Pattern clarification examples:
-  - "Tracer Bullets": when the hypothesis involves building a minimal, functional implementation to quickly test feasibility or integration in practice.
+Pattern clarification examples:
+- "Tracer Bullets": when the hypothesis involves building a minimal, functional implementation to quickly test feasibility or integration in practice.
 
-  Document content:
-  ${context}
-  `;
+Document content:
+${context}
+`;
 
-    const response = await llm.invoke(prompt);
+  const response = await llm.invoke(prompt);
+  const rawOutput = response.text || response.candidates?.[0]?.content || '';
 
-    const rawOutput = response.text || response.candidates?.[0]?.content || '';
+  const cleaned = rawOutput
+    .replace(/```(?:json)?\s*/gi, '')
+    .replace(/```/g, '')
+    .trim();
 
-    const cleaned = rawOutput
-      .replace(/```(?:json)?\s*/gi, '')
-      .replace(/```/g, '')
-      .trim();
+  try {
+    const parsed = await parser.parse(cleaned);
+    return parsed;
+  } catch (error) {
+    console.error('❌ Parser JSON Error:', cleaned);
+    throw error;
+  }
+}
 
-    try {
-      const parsed = await parser.parse(cleaned);
-      return parsed;
-    } catch (error) {
-      console.error('❌ Parser JSON Error:', cleaned);
-      throw error;
-    }
+// 🚀 Função Serverless Netlify
+export async function handler(event) {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Use POST.' }),
+    };
   }
 
-  // 🚀 Função Serverless Netlify
-  export async function handler(event) {
-    if (event.httpMethod !== 'POST') {
+  try {
+    console.time('🔍 Total Time');
+
+    const { hypothesis } = JSON.parse(event.body);
+
+    if (!hypothesis) {
       return {
-        statusCode: 405,
-        body: JSON.stringify({ error: 'Use POST.' }),
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing hypothesis.' }),
       };
     }
 
-    try {
-      console.time('🔍 Total Time');
+    const folderPath = path.join(__dirname, 'docs');
 
-      const { hypothesis } = JSON.parse(event.body);
-
-      if (!hypothesis) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: 'Missing hypothesis.' }),
-        };
-      }
-
-      const folderPath = path.join(__dirname, 'docs');
-
-      if (!(await fs.pathExists(folderPath))) {
-        return {
-          statusCode: 500,
-          body: JSON.stringify({ error: 'Docs folder not found.' }),
-        };
-      }
-
-      console.time('📄 Reading PDF files');
-      const files = await fs.readdir(folderPath);
-      const pdfFiles = files.filter((file) => file.endsWith('.pdf'));
-      console.timeEnd('📄 Reading PDF files');
-
-      if (pdfFiles.length === 0) {
-        return {
-          statusCode: 500,
-          body: JSON.stringify({ error: 'No PDF files found.' }),
-        };
-      }
-
-      console.time('📝 Extract PDFs info');
-      const texts = await Promise.all(
-        pdfFiles.map((file) => extractTextFromPDF(path.join(folderPath, file)))
-      );
-      console.timeEnd('📝 Extract PDFs info');
-
-      const result = await classifyPattern(hypothesis, texts);
-
-      console.timeEnd('🔍 Total Time');
-
-      return {
-        statusCode: 200,
-        body: JSON.stringify(result),
-      };
-    } catch (error) {
-      console.error('Error:', error);
+    if (!(await fs.pathExists(folderPath))) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: error.message }),
+        body: JSON.stringify({ error: 'Docs folder not found.' }),
       };
     }
+
+    console.time('📄 Reading PDF files');
+    const files = await fs.readdir(folderPath);
+    const pdfFiles = files.filter((file) => file.endsWith('.pdf'));
+    console.timeEnd('📄 Reading PDF files');
+
+    if (pdfFiles.length === 0) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'No PDF files found.' }),
+      };
+    }
+
+    console.time('📝 Extract PDFs info');
+    const texts = await Promise.all(
+      pdfFiles.map((file) => extractTextFromPDF(path.join(folderPath, file)))
+    );
+    console.timeEnd('📝 Extract PDFs info');
+
+    const result = await classifyPattern(hypothesis, texts);
+
+    console.timeEnd('🔍 Total Time');
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(result),
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
   }
+}
