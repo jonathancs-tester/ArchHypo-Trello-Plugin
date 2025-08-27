@@ -18,7 +18,7 @@
     const idiomaTexto = idioma === 'por' ? 'português' : 'inglês' 
 
     const prompt = ChatPromptTemplate.fromTemplate(
-    `Dado o contexto: "{input}", identifique o domínio do problema ("Desempenho", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Productividade") e explique o motivo.
+    `Dado o contexto: "{input}", classifique o domínio do problema em ("Desempenho", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Productividade") e explique o motivo.
 
     **Responda em: ${idiomaTexto}**
 

@@ -219,14 +219,29 @@
           const data = await res.json();
 
           const resultDiv = document.createElement('div');
+          const fixedOptions = ["Architectural Hypotheses", "Architectural Spike", "Architectural Trigger",
+                    "Architecture in the Backlog", "Bring the Specialist", "Choose the Means",
+                    "Climbing on the Shoulders of Giants", "Continuous Inspection",
+                    "Define Quality Standards", "Find Where it Hurts", "Hypothesis Impact",
+                    "Learning from Experiments", "Plan Analytics Implementation",
+                    "Plan for Preparation", "Plan for Responsible Moments",
+                    "Postpone Uncertain Decisions", "Protective Guideline",
+                    "Quality Checkpoint", "Reachable Goals", "Small Steps for Analytics",
+                    "Suspend Measurement", "Technical Debt Management",
+                    "Test Architecture", "Tracer Bullets", "Uncertainty Level",
+                    "What you Need to Know"];
           resultDiv.className = 'pattern-result';
           resultDiv.innerHTML = `
             <p>${itemText}</p>
-            <textarea>${data.pattern}</textarea>
+            <select id="patternSelect">
+                ${fixedOptions.map(option => `
+                  <option value="${option}" ${option === data.pattern ? 'selected' : ''}>${option}</option>
+                `).join('')}
+              </select>
             ${motivoHTML(data.reason)}
           `;
-
           patternContainer.appendChild(resultDiv);
+
         } catch (error) {
           console.error('Erro ao classificar o item:', error);
         }
