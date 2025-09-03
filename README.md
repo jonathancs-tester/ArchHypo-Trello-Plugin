@@ -53,11 +53,12 @@ Crie um arquivo .env com as seguintes variáveis:
 BACKEND_URL=url_backend_server
 GENAI_API_KEY=llm_api_key
 GENAI_URL=llm_base_url
-NON_FUNCTIONAL=archhypo_non_functional_requirements
-PATTERN=archhypo_pattern
 TRELLO_API_URL=trello_base_url
 TRELLO_KEY=trello_key
 TRELLO_TOKEN=trello_token
+PINECONE_API_KEY=pinecode_api_key
+PINECONE_ENV=pinecode_endpoint
+PINECONE_INDEX=pinecode_index
 ```
 
 ### 🔧 Executando localmente
