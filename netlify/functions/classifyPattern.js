@@ -1,12 +1,6 @@
-import pdf from 'pdf-parse/lib/pdf-parse.js';
-import fs from 'fs-extra';
-import path from 'path';
 import dotenv from 'dotenv';
-import crypto from 'crypto';
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StructuredOutputParser } from 'langchain/output_parsers';
-import { Document } from 'langchain/document';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { Pinecone } from "@pinecone-database/pinecone";
 import { franc } from 'franc';
 
@@ -67,7 +61,7 @@ async function queryPinecone(hypothesis, topK = 20) {
 
 // --- Classificação com LLM ---
 async function classifyPattern(hypothesis) {
-  const llm = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash", apiKey: API_KEY });
+  const llm = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash", apiKey: API_KEY, verbose: true });
   const relevantDocs = await queryPinecone(hypothesis, 20);
   const context = relevantDocs.join("\n\n---\n\n");
 
