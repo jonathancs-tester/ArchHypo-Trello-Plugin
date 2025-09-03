@@ -82,7 +82,7 @@ Task:
 Given the hypothesis and the document content below, select up to one ArchHypo pattern that best match the hypothesis.
 Do NOT invent patterns.
 
-If the selected pattern is "What You Need to Know", then include "Software Analytics" in the result.
+If the selected pattern is "What You Need to Know", then substitute it with "Software Analytics" in the result.
 
 Respond in **${idiomaTexto}** with valid JSON:
 ${parser.getFormatInstructions()}
