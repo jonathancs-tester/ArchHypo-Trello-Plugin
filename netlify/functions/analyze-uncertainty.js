@@ -26,7 +26,7 @@
           Alto: A hipótese é baseada em suposições e poucas evidências concretas. A análise requer cautela e pode envolver riscos.
           Muito Alto: A hipótese é altamente especulativa. Não há dados disponíveis e o cenário é desconhecido, exigindo investigação aprofundada.
 
-      **Responda em: ${idiomaTexto}**
+      **Responda em: português**
 
   Responda no formato JSON:
   {{"sugestao": "incerteza", "motivo": "explicação"}}.`

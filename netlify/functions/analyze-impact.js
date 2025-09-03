@@ -27,7 +27,7 @@
       Alto: O problema é significativo e afeta áreas críticas. Há poucas evidências concretas, e uma solução pode exigir investigação ou testes.
       Muito Alto: A situação é altamente incerta. Não há dados disponíveis, e o impacto pode ser imprevisível. Exige análise aprofundada e cautela.
     
-    **Responda em: ${idiomaTexto}**
+    **Responda em: português**
 
   Responda no formato JSON: 
   {{"sugestao": "impacto", "motivo": "explicação"}}.`

@@ -19,7 +19,7 @@
     const prompt = ChatPromptTemplate.fromTemplate(
       `Dado o contexto: "{input}", sugira somente um plano tecnico com 3 a 5 items separados **obrigatoriamente pela string '\n'** e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
 
-      **Responda em: ${idiomaTexto}**
+      **Responda em: português**
 
       Responda no formato JSON: 
   {{"sugestao": "plano tecnico", "motivo": "explicação", "justificativa": "objetivo", "descricao": "o que deve ser feito", "tradeoff": "quais sao os tradeoff/observações" }}.`

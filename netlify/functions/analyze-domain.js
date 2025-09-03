@@ -20,7 +20,7 @@
     const prompt = ChatPromptTemplate.fromTemplate(
     `Dado o contexto: "{input}", identifique o domínio do problema ("Desempenho", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Productividade") e explique o motivo.
 
-    **Responda em: ${idiomaTexto}**
+    **Responda em: português**
 
     Use este mapeamento para traduzir o domínio do problema para português, se necessário:
     - Performance → Desempenho
