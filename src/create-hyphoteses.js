@@ -9,10 +9,23 @@
     hipoteseMotivo: '',
     dominio: '',
     dominioMotivo: '',
+    language: 'pt' // Idioma padrão
   };
 
   let currentStep = 0;
   let sugestaoOriginal = '';
+
+  function updateLanguage(lang) {
+    state.language = lang;
+    
+    // Atualizar placeholders e textos baseados no idioma
+    const contextoField = document.getElementById('contexto');
+    if (state.language === 'pt') {
+      contextoField.placeholder = "Descreva a incerteza, situação ou contexto em detalhes...";
+    } else {
+      contextoField.placeholder = "Describe the uncertainty, situation or context in detail...";
+    }
+  }
 
   function getBoardIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -57,7 +70,10 @@
     const res = await fetch(`/.netlify/functions/${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ input }),
+      body: JSON.stringify({ 
+        input,
+        language: state.language 
+      }),
     });
 
     const data = await res.json();

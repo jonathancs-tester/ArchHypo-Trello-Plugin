@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { Pinecone } from "@pinecone-database/pinecone";
-import { franc } from 'franc';
+import { cleanAndParseJSON } from './json-utils.js';
 
 dotenv.config();
 
@@ -60,13 +60,13 @@ async function queryPinecone(hypothesis, topK = 20) {
 }
 
 // --- Classificação com LLM ---
-async function classifyPattern(hypothesis) {
+async function classifyPattern(hypothesis, language = 'pt') {
   const llm = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash", apiKey: API_KEY, verbose: true });
   const relevantDocs = await queryPinecone(hypothesis, 20);
   const context = relevantDocs.join("\n\n---\n\n");
 
-  const idioma = franc(hypothesis);
-  const idiomaTexto = idioma === 'por' ? 'português' : 'inglês';
+  // Usar idioma enviado pelo frontend em vez de detecção automática
+  const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
   console.log(`🧠 Classificando hipótese (${idiomaTexto})...`);
 
@@ -90,16 +90,16 @@ ${context}
 
   const response = await llm.invoke(prompt);
   const rawOutput = response.text || response.candidates?.[0]?.content || '';
-  const cleaned = rawOutput.replace(/```(?:json)?\s*/gi, '').replace(/```/g, '').trim();
 
-  console.log("📝 Resposta LLM bruta:", cleaned);
+  console.log("📝 Resposta LLM bruta:", rawOutput);
 
   try {
-    const parsed = await parser.parse(cleaned);
+    // Usar a função de parse robusto
+    const parsed = cleanAndParseJSON(rawOutput);
     console.log("✅ JSON válido recebido do LLM:", parsed);
     return parsed;
   } catch (error) {
-    console.error("❌ Erro ao parsear JSON:", cleaned);
+    console.error("❌ Erro ao parsear JSON:", rawOutput);
     throw error;
   }
 }
@@ -109,12 +109,12 @@ export async function handler(event) {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ error: 'Use POST.' }) };
 
   try {
-    const { hypothesis } = JSON.parse(event.body);
+    const { hypothesis, language = 'pt' } = JSON.parse(event.body);
     if (!hypothesis) return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
 
     console.log("🚀 Iniciando processamento de hipótese...");
 
-    const result = await classifyPattern(hypothesis);
+    const result = await classifyPattern(hypothesis, language);
     return { statusCode: 200, body: JSON.stringify(result) };
 
   } catch (error) {

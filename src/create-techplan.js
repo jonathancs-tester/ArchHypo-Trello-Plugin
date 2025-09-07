@@ -2,11 +2,16 @@
       title: '',
       justificativa: '',
       descricao: '',
-      tradeoff: ''
+      tradeoff: '',
+      language: 'pt' // Idioma padrão
     };
     
     let currentStep = 0;
     var cardId = '';
+
+    function updateLanguage(lang) {
+      state.language = lang;
+    }
 
     function getBoardIdFromUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -63,7 +68,10 @@
       const res = await fetch(`/.netlify/functions/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input }),
+        body: JSON.stringify({ 
+          input, 
+          language: state.language 
+        }),
       });
 
       const data = await res.json();
@@ -213,7 +221,10 @@
           const res = await fetch(`/.netlify/functions/classifyPattern`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ hypothesis: itemText }),
+            body: JSON.stringify({ 
+              hypothesis: itemText, 
+              language: state.language 
+            }),
           });
 
           const data = await res.json();
