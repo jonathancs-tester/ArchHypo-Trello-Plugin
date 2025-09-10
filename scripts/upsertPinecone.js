@@ -25,8 +25,17 @@ async function getPineconeClient() {
 async function extractTextFromPDF(filePath) {
   const dataBuffer = await fs.readFile(filePath);
   const data = await pdf(dataBuffer);
-  console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${data.text.length} chars)`);
-  return data.text;
+  
+  let text = data.text;
+  const cutoffIndex = text.indexOf("Therefore:");
+  if (cutoffIndex !== -1) {
+    text = text.substring(0, cutoffIndex);
+  }
+
+  console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${text.length} chars antes de 'Therefore:')`);
+  return text;
+  // console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${data.text.length} chars)`);
+  // return data.text;
 }
 
 // Função para gerar embeddings
