@@ -1,4 +1,4 @@
-  const state = {
+const state = {
     contexto: '',
     incertezaTotal: 0,
     incerteza: '',
@@ -15,17 +15,92 @@
   let currentStep = 0;
   let sugestaoOriginal = '';
 
-  function updateLanguage(lang) {
-    state.language = lang;
-    
-    // Atualizar placeholders e textos baseados no idioma
-    const contextoField = document.getElementById('contexto');
-    if (state.language === 'pt') {
-      contextoField.placeholder = "Descreva a incerteza, situação ou contexto em detalhes...";
-    } else {
-      contextoField.placeholder = "Describe the uncertainty, situation or context in detail...";
+  // Expandir as traduções
+const translations = {
+  pt: {
+    placeholders: {
+      contexto: "Descreva a incerteza, situação ou contexto em detalhes...",
+      loading: "⏳ Processando...",
+      next: "Próximo",
+      previous: "Anterior"
+    },
+    messages: {
+      confirmLeave: "As informações preenchidas serão perdidas. Deseja voltar mesmo assim?",
+      createCardError: "Erro ao criar o card:",
+      checkConsole: "Verifique o console para mais detalhes.",
+      justification: "Justificativa: (clique aqui)",
+      objective: "**Objetivo:**",
+      description: "**Descrição:**",
+      domain: "**Domínio:**",
+      uncertainty: "**Incerteza:**",
+      impact: "**Impacto:**"
+    }
+  },
+  en: {
+    placeholders: {
+      contexto: "Describe the uncertainty, situation or context in detail...",
+      loading: "⏳ Processing...",
+      next: "Next",
+      previous: "Previous"
+    },
+    messages: {
+      confirmLeave: "The filled information will be lost. Do you really want to go back?",
+      createCardError: "Error creating card:",
+      checkConsole: "Check console for more details.",
+      justification: "Justification: (click here)",
+      objective: "**Objective:**",
+      description: "**Description:**",
+      domain: "**Domain:**",
+      uncertainty: "**Uncertainty:**",
+      impact: "**Impact:**"
     }
   }
+};
+
+// Função para atualizar textos
+function updateTexts(language) {
+  const texts = translations[language];
+  
+  const contextoTextarea = document.getElementById('contexto');
+  if (contextoTextarea) {
+    contextoTextarea.placeholder = texts.placeholders.contexto;
+  }
+  
+  document.querySelectorAll('.loading-indicator').forEach(el => {
+    el.textContent = texts.placeholders.loading;
+  });
+  
+  document.querySelectorAll('button').forEach(button => {
+    const text = button.textContent.trim();
+    if (text === 'Próximo' || text === 'Next') {
+      button.textContent = texts.placeholders.next;
+    }
+    if (text === 'Anterior' || text === 'Previous') {
+      button.textContent = texts.placeholders.previous;
+    }
+  });
+}
+
+// Função helper para obter texto traduzido
+function t(key) {
+  const keys = key.split('.');
+  let value = translations[state.language];
+  for (const k of keys) {
+    value = value[k];
+  }
+  return value || key;
+}
+
+function updateLanguage(newLanguage) {
+  state.language = newLanguage;
+  updateTexts(newLanguage);
+  console.log('Language updated to:', newLanguage);
+}
+
+// Inicializar textos no carregamento
+document.addEventListener('DOMContentLoaded', () => {
+  updateTexts(state.language);
+});
 
   function getBoardIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -42,7 +117,7 @@
   }
 
   function previousStep() {
-    const confirmLeave = window.confirm("As informações preenchidas serão perdidas. Deseja voltar mesmo assim?");
+    const confirmLeave = window.confirm(t('messages.confirmLeave'));
     if (confirmLeave && currentStep >= 0) {
       showStep(currentStep - 1);
     }
@@ -254,6 +329,7 @@
   }
 
   async function createCard() {
+    try {
       showLoading(4);
       state.impacto = document.getElementById('impacto').value;
       state.impactoMotivo = document.getElementById('impactoResultado').value;
@@ -269,12 +345,14 @@
               "**Nível de Impacto:** " + state.impacto
       };
 
-      try {
-          const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=INCERTEZA`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-          });
+      const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=HIPOTESES ARQUITETURAIS`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: state.hipotese,
+          detalhes: `${t('messages.objective')} ${state.hipoteseMotivo}\n${t('messages.domain')} ${state.dominio}\n${t('messages.uncertainty')} ${state.incerteza}\n${t('messages.impact')} ${state.impacto}`
+        })
+      });
 
           const result = await res.json();
 
@@ -288,17 +366,17 @@
           document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">${data.name}</a>`;
           showStep(5);
       } catch (error) {
-          console.error('❌ Request error:', error);
-          alert('Error creating the card. Check the console for more details.');
+        console.error('❌ Erro ao criar o card:', error.message || error);
+        alert(`${t('messages.createCardError')} ${error.message || t('messages.checkConsole')}`);
+      } finally {
+        hideLoading(3);
       }
-      hideLoading(4);
-      showStep(5);
   }
 
   function motivoHTML(motivo) {
     return `
       <details>
-        <summary><em>Justificativa: (clique aqui)</em></summary>
+        <summary><em>${t('messages.justification')}</em></summary>
         <p>${motivo}</p>
       </details>
     `;
