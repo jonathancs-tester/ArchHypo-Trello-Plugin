@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { Pinecone } from "@pinecone-database/pinecone";
-import { cleanAndParseJSON } from './json-utils.js';
+import { cleanAndParseJSON } from './utils/json-utils.js';
 
 dotenv.config();
 

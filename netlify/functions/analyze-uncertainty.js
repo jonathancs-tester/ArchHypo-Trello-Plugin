@@ -1,7 +1,7 @@
-  import { handleCors, corsHeaders } from './cors.js';
+  import { handleCors, corsHeaders } from './utils/cors.js';
   import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
   import { ChatPromptTemplate } from "@langchain/core/prompts";
-  import { cleanAndParseJSON } from './json-utils.js';
+  import { cleanAndParseJSON } from './utils/json-utils.js';
 
   export async function handler(event) {
     const corsResponse = handleCors(event);
