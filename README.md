@@ -20,6 +20,7 @@ Plugin para Trello que integra funcionalidades de arquitetura hipotética (ArchH
   - [Instalação](#-instalação)
   - [Configuração](#configuração)
   - [Executando localmente](#-executando-localmente)
+- [🧠 Configuração RAG](#-configuração-rag)
 - [📄 Licença](#-licença)
 - [🤝 Contribuição](#-contribuição)
 - [📬 Contato](#-contato)
@@ -67,6 +68,36 @@ PINECONE_INDEX=pinecode_index
 npx netlify dev
 ```
 A aplicação estará disponível em http://localhost:8888.
+
+## 🧠 Configuração RAG
+
+O sistema RAG (Retrieval-Augmented Generation) utiliza os seguintes parâmetros para o processamento de documentos:
+
+### Tamanho dos Chunks
+- **Chunk Size**: `2000` caracteres
+- **Chunk Overlap**: `200` caracteres
+
+Estes parâmetros estão configurados em `scripts/upsertPinecone.js` na linha 82, utilizando o `RecursiveCharacterTextSplitter` do LangChain:
+
+```javascript
+const splitter = new RecursiveCharacterTextSplitter({ 
+  chunkSize: 2000, 
+  chunkOverlap: 200 
+});
+```
+
+### Como Funciona
+1. **Extração**: PDFs são processados e o texto é extraído
+2. **Divisão**: O texto é dividido em chunks de 2000 caracteres com sobreposição de 200 caracteres
+3. **Embedding**: Cada chunk é convertido em embedding usando Gemini Embedding API
+4. **Armazenamento**: Os embeddings são armazenados no Pinecone para consulta posterior
+
+### Atualização da Base Vetorial
+Para atualizar a base de conhecimento com novos documentos:
+
+```sh
+node scripts/upsertPinecone.js
+```
 
 ## 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
