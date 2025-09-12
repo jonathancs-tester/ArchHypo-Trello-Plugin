@@ -246,13 +246,8 @@
                   ];
           resultDiv.className = 'pattern-result';
           resultDiv.innerHTML = `
-            <p>${itemText}</p>
-            <div class="pattern-hover-container">
-              <select id="patternSelect">
-                ${fixedOptions.map(option => `
-                  <option value="${option}" ${option === data.pattern ? 'selected' : ''}>${option}</option>
-                `).join('')}
-              </select>
+            <div class="pattern-header">
+              <p>${itemText}</p>
               <span class="hover-info">
                 ℹ️
                 <div class="hover-box">
@@ -264,6 +259,13 @@
                   <b>Relevância da Resposta:</b> ${data.evaluation?.relevanceScore?.toFixed(2)}
                 </div>
               </span>
+            </div>
+            <div class="pattern-hover-container">
+              <select id="patternSelect">
+                ${fixedOptions.map(option => `
+                  <option value="${option}" ${option === data.pattern ? 'selected' : ''}>${option}</option>
+                `).join('')}
+              </select>
             </div>
             ${motivoHTML(data.reason)}
           `;
