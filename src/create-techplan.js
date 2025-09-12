@@ -247,7 +247,6 @@
           resultDiv.className = 'pattern-result';
           resultDiv.innerHTML = `
             <div class="pattern-header">
-              <p>${itemText}</p>
               <span class="hover-info">
                 ℹ️
                 <div class="hover-box">
@@ -256,9 +255,10 @@
                   <b>Hit Rate:</b> ${data.evaluation?.hitRate?.toFixed(2)}<br>
                   <b>MRR:</b> ${data.evaluation?.mrr?.toFixed(2)}<br>
                   <b>Consistência Factual:</b> ${data.evaluation?.factualConsistencyScore?.toFixed(5)}<br>
-                  <b>Relevância da Resposta:</b> ${data.evaluation?.relevanceScore?.toFixed(2)}
+                  <b>Relevância da Resposta:</b> ${data.evaluation?.relevanceScore?.toFixed(5)}
                 </div>
               </span>
+              <p>${itemText}</p>
             </div>
             <div class="pattern-hover-container">
               <select id="patternSelect">
