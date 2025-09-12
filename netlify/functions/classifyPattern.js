@@ -18,9 +18,7 @@ const parser = StructuredOutputParser.fromNamesAndDescriptions({
 
 // --- Inicializa Pinecone ---
 async function getPineconeClient() {
-  console.log("🔌 Conectando ao Pinecone...");
   const client = new Pinecone({ apiKey: PINECONE_API_KEY });
-  console.log("✅ Conectado ao Pinecone!");
   return client;
 }
 
@@ -43,19 +41,12 @@ async function embedText(text) {
 
 // --- Consulta Pinecone ---
 async function queryPinecone(hypothesis, topK = 20) {
-  console.log(`🔎 Fazendo query no Pinecone com hipótese: "${hypothesis}"`);
   const vector = await embedText(hypothesis);
   const pinecone = await getPineconeClient();
   const index = pinecone.index(PINECONE_INDEX);
 
   const queryResponse = await index.query({ vector, topK, includeMetadata: true });
   const matches = queryResponse.matches || [];
-  console.log(`📊 Query retornou ${matches.length} resultados do Pinecone`);
-
-  matches.slice(0, 3).forEach((m, idx) => {
-    console.log(`   ▶️ Match ${idx + 1}: (score=${m.score?.toFixed(3)}) "${m.metadata?.text?.slice(0, 80)}..."`);
-  });
-
   return matches.map(m => m.metadata.text);
 }
 
@@ -67,8 +58,6 @@ async function classifyPattern(hypothesis) {
 
   const idioma = franc(hypothesis);
   const idiomaTexto = idioma === 'por' ? 'português' : 'inglês';
-
-  console.log(`🧠 Classificando hipótese (${idiomaTexto})...`);
 
   const prompt = `
 You are an expert in software architecture.
@@ -92,33 +81,71 @@ ${context}
   const rawOutput = response.text || response.candidates?.[0]?.content || '';
   const cleaned = rawOutput.replace(/```(?:json)?\s*/gi, '').replace(/```/g, '').trim();
 
-  console.log("📝 Resposta LLM bruta:", cleaned);
+  const parsed = await parser.parse(cleaned);
+  return parsed;
+}
 
-  try {
-    const parsed = await parser.parse(cleaned);
-    console.log("✅ JSON válido recebido do LLM:", parsed);
-    return parsed;
-  } catch (error) {
-    console.error("❌ Erro ao parsear JSON:", cleaned);
-    throw error;
-  }
+// --- Métricas de avaliação ---
+function precisionAtK(retrieved, relevant, k) {
+  const topK = retrieved.slice(0, k);
+  const relevantSet = new Set(relevant);
+  const hits = topK.filter(doc => relevantSet.has(doc));
+  return hits.length / k;
+}
+
+function hitRate(retrieved, relevant) {
+  const relevantSet = new Set(relevant);
+  const hits = retrieved.filter(doc => relevantSet.has(doc));
+  return hits.length / relevant.length;
+}
+
+async function calcularSimilaridadeSemantica(texto, documentos) {
+  const textoEmbedding = await embedText(texto);
+  const docsEmbeddings = await Promise.all(documentos.map(embedText));
+
+  const cosineSimilarity = (a, b) => {
+    const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
+    const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+    const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+    return dot / (normA * normB);
+  };
+
+  const scores = docsEmbeddings.map(docEmb => cosineSimilarity(textoEmbedding, docEmb));
+  const avgScore = scores.reduce((sum, val) => sum + val, 0) / scores.length;
+  return avgScore;
 }
 
 // --- Netlify Function handler ---
 export async function handler(event) {
-  if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ error: 'Use POST.' }) };
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: JSON.stringify({ error: 'Use POST.' }) };
+  }
 
   try {
     const { hypothesis } = JSON.parse(event.body);
-    if (!hypothesis) return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
-
-    console.log("🚀 Iniciando processamento de hipótese...");
+    if (!hypothesis) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
+    }
 
     const result = await classifyPattern(hypothesis);
-    return { statusCode: 200, body: JSON.stringify(result) };
+    const retrievedDocs = await queryPinecone(hypothesis, 20);
+    const relevantDocs = retrievedDocs; // ajuste se tiver um conjunto específico
+
+    const evaluation = {
+      precisionAt5: precisionAtK(retrievedDocs, relevantDocs, 5),
+      hitRate: hitRate(retrievedDocs, relevantDocs),
+      factualConsistencyScore: await calcularSimilaridadeSemantica(result.pattern, retrievedDocs)
+    };
+
+    const response = {
+      pattern: result.pattern,
+      reason: result.reason,
+      evaluation
+    };
+
+    return { statusCode: 200, body: JSON.stringify(response) };
 
   } catch (error) {
-    console.error("💥 Erro geral:", error);
     return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 }
