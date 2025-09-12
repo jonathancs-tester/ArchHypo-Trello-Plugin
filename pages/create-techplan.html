@@ -192,6 +192,39 @@
         opacity: 0.5;
         cursor: not-allowed;
       }
+
+      .pattern-hover-container {
+      position: relative;
+      display: inline-block;
+        margin-left: 10px;
+      }
+
+      .hover-info {
+        cursor: pointer;
+        margin-left: 8px;
+        font-size: 16px;
+        position: relative;
+      }
+
+      .hover-box {
+        display: none;
+        position: absolute;
+        top: 25px;
+        left: 0;
+        background-color: #f9f9f9;
+        color: #333;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        width: 220px;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        font-size: 14px;
+      }
+
+      .hover-info:hover .hover-box {
+        display: block;
+      }
     </style>
   </head>
   <body>

@@ -259,7 +259,9 @@
                   <strong>Métricas:</strong><br>
                   <b>Precision@5:</b> ${data.evaluation?.precisionAt5?.toFixed(2)}<br>
                   <b>Hit Rate:</b> ${data.evaluation?.hitRate?.toFixed(2)}<br>
-                  <b>Consistência Factual:</b> ${data.evaluation?.factualConsistencyScore?.toFixed(5)}
+                  <b>MRR:</b> ${data.evaluation?.mrr?.toFixed(2)}<br>
+                  <b>Consistência Factual:</b> ${data.evaluation?.factualConsistencyScore?.toFixed(5)}<br>
+                  <b>Relevância da Resposta:</b> ${data.evaluation?.relevanceScore?.toFixed(2)}
                 </div>
               </span>
             </div>

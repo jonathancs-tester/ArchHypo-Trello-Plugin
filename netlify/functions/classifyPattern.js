@@ -10,7 +10,7 @@ const API_KEY = process.env.GENAI_API_KEY;
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX = process.env.PINECONE_INDEX;
 
-// Parser JSON
+// --- Parser JSON ---
 const parser = StructuredOutputParser.fromNamesAndDescriptions({
   pattern: "Names of select the most appropriate ArchHypo pattern",
   reason: "Reason for the choice.",
@@ -18,25 +18,29 @@ const parser = StructuredOutputParser.fromNamesAndDescriptions({
 
 // --- Inicializa Pinecone ---
 async function getPineconeClient() {
-  const client = new Pinecone({ apiKey: PINECONE_API_KEY });
-  return client;
+  return new Pinecone({ apiKey: PINECONE_API_KEY });
 }
 
 // --- Gera embeddings ---
 async function embedText(text) {
-  const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-goog-api-key": API_KEY
-      },
-      body: JSON.stringify({ content: { parts: [{ text }] } })
-    }
-  );
-  const data = await res.json();
-  return data.embedding.values;
+  try {
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-goog-api-key": API_KEY
+        },
+        body: JSON.stringify({ content: { parts: [{ text }] } })
+      }
+    );
+    const data = await res.json();
+    return data.embedding?.values || [];
+  } catch (error) {
+    console.error("Erro ao gerar embedding:", error);
+    return [];
+  }
 }
 
 // --- Consulta Pinecone ---
@@ -52,7 +56,12 @@ async function queryPinecone(hypothesis, topK = 20) {
 
 // --- Classificação com LLM ---
 async function classifyPattern(hypothesis) {
-  const llm = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash", apiKey: API_KEY, verbose: true });
+  const llm = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash",
+    apiKey: API_KEY,
+    verbose: true
+  });
+
   const relevantDocs = await queryPinecone(hypothesis, 20);
   const context = relevantDocs.join("\n\n---\n\n");
 
@@ -81,8 +90,7 @@ ${context}
   const rawOutput = response.text || response.candidates?.[0]?.content || '';
   const cleaned = rawOutput.replace(/```(?:json)?\s*/gi, '').replace(/```/g, '').trim();
 
-  const parsed = await parser.parse(cleaned);
-  return parsed;
+  return await parser.parse(cleaned);
 }
 
 // --- Métricas de avaliação ---
@@ -99,9 +107,29 @@ function hitRate(retrieved, relevant) {
   return hits.length / relevant.length;
 }
 
-async function calcularSimilaridadeSemantica(texto, documentos) {
-  const textoEmbedding = await embedText(texto);
-  const docsEmbeddings = await Promise.all(documentos.map(embedText));
+function meanReciprocalRank(retrieved, relevant) {
+  const relevantSet = new Set(relevant);
+  for (let i = 0; i < retrieved.length; i++) {
+    if (relevantSet.has(retrieved[i])) {
+      return 1 / (i + 1);
+    }
+  }
+  return 0;
+}
+
+function relevanceScore(hypothesis, retrieved) {
+  const terms = hypothesis.toLowerCase().split(/\W+/).filter(t => t.length > 3);
+  const scores = retrieved.map(doc => {
+    const docLower = doc.toLowerCase();
+    const count = terms.filter(term => docLower.includes(term)).length;
+    return count / terms.length;
+  });
+  return scores.reduce((sum, val) => sum + val, 0) / scores.length;
+}
+
+async function factualConsistencyScore(text, documents) {
+  const textEmbedding = await embedText(text);
+  const docEmbeddings = await Promise.all(documents.map(embedText));
 
   const cosineSimilarity = (a, b) => {
     const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
@@ -110,9 +138,8 @@ async function calcularSimilaridadeSemantica(texto, documentos) {
     return dot / (normA * normB);
   };
 
-  const scores = docsEmbeddings.map(docEmb => cosineSimilarity(textoEmbedding, docEmb));
-  const avgScore = scores.reduce((sum, val) => sum + val, 0) / scores.length;
-  return avgScore;
+  const scores = docEmbeddings.map(docEmb => cosineSimilarity(textEmbedding, docEmb));
+  return scores.reduce((sum, val) => sum + val, 0) / scores.length;
 }
 
 // --- Netlify Function handler ---
@@ -134,18 +161,22 @@ export async function handler(event) {
     const evaluation = {
       precisionAt5: precisionAtK(retrievedDocs, relevantDocs, 5),
       hitRate: hitRate(retrievedDocs, relevantDocs),
-      factualConsistencyScore: await calcularSimilaridadeSemantica(result.pattern, retrievedDocs)
+      mrr: meanReciprocalRank(retrievedDocs, relevantDocs),
+      factualConsistencyScore: await factualConsistencyScore(result.pattern, retrievedDocs),
+      relevanceScore: relevanceScore(hypothesis, retrievedDocs)
     };
 
-    const response = {
-      pattern: result.pattern,
-      reason: result.reason,
-      evaluation
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        pattern: result.pattern,
+        reason: result.reason,
+        evaluation
+      })
     };
-
-    return { statusCode: 200, body: JSON.stringify(response) };
 
   } catch (error) {
+    console.error("Erro na função handler:", error);
     return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 }
