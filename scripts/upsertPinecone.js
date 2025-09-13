@@ -4,7 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
 import { Document } from 'langchain/document';
-import { TokenTextSplitter } from '@langchain/textsplitters';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { Pinecone } from '@pinecone-database/pinecone';
 
 dotenv.config();
@@ -88,11 +88,11 @@ async function embedText(text) {
 }
 
 async function upsertWithMetadata(index, docs, baseMeta) {
-  console.log(`📦 Upsert de ${docs.length} documentos para ${baseMeta.paperId}`);
+  console.log(`📦 Upsert de ${docs.length} documentos para ${baseMeta.patternName}`);
   const batch = [];
 
   for (const d of docs) {
-    const id = `${baseMeta.paperId}-${hashId(d.pageContent)}`;
+    const id = `${baseMeta.patternName}-${hashId(d.pageContent)}`;
     const vector = await embedText(d.pageContent);
     const payload = {
       id,
@@ -100,8 +100,8 @@ async function upsertWithMetadata(index, docs, baseMeta) {
       metadata: {
         ...baseMeta,
         section: d.metadata.section,
-        summary: generateSummary(d.pageContent),
-        keywords: extractKeywords(d.pageContent),
+        // summary: generateSummary(d.pageContent),
+        // keywords: extractKeywords(d.pageContent),
         text: d.pageContent
       }
     };
@@ -130,10 +130,10 @@ async function prepareVectorDB() {
     console.log(`📄 Processando arquivo: ${file}`);
     const filteredText = await extractTextFromPDF(path.join(folderPath, file));
 
-    const splitter = new TokenTextSplitter({
-      encodingName: "cl100k_base",
-      chunkSize: 1000,
-      chunkOverlap: 150,
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 1200,
+      chunkOverlap: 200,
+      separators: ['\n\n', '\n', ' ', ''],
     });
 
     const parts = await splitter.splitText(filteredText);
@@ -143,7 +143,7 @@ async function prepareVectorDB() {
     }));
 
     console.log(`📄 Chunks gerados: ${docs.length}`);
-    await upsertWithMetadata(index, docs, { paperId: path.basename(file, '.pdf') });
+    await upsertWithMetadata(index, docs, { patternName: path.basename(file, '.pdf') });
   }
 
   console.log("🎉 Pinecone atualizado com sucesso!");
