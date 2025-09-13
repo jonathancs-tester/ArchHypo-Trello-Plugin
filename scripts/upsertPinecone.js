@@ -18,17 +18,38 @@ function hashId(text) {
 }
 
 function generateSummary(text) {
-  return text.split(/\s+/).slice(0, 30).join(" ") + "...";
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const keywords = ["goal", "purpose", "used to", "investigate", "decision", "architecture", "spike"];
+  
+  const best = sentences.find(s =>
+    keywords.some(k => s.toLowerCase().includes(k))
+  );
+
+  return (best || sentences[0]).trim();
 }
 
 function extractKeywords(text) {
-  const words = text.toLowerCase().match(/\b\w{4,}\b/g) || [];
+  const stopwords = new Set([
+    "this", "that", "with", "from", "which", "when", "where", "what", "your", "have", "been",
+    "some", "such", "might", "about", "also", "more", "than", "into", "their", "they", "them",
+    "will", "would", "could", "should", "because", "while", "after", "before", "then", "there",
+    "only", "each", "other", "over", "under", "very", "just", "even", "many", "most", "like",
+    "used", "using", "used to", "based", "make", "made", "can", "may", "not", "for", "and", "the", "you", "are", "was", "were", "has", "had", "but", "or", "if", "on", "in", "of", "to", "a", "an", "is", "it", "as", "be", "by", "do", "does", "did"
+  ]);
+
+  const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g) || [];
   const freq = {};
-  for (const w of words) freq[w] = (freq[w] || 0) + 1;
+
+  for (const word of words) {
+    if (!stopwords.has(word)) {
+      freq[word] = (freq[word] || 0) + 1;
+    }
+  }
+
   return Object.entries(freq)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
-    .map(([w]) => w);
+    .slice(0, 7)
+    .map(([word]) => word);
 }
 
 async function extractTextFromPDF(filePath) {
@@ -68,6 +89,8 @@ async function embedText(text) {
 
 async function upsertWithMetadata(index, docs, baseMeta) {
   console.log(`📦 Upsert de ${docs.length} documentos para ${baseMeta.paperId}`);
+  const batch = [];
+
   for (const d of docs) {
     const id = `${baseMeta.paperId}-${hashId(d.pageContent)}`;
     const vector = await embedText(d.pageContent);
@@ -82,9 +105,11 @@ async function upsertWithMetadata(index, docs, baseMeta) {
         text: d.pageContent
       }
     };
-    await index.upsert([payload]);
-    console.log(`✅ Documento inserido: ${id}`);
+    batch.push(payload);
   }
+
+  await index.upsert(batch);
+  console.log(`✅ ${batch.length} documentos inseridos em batch`);
 }
 
 async function prepareVectorDB() {
@@ -107,8 +132,8 @@ async function prepareVectorDB() {
 
     const splitter = new TokenTextSplitter({
       encodingName: "cl100k_base",
-      chunkSize: 700,
-      chunkOverlap: 80,
+      chunkSize: 1000,
+      chunkOverlap: 150,
     });
 
     const parts = await splitter.splitText(filteredText);
