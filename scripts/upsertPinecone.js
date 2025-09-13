@@ -25,17 +25,8 @@ async function getPineconeClient() {
 async function extractTextFromPDF(filePath) {
   const dataBuffer = await fs.readFile(filePath);
   const data = await pdf(dataBuffer);
-  
-  let text = data.text;
-  const cutoffIndex = text.indexOf("Therefore:");
-  if (cutoffIndex !== -1) {
-    text = text.substring(0, cutoffIndex);
-  }
-
-  console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${text.length} chars antes de 'Therefore:')`);
-  return text;
-  // console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${data.text.length} chars)`);
-  // return data.text;
+  console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${data.text.length} chars)`);
+  return data.text;
 }
 
 // Função para gerar embeddings
@@ -87,23 +78,9 @@ async function prepareVectorDB() {
 
   console.log(`📂 Encontrados ${pdfFiles.length} arquivos PDF`);
 
-  const rawTexts = await Promise.all(
-    pdfFiles.map(file => extractTextFromPDF(path.join(folderPath, file)))
-  );
-
-  // Pré-processamento: remove quebras de linha no meio de frases
-  const cleanedTexts = rawTexts.map(text =>
-    text.replace(/\n(?=\w)/g, ' ').replace(/\n{2,}/g, '\n\n')
-  );
-
-  const docs = cleanedTexts.map(t => new Document({ pageContent: t }));
-
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1200,
-    chunkOverlap: 200,
-    separators: ['\n\n', '\n', ' ', ''],
-  });
-
+  const texts = await Promise.all(pdfFiles.map(file => extractTextFromPDF(path.join(folderPath, file))));
+  const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 2000, chunkOverlap: 200 });
+  const docs = texts.map(t => new Document({ pageContent: t }));
   const splitDocs = await splitter.splitDocuments(docs);
 
   console.log(`✂️ Divididos em ${splitDocs.length} chunks`);
