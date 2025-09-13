@@ -59,11 +59,11 @@ async function extractTextFromPDF(filePath) {
   const fullText = data.text.replace(/\n(?=\w)/g, ' ').replace(/\n{2,}/g, '\n\n');
 
   // Corta tudo após a primeira ocorrência de "Therefore"
-  const match = fullText.match(/^(.*?)(?=\bTherefore\b)/is);
-  const filteredText = match ? match[1].trim() : fullText;
+  // const match = fullText.match(/^(.*?)(?=\bTherefore\b)/is);
+  // const filteredText = match ? match[1].trim() : fullText;
 
-  console.log(`📄 Texto filtrado com ${filteredText.length} caracteres`);
-  return filteredText;
+  console.log(`📄 Texto filtrado com ${fullText.length} caracteres`);
+  return fullText;
 }
 
 async function embedText(text) {
