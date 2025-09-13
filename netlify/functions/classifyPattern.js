@@ -137,8 +137,6 @@ function relevanceScore(hypothesis, retrieved) {
 }
 
 async function factualConsistencyScore(text, documents) {
-  if (!documents || documents.length === 0) return 0;
-
   const textEmbedding = await embedText(text);
   const docEmbeddings = await Promise.all(documents.map(embedText));
 
@@ -146,7 +144,7 @@ async function factualConsistencyScore(text, documents) {
     const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
     const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
     const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
-    return normA && normB ? dot / (normA * normB) : 0;
+    return dot / (normA * normB);
   };
 
   const scores = docEmbeddings.map(docEmb => cosineSimilarity(textEmbedding, docEmb));
