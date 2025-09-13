@@ -37,33 +37,6 @@ async function embedText(text) {
   return data.embedding?.values || [];
 }
 
-async function getPatternCandidates() {
-  const folderPath = path.resolve(process.cwd(), 'netlify/functions/docs');
-  const files = await fs.readdir(folderPath);
-  const pdfFiles = files.filter(f => f.endsWith('.pdf'));
-  return pdfFiles.map(f => path.basename(f, '.pdf').replace(/_/g, ' '));
-}
-
-async function classifyCentroid(hypothesis) {
-  const candidates = await getPatternCandidates();
-  const embeddings = await Promise.all(candidates.map(embedText));
-  const hypoEmb = await embedText(hypothesis);
-
-  const cosine = (a, b) => {
-    const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
-    const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
-    const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
-    return dot / (normA * normB);
-  };
-
-  const scores = embeddings.map(e => cosine(hypoEmb, e));
-  return candidates
-    .map((name, i) => ({ name, score: scores[i] }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 2)
-    .map(c => c.name);
-}
-
 async function queryPinecone(hypothesis, topK = 50) {
   const vector = await embedText(hypothesis);
   const pinecone = await getPineconeClient();
@@ -143,16 +116,29 @@ function meanReciprocalRank(retrieved, relevant) {
 }
 
 function relevanceScore(hypothesis, retrieved) {
-  const terms = hypothesis.toLowerCase().split(/\W+/).filter(t => t.length > 3);
+  if (!retrieved || retrieved.length === 0) return 0;
+
+  const terms = hypothesis
+    .toLowerCase()
+    .split(/\W+/)
+    .filter(t => t.length > 3);
+
+  if (terms.length === 0) return 0;
+
   const scores = retrieved.map(doc => {
-    const docLower = doc.toLowerCase();
-    const count = terms.filter(term => docLower.includes(term)).length;
-    return count / terms.length;
+    const docTerms = new Set(
+      doc.toLowerCase().split(/\W+/).filter(t => t.length > 3)
+    );
+    const matchCount = terms.filter(term => docTerms.has(term)).length;
+    return matchCount / terms.length;
   });
+
   return scores.reduce((sum, val) => sum + val, 0) / scores.length;
 }
 
 async function factualConsistencyScore(text, documents) {
+  if (!documents || documents.length === 0) return 0;
+
   const textEmbedding = await embedText(text);
   const docEmbeddings = await Promise.all(documents.map(embedText));
 
@@ -160,7 +146,7 @@ async function factualConsistencyScore(text, documents) {
     const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
     const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
     const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
-    return dot / (normA * normB);
+    return normA && normB ? dot / (normA * normB) : 0;
   };
 
   const scores = docEmbeddings.map(docEmb => cosineSimilarity(textEmbedding, docEmb));
