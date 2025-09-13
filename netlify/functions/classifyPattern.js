@@ -141,17 +141,38 @@ function relevanceScore(hypothesis, retrieved) {
 
 async function factualConsistencyScore(text, documents) {
   const textEmbedding = await embedText(text);
-  const docEmbeddings = await Promise.all(documents.map(embedText));
+
+  if (!Array.isArray(textEmbedding) || textEmbedding.length === 0) {
+    console.warn("Embedding do texto está vazio ou inválido.");
+    return null;
+  }
+
+  const docEmbeddings = await Promise.all(documents.map(async (doc, i) => {
+    const emb = await embedText(doc);
+    if (!Array.isArray(emb) || emb.length === 0) {
+      console.warn(`Embedding do documento ${i} está vazio ou inválido.`);
+    }
+    return emb;
+  }));
+
+  const validEmbeddings = docEmbeddings.filter(e => Array.isArray(e) && e.length > 0);
+
+  if (validEmbeddings.length === 0) {
+    console.warn("Nenhum embedding válido nos documentos.");
+    return null;
+  }
 
   const cosineSimilarity = (a, b) => {
     const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
     const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
     const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
-    return dot / (normA * normB);
+    return normA && normB ? dot / (normA * normB) : 0;
   };
 
-  const scores = docEmbeddings.map(docEmb => cosineSimilarity(textEmbedding, docEmb));
-  return scores.reduce((sum, val) => sum + val, 0) / scores.length;
+  const scores = validEmbeddings.map(docEmb => cosineSimilarity(textEmbedding, docEmb));
+  const avgScore = scores.reduce((sum, val) => sum + val, 0) / scores.length;
+
+  return isFinite(avgScore) ? avgScore : null;
 }
 
 // --- Netlify Function handler ---
