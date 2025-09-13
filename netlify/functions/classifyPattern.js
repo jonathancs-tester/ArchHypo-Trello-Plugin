@@ -43,26 +43,38 @@ async function embedText(text) {
   }
 }
 
-// --- Consulta Pinecone ---
-async function queryPinecone(hypothesis, topK = 20) {
+// --- Consulta Pinecone com filtro opcional ---
+async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
   const vector = await embedText(hypothesis);
   const pinecone = await getPineconeClient();
   const index = pinecone.index(PINECONE_INDEX);
 
-  const queryResponse = await index.query({ vector, topK, includeMetadata: true });
+  const queryParams = {
+    vector,
+    topK,
+    includeMetadata: true
+  };
+
+  if (patternCandidates.length > 0) {
+    queryParams.filter = {
+      patternName: { $in: patternCandidates }
+    };
+  }
+
+  const queryResponse = await index.query(queryParams);
   const matches = queryResponse.matches || [];
   return matches.map(m => m.metadata.text);
 }
 
 // --- Classificação com LLM ---
-async function classifyPattern(hypothesis) {
+async function classifyPattern(hypothesis, patternCandidates = []) {
   const llm = new ChatGoogleGenerativeAI({
     model: "gemini-2.5-flash",
     apiKey: API_KEY,
     verbose: true
   });
 
-  const relevantDocs = await queryPinecone(hypothesis, 20);
+  const relevantDocs = await queryPinecone(hypothesis, 20, patternCandidates);
   const context = relevantDocs.join("\n\n---\n\n");
 
   const idioma = franc(hypothesis);
@@ -149,14 +161,14 @@ export async function handler(event) {
   }
 
   try {
-    const { hypothesis } = JSON.parse(event.body);
+    const { hypothesis, patternCandidates = [] } = JSON.parse(event.body);
     if (!hypothesis) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
     }
 
-    const result = await classifyPattern(hypothesis);
-    const retrievedDocs = await queryPinecone(hypothesis, 20);
-    const relevantDocs = retrievedDocs; // ajuste se tiver um conjunto específico
+    const result = await classifyPattern(hypothesis, patternCandidates);
+    const retrievedDocs = await queryPinecone(hypothesis, 20, patternCandidates);
+    const relevantDocs = retrievedDocs;
 
     const evaluation = {
       precisionAt5: precisionAtK(retrievedDocs, relevantDocs, 5),
