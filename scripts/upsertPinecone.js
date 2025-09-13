@@ -1,11 +1,11 @@
+// scripts/updateVectorDB.js
 import pdf from 'pdf-parse/lib/pdf-parse.js';
 import fs from 'fs-extra';
 import path from 'path';
 import dotenv from 'dotenv';
-import crypto from 'crypto';
 import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { Pinecone } from '@pinecone-database/pinecone';
+import { Pinecone } from "@pinecone-database/pinecone";
 
 dotenv.config();
 
@@ -13,61 +13,33 @@ const API_KEY = process.env.GENAI_API_KEY;
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX = process.env.PINECONE_INDEX;
 
-function hashId(text) {
-  return crypto.createHash("sha1").update(text).digest("hex").slice(0, 16);
+// Inicializa Pinecone
+async function getPineconeClient() {
+  console.log("🔌 Conectando ao Pinecone...");
+  const client = new Pinecone({ apiKey: PINECONE_API_KEY });
+  console.log("✅ Conectado ao Pinecone!");
+  return client;
 }
 
-function generateSummary(text) {
-  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-  const keywords = ["goal", "purpose", "used to", "investigate", "decision", "architecture", "spike"];
-  
-  const best = sentences.find(s =>
-    keywords.some(k => s.toLowerCase().includes(k))
-  );
-
-  return (best || sentences[0]).trim();
-}
-
-function extractKeywords(text) {
-  const stopwords = new Set([
-    "this", "that", "with", "from", "which", "when", "where", "what", "your", "have", "been",
-    "some", "such", "might", "about", "also", "more", "than", "into", "their", "they", "them",
-    "will", "would", "could", "should", "because", "while", "after", "before", "then", "there",
-    "only", "each", "other", "over", "under", "very", "just", "even", "many", "most", "like",
-    "used", "using", "used to", "based", "make", "made", "can", "may", "not", "for", "and", "the", "you", "are", "was", "were", "has", "had", "but", "or", "if", "on", "in", "of", "to", "a", "an", "is", "it", "as", "be", "by", "do", "does", "did"
-  ]);
-
-  const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g) || [];
-  const freq = {};
-
-  for (const word of words) {
-    if (!stopwords.has(word)) {
-      freq[word] = (freq[word] || 0) + 1;
-    }
-  }
-
-  return Object.entries(freq)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 7)
-    .map(([word]) => word);
-}
-
+// Função para extrair texto dos PDFs
 async function extractTextFromPDF(filePath) {
-  console.log(`📄 Lendo PDF: ${filePath}`);
   const dataBuffer = await fs.readFile(filePath);
   const data = await pdf(dataBuffer);
-  const fullText = data.text.replace(/\n(?=\w)/g, ' ').replace(/\n{2,}/g, '\n\n');
+  
+  let text = data.text;
+  const cutoffIndex = text.indexOf("Therefore:");
+  if (cutoffIndex !== -1) {
+    text = text.substring(0, cutoffIndex);
+  }
 
-  // Corta tudo após a primeira ocorrência de "Therefore"
-  const match = fullText.match(/^(.*?)(?=\bTherefore\b)/is);
-  const filteredText = match ? match[1].trim() : fullText;
-
-  console.log(`📄 Texto filtrado com ${filteredText.length} caracteres`);
-  return filteredText;
+  console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${text.length} chars antes de 'Therefore:')`);
+  return text;
+  // console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${data.text.length} chars)`);
+  // return data.text;
 }
 
+// Função para gerar embeddings
 async function embedText(text) {
-  console.log(`🔗 Gerando embedding para texto com ${text.length} caracteres`);
   const res = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
     {
@@ -80,78 +52,70 @@ async function embedText(text) {
     }
   );
   const data = await res.json();
-  if (!data.embedding?.values) {
-    console.error("❌ Falha ao gerar embedding:", data);
-    throw new Error("Embedding inválido");
-  }
   return data.embedding.values;
 }
 
-async function upsertWithMetadata(index, docs, baseMeta) {
-  console.log(`📦 Upsert de ${docs.length} documentos para ${baseMeta.patternName}`);
-  const batch = [];
+// Função de upsert no Pinecone
+async function upsertDocumentsToPinecone(docs) {
+  const pinecone = await getPineconeClient();
+  const index = pinecone.index(PINECONE_INDEX);
 
-  for (const d of docs) {
-    const id = `${baseMeta.patternName}-${hashId(d.pageContent)}`;
-    const vector = await embedText(d.pageContent);
-    const payload = {
-      id,
-      values: vector,
-      metadata: {
-        ...baseMeta,
-        section: d.metadata.section,
-        // summary: generateSummary(d.pageContent),
-        // keywords: extractKeywords(d.pageContent),
-        text: d.pageContent
-      }
-    };
-    batch.push(payload);
+  console.log(`📥 Iniciando upsert de ${docs.length} chunks no Pinecone...`);
+
+  for (let i = 0; i < docs.length; i++) {
+    const chunk = docs[i].pageContent;
+    const vector = await embedText(chunk);
+
+    await index.upsert([
+      { id: `doc-${i}`, values: vector, metadata: { text: chunk } }
+    ]);
+
+    if (i % 5 === 0) console.log(`⚡ Chunk ${i + 1}/${docs.length} upsertado (dim=${vector.length})`);
   }
 
-  await index.upsert(batch);
-  console.log(`✅ ${batch.length} documentos inseridos em batch`);
+  console.log(`✅ Finalizado: ${docs.length} chunks foram upsertados no Pinecone`);
 }
 
+// Prepara base Pinecone a partir dos PDFs
 async function prepareVectorDB() {
   const folderPath = path.resolve(process.cwd(), 'netlify/functions/docs');
-  console.log(`📁 Verificando pasta: ${folderPath}`);
-  if (!(await fs.pathExists(folderPath))) throw new Error("❌ Pasta 'docs' não encontrada.");
+  if (!(await fs.pathExists(folderPath))) throw new Error("Docs folder not found.");
 
   const files = await fs.readdir(folderPath);
   const pdfFiles = files.filter(f => f.endsWith('.pdf'));
-  console.log(`📄 PDFs encontrados: ${pdfFiles.length}`);
-  if (pdfFiles.length === 0) throw new Error("❌ Nenhum arquivo PDF encontrado.");
+  if (pdfFiles.length === 0) throw new Error("No PDF files found.");
 
-  const pinecone = new Pinecone({ apiKey: PINECONE_API_KEY });
-  const index = pinecone.index(PINECONE_INDEX);
-  console.log(`🔍 Conectado ao índice Pinecone: ${PINECONE_INDEX}`);
+  console.log(`📂 Encontrados ${pdfFiles.length} arquivos PDF`);
 
-  for (const file of pdfFiles) {
-    console.log(`📄 Processando arquivo: ${file}`);
-    const filteredText = await extractTextFromPDF(path.join(folderPath, file));
+  const rawTexts = await Promise.all(
+    pdfFiles.map(file => extractTextFromPDF(path.join(folderPath, file)))
+  );
 
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1200,
-      chunkOverlap: 200,
-      separators: ['\n\n', '\n', ' ', ''],
-    });
+  // Pré-processamento: remove quebras de linha no meio de frases
+  const cleanedTexts = rawTexts.map(text =>
+    text.replace(/\n(?=\w)/g, ' ').replace(/\n{2,}/g, '\n\n')
+  );
 
-    const parts = await splitter.splitText(filteredText);
-    const docs = parts.map((part, i) => new Document({
-      pageContent: part,
-      metadata: { section: `Chunk ${i + 1}` }
-    }));
+  const docs = cleanedTexts.map(t => new Document({ pageContent: t }));
 
-    console.log(`📄 Chunks gerados: ${docs.length}`);
-    await upsertWithMetadata(index, docs, { patternName: path.basename(file, '.pdf') });
-  }
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1200,
+    chunkOverlap: 200,
+    separators: ['\n\n', '\n', ' ', ''],
+  });
 
-  console.log("🎉 Pinecone atualizado com sucesso!");
+  const splitDocs = await splitter.splitDocuments(docs);
+
+  console.log(`✂️ Divididos em ${splitDocs.length} chunks`);
+
+  await upsertDocumentsToPinecone(splitDocs);
 }
 
+// Função main
 (async () => {
   try {
     await prepareVectorDB();
+    console.log("🎉 Pinecone atualizado com sucesso!");
   } catch (err) {
     console.error("💥 Erro ao atualizar Pinecone:", err);
     process.exit(1);
