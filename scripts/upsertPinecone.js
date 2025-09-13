@@ -1,11 +1,11 @@
-// scripts/updateVectorDB.js
 import pdf from 'pdf-parse/lib/pdf-parse.js';
 import fs from 'fs-extra';
 import path from 'path';
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 import { Document } from 'langchain/document';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { Pinecone } from "@pinecone-database/pinecone";
+import { TokenTextSplitter } from '@langchain/textsplitters';
+import { Pinecone } from '@pinecone-database/pinecone';
 
 dotenv.config();
 
@@ -13,32 +13,56 @@ const API_KEY = process.env.GENAI_API_KEY;
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX = process.env.PINECONE_INDEX;
 
-// Inicializa Pinecone
-async function getPineconeClient() {
-  console.log("🔌 Conectando ao Pinecone...");
-  const client = new Pinecone({ apiKey: PINECONE_API_KEY });
-  console.log("✅ Conectado ao Pinecone!");
-  return client;
+const headings = [
+  "Abstract","Summary","Intent","Problem","Context","Forces","Solution",
+  "Structure","Participants","Implementation","Applicability","Consequences",
+  "Trade-offs","Known Uses","Examples","References","Discussion","Motivation","Resulting Context","Therefore"
+];
+const headingRegex = new RegExp(`\\n\\s*(?:${headings.join("|")})\\s*:?\\s*\\n`, "gi");
+
+function splitBySections(raw) {
+  const sections = [];
+  const indices = [];
+  let match;
+  while ((match = headingRegex.exec(raw))) {
+    indices.push({ idx: match.index, title: match[0].trim() });
+  }
+  indices.push({ idx: raw.length, title: "END" });
+
+  for (let i = 0; i < indices.length - 1; i++) {
+    const start = indices[i].idx;
+    const end = indices[i + 1].idx;
+    const title = indices[i].title.replace(/\n|:/g, "").trim();
+    const text = raw.slice(i === 0 ? 0 : start, end).trim();
+    if (text) sections.push({ title: title || "Body", text });
+  }
+  return sections;
 }
 
-// Função para extrair texto dos PDFs
+function hashId(text) {
+  return crypto.createHash("sha1").update(text).digest("hex").slice(0, 16);
+}
+
+function generateSummary(text) {
+  return text.split(/\s+/).slice(0, 30).join(" ") + "...";
+}
+
+function extractKeywords(text) {
+  const words = text.toLowerCase().match(/\b\w{4,}\b/g) || [];
+  const freq = {};
+  for (const w of words) freq[w] = (freq[w] || 0) + 1;
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([w]) => w);
+}
+
 async function extractTextFromPDF(filePath) {
   const dataBuffer = await fs.readFile(filePath);
   const data = await pdf(dataBuffer);
-  
-  let text = data.text;
-  const cutoffIndex = text.indexOf("Therefore:");
-  if (cutoffIndex !== -1) {
-    text = text.substring(0, cutoffIndex);
-  }
-
-  console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${text.length} chars antes de 'Therefore:')`);
-  return text;
-  // console.log(`📄 Extraído texto de: ${path.basename(filePath)} (${data.text.length} chars)`);
-  // return data.text;
+  return data.text.replace(/\n(?=\w)/g, ' ').replace(/\n{2,}/g, '\n\n');
 }
 
-// Função para gerar embeddings
 async function embedText(text) {
   const res = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
@@ -55,28 +79,24 @@ async function embedText(text) {
   return data.embedding.values;
 }
 
-// Função de upsert no Pinecone
-async function upsertDocumentsToPinecone(docs) {
-  const pinecone = await getPineconeClient();
-  const index = pinecone.index(PINECONE_INDEX);
-
-  console.log(`📥 Iniciando upsert de ${docs.length} chunks no Pinecone...`);
-
-  for (let i = 0; i < docs.length; i++) {
-    const chunk = docs[i].pageContent;
-    const vector = await embedText(chunk);
-
-    await index.upsert([
-      { id: `doc-${i}`, values: vector, metadata: { text: chunk } }
-    ]);
-
-    if (i % 5 === 0) console.log(`⚡ Chunk ${i + 1}/${docs.length} upsertado (dim=${vector.length})`);
+async function upsertWithMetadata(index, docs, baseMeta) {
+  for (const d of docs) {
+    const id = `${baseMeta.paperId}-${hashId(d.pageContent)}`;
+    const vector = await embedText(d.pageContent);
+    await index.upsert([{
+      id,
+      values: vector,
+      metadata: {
+        ...baseMeta,
+        section: d.metadata.section,
+        summary: generateSummary(d.pageContent),
+        keywords: extractKeywords(d.pageContent),
+        text: d.pageContent
+      }
+    }]);
   }
-
-  console.log(`✅ Finalizado: ${docs.length} chunks foram upsertados no Pinecone`);
 }
 
-// Prepara base Pinecone a partir dos PDFs
 async function prepareVectorDB() {
   const folderPath = path.resolve(process.cwd(), 'netlify/functions/docs');
   if (!(await fs.pathExists(folderPath))) throw new Error("Docs folder not found.");
@@ -85,23 +105,41 @@ async function prepareVectorDB() {
   const pdfFiles = files.filter(f => f.endsWith('.pdf'));
   if (pdfFiles.length === 0) throw new Error("No PDF files found.");
 
-  console.log(`📂 Encontrados ${pdfFiles.length} arquivos PDF`);
+  const pinecone = new Pinecone({ apiKey: PINECONE_API_KEY });
+  const index = pinecone.index(PINECONE_INDEX);
 
-  const texts = await Promise.all(pdfFiles.map(file => extractTextFromPDF(path.join(folderPath, file))));
-  const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 2000, chunkOverlap: 200 });
-  const docs = texts.map(t => new Document({ pageContent: t }));
-  const splitDocs = await splitter.splitDocuments(docs);
+  for (const file of pdfFiles) {
+    const rawText = await extractTextFromPDF(path.join(folderPath, file));
+    const sections = splitBySections(rawText);
 
-  console.log(`✂️ Divididos em ${splitDocs.length} chunks`);
+    const splitter = new TokenTextSplitter({
+      encodingName: "cl100k_base",
+      chunkSize: 700,
+      chunkOverlap: 80,
+    });
 
-  await upsertDocumentsToPinecone(splitDocs);
+    const docs = [];
+    for (const s of sections) {
+      const parts = await splitter.splitText(s.text);
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        if (i === parts.length - 1 && part.split(/\s+/).length < 220 && docs.length) {
+          docs[docs.length - 1].pageContent += "\n\n" + part;
+        } else {
+          docs.push(new Document({ pageContent: part, metadata: { section: s.title } }));
+        }
+      }
+    }
+
+    await upsertWithMetadata(index, docs, { paperId: path.basename(file, '.pdf') });
+  }
+
+  console.log("🎉 Pinecone atualizado com sucesso!");
 }
 
-// Função main
 (async () => {
   try {
     await prepareVectorDB();
-    console.log("🎉 Pinecone atualizado com sucesso!");
   } catch (err) {
     console.error("💥 Erro ao atualizar Pinecone:", err);
     process.exit(1);

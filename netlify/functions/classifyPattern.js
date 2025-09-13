@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+import fs from 'fs-extra';
+import path from 'path';
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { Pinecone } from "@pinecone-database/pinecone";
@@ -10,51 +12,84 @@ const API_KEY = process.env.GENAI_API_KEY;
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX = process.env.PINECONE_INDEX;
 
-// --- Parser JSON ---
 const parser = StructuredOutputParser.fromNamesAndDescriptions({
-  pattern: "Names of select the most appropriate ArchHypo pattern",
-  reason: "Reason for the choice.",
+  pattern: "Nome do padrão mais apropriado",
+  reason: "Justificativa da escolha"
 });
 
-// --- Inicializa Pinecone ---
+const boostedSections = ["Intent", "Problem", "Applicability", "Solution"];
+
 async function getPineconeClient() {
   return new Pinecone({ apiKey: PINECONE_API_KEY });
 }
 
-// --- Gera embeddings ---
 async function embedText(text) {
-  try {
-    const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-goog-api-key": API_KEY
-        },
-        body: JSON.stringify({ content: { parts: [{ text }] } })
-      }
-    );
-    const data = await res.json();
-    return data.embedding?.values || [];
-  } catch (error) {
-    console.error("Erro ao gerar embedding:", error);
-    return [];
-  }
+  const res = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-goog-api-key": API_KEY
+      },
+      body: JSON.stringify({ content: { parts: [{ text }] } })
+    }
+  );
+  const data = await res.json();
+  return data.embedding?.values || [];
 }
 
-// --- Consulta Pinecone ---
-async function queryPinecone(hypothesis, topK = 20) {
+async function getPatternCandidates() {
+  const folderPath = path.resolve(process.cwd(), 'netlify/functions/docs');
+  const files = await fs.readdir(folderPath);
+  const pdfFiles = files.filter(f => f.endsWith('.pdf'));
+  return pdfFiles.map(f => path.basename(f, '.pdf').replace(/_/g, ' '));
+}
+
+async function classifyCentroid(hypothesis) {
+  const candidates = await getPatternCandidates();
+  const embeddings = await Promise.all(candidates.map(embedText));
+  const hypoEmb = await embedText(hypothesis);
+
+  const cosine = (a, b) => {
+    const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
+    const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+    const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+    return dot / (normA * normB);
+  };
+
+  const scores = embeddings.map(e => cosine(hypoEmb, e));
+  return candidates
+    .map((name, i) => ({ name, score: scores[i] }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 2)
+    .map(c => c.name);
+}
+
+async function queryPinecone(hypothesis, patternCandidates, topK = 50) {
   const vector = await embedText(hypothesis);
   const pinecone = await getPineconeClient();
   const index = pinecone.index(PINECONE_INDEX);
 
-  const queryResponse = await index.query({ vector, topK, includeMetadata: true });
+  const queryResponse = await index.query({
+    vector,
+    topK,
+    includeMetadata: true,
+    filter: {
+      patternName: { $in: patternCandidates }
+    }
+  });
+
   const matches = queryResponse.matches || [];
-  return matches.map(m => m.metadata.text);
+  const reranked = matches.sort((a, b) => {
+    const boostA = boostedSections.includes(a.metadata.section) ? 1 : 0;
+    const boostB = boostedSections.includes(b.metadata.section) ? 1 : 0;
+    return boostB - boostA;
+  });
+
+  return reranked.slice(0, 10);
 }
 
-// --- Classificação com LLM ---
 async function classifyPattern(hypothesis) {
   const llm = new ChatGoogleGenerativeAI({
     model: "gemini-2.5-flash",
@@ -62,38 +97,41 @@ async function classifyPattern(hypothesis) {
     verbose: true
   });
 
-  const relevantDocs = await queryPinecone(hypothesis, 20);
-  const context = relevantDocs.join("\n\n---\n\n");
+  const patternCandidates = await classifyCentroid(hypothesis);
+  const topChunks = await queryPinecone(hypothesis, patternCandidates, 50);
+  const context = topChunks.map(c => `Section: ${c.metadata.section}\n${c.metadata.text}`).join("\n\n---\n\n");
 
-  const idioma = franc(hypothesis);
-  const idiomaTexto = idioma === 'por' ? 'português' : 'inglês';
+  const idioma = franc(hypothesis) === 'por' ? 'português' : 'inglês';
 
   const prompt = `
-You are an expert in software architecture.
-Task:
-Given the hypothesis and the document content below, select up to one ArchHypo pattern that best match the hypothesis.
-Do NOT invent patterns.
+Você é especialista em arquitetura de software.
+Tarefa:
+Dado o conteúdo abaixo e a hipótese, selecione o padrão ArchHypo mais apropriado.
+Não invente padrões. Use apenas os existentes.
 
-If the selected pattern is "What You Need to Know", then substitute it with "Software Analytics" in the result.
-
-Respond in **${idiomaTexto}** with valid JSON:
+Responda em **${idioma}** com JSON válido:
 ${parser.getFormatInstructions()}
 
-Hypothesis:
+Hipótese:
 "${hypothesis}"
 
-Document content:
+Contexto:
 ${context}
 `;
 
   const response = await llm.invoke(prompt);
   const rawOutput = response.text || response.candidates?.[0]?.content || '';
-  const cleaned = rawOutput.replace(/```(?:json)?\s*/gi, '').replace(/```/g, '').trim();
+  const cleaned = rawOutput.replace(/```(?:json)?\\s*/gi, '').replace(/```/g, '').trim();
+  const parsed = await parser.parse(cleaned);
 
-  return await parser.parse(cleaned);
+  return {
+    pattern: parsed.pattern,
+    reason: parsed.reason,
+    retrievedDocs: topChunks.map(c => c.metadata.text)
+  };
 }
 
-// --- Métricas de avaliação ---
+// --- Métricas ---
 function precisionAtK(retrieved, relevant, k) {
   const topK = retrieved.slice(0, k);
   const relevantSet = new Set(relevant);
@@ -155,13 +193,12 @@ export async function handler(event) {
     }
 
     const result = await classifyPattern(hypothesis);
-    const retrievedDocs = await queryPinecone(hypothesis, 20);
-    const relevantDocs = retrievedDocs; // ajuste se tiver um conjunto específico
+    const retrievedDocs = result.retrievedDocs;
 
     const evaluation = {
-      precisionAt5: precisionAtK(retrievedDocs, relevantDocs, 5),
-      hitRate: hitRate(retrievedDocs, relevantDocs),
-      mrr: meanReciprocalRank(retrievedDocs, relevantDocs),
+      precisionAt5: precisionAtK(retrievedDocs, retrievedDocs, 5),
+      hitRate: hitRate(retrievedDocs, retrievedDocs),
+      mrr: meanReciprocalRank(retrievedDocs, retrievedDocs),
       factualConsistencyScore: await factualConsistencyScore(result.pattern, retrievedDocs),
       relevanceScore: relevanceScore(hypothesis, retrievedDocs)
     };
