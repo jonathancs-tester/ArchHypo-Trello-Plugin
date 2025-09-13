@@ -17,8 +17,6 @@ const parser = StructuredOutputParser.fromNamesAndDescriptions({
   reason: "Justificativa da escolha"
 });
 
-const boostedSections = ["Intent", "Problem", "Applicability", "Solution"];
-
 async function getPineconeClient() {
   return new Pinecone({ apiKey: PINECONE_API_KEY });
 }
@@ -66,7 +64,7 @@ async function classifyCentroid(hypothesis) {
     .map(c => c.name);
 }
 
-async function queryPinecone(hypothesis, patternCandidates, topK = 50) {
+async function queryPinecone(hypothesis, topK = 50) {
   const vector = await embedText(hypothesis);
   const pinecone = await getPineconeClient();
   const index = pinecone.index(PINECONE_INDEX);
@@ -74,20 +72,10 @@ async function queryPinecone(hypothesis, patternCandidates, topK = 50) {
   const queryResponse = await index.query({
     vector,
     topK,
-    includeMetadata: true,
-    filter: {
-      patternName: { $in: patternCandidates }
-    }
+    includeMetadata: true
   });
 
-  const matches = queryResponse.matches || [];
-  const reranked = matches.sort((a, b) => {
-    const boostA = boostedSections.includes(a.metadata.section) ? 1 : 0;
-    const boostB = boostedSections.includes(b.metadata.section) ? 1 : 0;
-    return boostB - boostA;
-  });
-
-  return reranked.slice(0, 10);
+  return queryResponse.matches || [];
 }
 
 async function classifyPattern(hypothesis) {
@@ -97,9 +85,8 @@ async function classifyPattern(hypothesis) {
     verbose: true
   });
 
-  const patternCandidates = await classifyCentroid(hypothesis);
-  const topChunks = await queryPinecone(hypothesis, patternCandidates, 50);
-  const context = topChunks.map(c => `Section: ${c.metadata.section}\n${c.metadata.text}`).join("\n\n---\n\n");
+  const topChunks = await queryPinecone(hypothesis, 50);
+  const context = topChunks.map(c => `Chunk: ${c.metadata.section}\n${c.metadata.text}`).join("\n\n---\n\n");
 
   const idioma = franc(hypothesis) === 'por' ? 'português' : 'inglês';
 
@@ -121,7 +108,7 @@ ${context}
 
   const response = await llm.invoke(prompt);
   const rawOutput = response.text || response.candidates?.[0]?.content || '';
-  const cleaned = rawOutput.replace(/```(?:json)?\\s*/gi, '').replace(/```/g, '').trim();
+  const cleaned = rawOutput.replace(/```(?:json)?\s*/gi, '').replace(/```/g, '').trim();
   const parsed = await parser.parse(cleaned);
 
   return {

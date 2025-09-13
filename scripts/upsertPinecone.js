@@ -13,32 +13,6 @@ const API_KEY = process.env.GENAI_API_KEY;
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX = process.env.PINECONE_INDEX;
 
-const headings = [
-  "Abstract","Summary","Intent","Problem","Context","Forces","Solution",
-  "Structure","Participants","Implementation","Applicability","Consequences",
-  "Trade-offs","Known Uses","Examples","References","Discussion","Motivation","Resulting Context","Therefore"
-];
-const headingRegex = new RegExp(`\\n\\s*(?:${headings.join("|")})\\s*:?\\s*\\n`, "gi");
-
-function splitBySections(raw) {
-  const sections = [];
-  const indices = [];
-  let match;
-  while ((match = headingRegex.exec(raw))) {
-    indices.push({ idx: match.index, title: match[0].trim() });
-  }
-  indices.push({ idx: raw.length, title: "END" });
-
-  for (let i = 0; i < indices.length - 1; i++) {
-    const start = indices[i].idx;
-    const end = indices[i + 1].idx;
-    const title = indices[i].title.replace(/\n|:/g, "").trim();
-    const text = raw.slice(i === 0 ? 0 : start, end).trim();
-    if (text) sections.push({ title: title || "Body", text });
-  }
-  return sections;
-}
-
 function hashId(text) {
   return crypto.createHash("sha1").update(text).digest("hex").slice(0, 16);
 }
@@ -58,12 +32,21 @@ function extractKeywords(text) {
 }
 
 async function extractTextFromPDF(filePath) {
+  console.log(`📄 Lendo PDF: ${filePath}`);
   const dataBuffer = await fs.readFile(filePath);
   const data = await pdf(dataBuffer);
-  return data.text.replace(/\n(?=\w)/g, ' ').replace(/\n{2,}/g, '\n\n');
+  const fullText = data.text.replace(/\n(?=\w)/g, ' ').replace(/\n{2,}/g, '\n\n');
+
+  // Corta tudo após a primeira ocorrência de "Therefore"
+  const match = fullText.match(/^(.*?)(?=\bTherefore\b)/is);
+  const filteredText = match ? match[1].trim() : fullText;
+
+  console.log(`📄 Texto filtrado com ${filteredText.length} caracteres`);
+  return filteredText;
 }
 
 async function embedText(text) {
+  console.log(`🔗 Gerando embedding para texto com ${text.length} caracteres`);
   const res = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
     {
@@ -76,14 +59,19 @@ async function embedText(text) {
     }
   );
   const data = await res.json();
+  if (!data.embedding?.values) {
+    console.error("❌ Falha ao gerar embedding:", data);
+    throw new Error("Embedding inválido");
+  }
   return data.embedding.values;
 }
 
 async function upsertWithMetadata(index, docs, baseMeta) {
+  console.log(`📦 Upsert de ${docs.length} documentos para ${baseMeta.paperId}`);
   for (const d of docs) {
     const id = `${baseMeta.paperId}-${hashId(d.pageContent)}`;
     const vector = await embedText(d.pageContent);
-    await index.upsert([{
+    const payload = {
       id,
       values: vector,
       metadata: {
@@ -93,24 +81,29 @@ async function upsertWithMetadata(index, docs, baseMeta) {
         keywords: extractKeywords(d.pageContent),
         text: d.pageContent
       }
-    }]);
+    };
+    await index.upsert([payload]);
+    console.log(`✅ Documento inserido: ${id}`);
   }
 }
 
 async function prepareVectorDB() {
   const folderPath = path.resolve(process.cwd(), 'netlify/functions/docs');
-  if (!(await fs.pathExists(folderPath))) throw new Error("Docs folder not found.");
+  console.log(`📁 Verificando pasta: ${folderPath}`);
+  if (!(await fs.pathExists(folderPath))) throw new Error("❌ Pasta 'docs' não encontrada.");
 
   const files = await fs.readdir(folderPath);
   const pdfFiles = files.filter(f => f.endsWith('.pdf'));
-  if (pdfFiles.length === 0) throw new Error("No PDF files found.");
+  console.log(`📄 PDFs encontrados: ${pdfFiles.length}`);
+  if (pdfFiles.length === 0) throw new Error("❌ Nenhum arquivo PDF encontrado.");
 
   const pinecone = new Pinecone({ apiKey: PINECONE_API_KEY });
   const index = pinecone.index(PINECONE_INDEX);
+  console.log(`🔍 Conectado ao índice Pinecone: ${PINECONE_INDEX}`);
 
   for (const file of pdfFiles) {
-    const rawText = await extractTextFromPDF(path.join(folderPath, file));
-    const sections = splitBySections(rawText);
+    console.log(`📄 Processando arquivo: ${file}`);
+    const filteredText = await extractTextFromPDF(path.join(folderPath, file));
 
     const splitter = new TokenTextSplitter({
       encodingName: "cl100k_base",
@@ -118,19 +111,13 @@ async function prepareVectorDB() {
       chunkOverlap: 80,
     });
 
-    const docs = [];
-    for (const s of sections) {
-      const parts = await splitter.splitText(s.text);
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i];
-        if (i === parts.length - 1 && part.split(/\s+/).length < 220 && docs.length) {
-          docs[docs.length - 1].pageContent += "\n\n" + part;
-        } else {
-          docs.push(new Document({ pageContent: part, metadata: { section: s.title } }));
-        }
-      }
-    }
+    const parts = await splitter.splitText(filteredText);
+    const docs = parts.map((part, i) => new Document({
+      pageContent: part,
+      metadata: { section: `Chunk ${i + 1}` }
+    }));
 
+    console.log(`📄 Chunks gerados: ${docs.length}`);
     await upsertWithMetadata(index, docs, { paperId: path.basename(file, '.pdf') });
   }
 
