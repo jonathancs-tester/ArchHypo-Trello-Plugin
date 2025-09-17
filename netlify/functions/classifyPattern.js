@@ -10,17 +10,21 @@ const API_KEY = process.env.GENAI_API_KEY;
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX = process.env.PINECONE_INDEX;
 
-// 🔁 Reutilização de instâncias
-const pineconeClient = new Pinecone({ apiKey: PINECONE_API_KEY });
-const llm = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash", apiKey: API_KEY, verbose: true });
-
-// 📦 Parser JSON
+// Parser JSON
 const parser = StructuredOutputParser.fromNamesAndDescriptions({
   pattern: "Names of select the most appropriate ArchHypo pattern",
   reason: "Reason for the choice.",
 });
 
-// 🔎 Gera embeddings
+// --- Inicializa Pinecone ---
+async function getPineconeClient() {
+  console.log("🔌 Conectando ao Pinecone...");
+  const client = new Pinecone({ apiKey: PINECONE_API_KEY });
+  console.log("✅ Conectado ao Pinecone!");
+  return client;
+}
+
+// --- Gera embeddings ---
 async function embedText(text) {
   const res = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
@@ -37,19 +41,17 @@ async function embedText(text) {
   return data.embedding.values;
 }
 
-// 🔍 Consulta Pinecone
-async function queryPinecone(hypothesis, topK = 10) {
+// --- Consulta Pinecone ---
+async function queryPinecone(hypothesis, topK = 20) {
   console.log(`🔎 Fazendo query no Pinecone com hipótese: "${hypothesis}"`);
+  const vector = await embedText(hypothesis);
+  const pinecone = await getPineconeClient();
+  const index = pinecone.index(PINECONE_INDEX);
 
-  const [vector] = await Promise.all([
-    embedText(hypothesis)
-  ]);
-
-  const index = pineconeClient.index(PINECONE_INDEX);
   const queryResponse = await index.query({ vector, topK, includeMetadata: true });
   const matches = queryResponse.matches || [];
-
   console.log(`📊 Query retornou ${matches.length} resultados do Pinecone`);
+
   matches.slice(0, 3).forEach((m, idx) => {
     console.log(`   ▶️ Match ${idx + 1}: (score=${m.score?.toFixed(3)}) "${m.metadata?.text?.slice(0, 80)}..."`);
   });
@@ -57,10 +59,11 @@ async function queryPinecone(hypothesis, topK = 10) {
   return matches.map(m => m.metadata.text);
 }
 
-// 🧠 Classificação com LLM
+// --- Classificação com LLM ---
 async function classifyPattern(hypothesis) {
-  const relevantDocs = await queryPinecone(hypothesis, 10);
-  const context = relevantDocs.join("\n");
+  const llm = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash-lite", apiKey: API_KEY, verbose: true });
+  const relevantDocs = await queryPinecone(hypothesis, 20);
+  const context = relevantDocs.join("\n\n---\n\n");
 
   const idioma = franc(hypothesis);
   const idiomaTexto = idioma === 'por' ? 'português' : 'inglês';
@@ -101,19 +104,16 @@ ${context}
   }
 }
 
-// 🚀 Netlify Function handler
+// --- Netlify Function handler ---
 export async function handler(event) {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ error: 'Use POST.' }) };
-  }
+  if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ error: 'Use POST.' }) };
 
   try {
     const { hypothesis } = JSON.parse(event.body);
-    if (!hypothesis) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
-    }
+    if (!hypothesis) return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
 
     console.log("🚀 Iniciando processamento de hipótese...");
+
     const result = await classifyPattern(hypothesis);
     return { statusCode: 200, body: JSON.stringify(result) };
 
