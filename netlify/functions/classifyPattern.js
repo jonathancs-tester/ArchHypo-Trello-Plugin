@@ -69,7 +69,7 @@ async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
 // --- Classificação com LLM ---
 async function classifyPattern(hypothesis, patternCandidates = []) {
   const llm = new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash",
+    model: "gemini-2.5-flash-lite",
     apiKey: API_KEY,
     verbose: true
   });
