@@ -341,12 +341,27 @@ document.addEventListener('DOMContentLoaded', () => {
                   ];
           resultDiv.className = 'pattern-result';
           resultDiv.innerHTML = `
-            <p>${itemText}</p>
-            <select id="patternSelect">
+            <div class="pattern-header">
+              <span class="hover-info">
+                ℹ️
+                <div class="hover-box">
+                  <strong>Métricas:</strong><br>
+                  <b>Precision@5:</b> ${data.evaluation?.precisionAt5?.toFixed(2)}<br>
+                  <b>Hit Rate:</b> ${data.evaluation?.hitRate?.toFixed(2)}<br>
+                  <b>MRR:</b> ${data.evaluation?.mrr?.toFixed(2)}<br>
+                  <b>Consistência Factual:</b> ${data.evaluation?.factualConsistencyScore?.toFixed(5)}<br>
+                  <b>Relevância da Resposta:</b> ${data.evaluation?.relevanceScore?.toFixed(5)}
+                </div>
+              </span>
+              <p>${itemText}</p>
+            </div>
+            <div class="pattern-hover-container">
+              <select id="patternSelect">
                 ${fixedOptions.map(option => `
                   <option value="${option}" ${option === data.pattern ? 'selected' : ''}>${option}</option>
                 `).join('')}
               </select>
+            </div>
             ${motivoHTML(data.reason)}
           `;
           patternContainer.appendChild(resultDiv);

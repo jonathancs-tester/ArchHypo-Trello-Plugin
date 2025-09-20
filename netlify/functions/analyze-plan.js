@@ -18,7 +18,7 @@
     const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
     
     const prompt = ChatPromptTemplate.fromTemplate(
-      `Dado o contexto: "{input}", sugira somente um plano tecnico com 3 a 5 items separados **obrigatoriamente pela string '\n'** e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
+      `Dado o contexto: "{input}", sugira somente um plano tecnico com 3 a 5 items separados **obrigatoriamente pela string '\\n'** e sem numero do item no inicio para mitigar o problema ou tratar a hipótese, e explique o motivo.
 
       **Responda em: ${idiomaTexto}**
 
