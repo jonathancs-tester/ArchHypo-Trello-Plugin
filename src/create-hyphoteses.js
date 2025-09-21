@@ -151,181 +151,210 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
     });
 
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || errorData.error || `HTTP ${res.status}: ${res.statusText}`);
+    }
+
     const data = await res.json();
     return data;
   }
 
   async function analyzeHypothesis() {
-    showLoading(0); 
-    const input = document.getElementById('contexto').value;
-    const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
-    state.contexto = input;
+    try {
+      showLoading(0); 
+      const input = document.getElementById('contexto').value;
+      const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
+      state.contexto = input;
 
-    sugestaoOriginal = sugestao;
-    const hipoteseField = document.getElementById('hipotese');
-    const motivoField = document.getElementById('hipoteseMotivo');
+      sugestaoOriginal = sugestao;
+      const hipoteseField = document.getElementById('hipotese');
+      const motivoField = document.getElementById('hipoteseMotivo');
 
-    hipoteseField.value = sugestao;
-    document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
-    hipoteseField.style.display = 'block';
-    motivoField.style.display = 'none';
+      hipoteseField.value = sugestao;
+      document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
+      hipoteseField.style.display = 'block';
+      motivoField.style.display = 'none';
 
-    hipoteseField.addEventListener('input', function () {
-      const sugestaoAtual = this.value;
-      if (sugestaoAtual !== sugestaoOriginal) {
-        motivoField.style.display = 'block';
-        motivoField.placeholder = 'Justifique a alteração...';
-      } else {
-        motivoField.style.display = 'none';
-        motivoField.value = '';
-      }
-    });
+      hipoteseField.addEventListener('input', function () {
+        const sugestaoAtual = this.value;
+        if (sugestaoAtual !== sugestaoOriginal) {
+          motivoField.style.display = 'block';
+          motivoField.placeholder = 'Justifique a alteração...';
+        } else {
+          motivoField.style.display = 'none';
+          motivoField.value = '';
+        }
+      });
 
-    hideLoading(0);
-    showStep(1);
+      showStep(1);
+    } catch (error) {
+      console.error('❌ Erro ao analisar hipótese:', error.message || error);
+      alert(`${t('messages.createCardError')} ${error.message || t('messages.checkConsole')}`);
+    } finally {
+      hideLoading(0);
+    }
   }
 
   async function analyzeDomain() {
-    showLoading(1);
-    state.hipotese = document.getElementById('hipotese').value;
-    state.hipoteseMotivo = document.getElementById('hipoteseResultado').value;
+    try {
+      showLoading(1);
+      state.hipotese = document.getElementById('hipotese').value;
+      state.hipoteseMotivo = document.getElementById('hipoteseResultado').value;
 
-    const input = `
+      const input = `
   Context: ${state.contexto}; 
   Hypothesis: ${state.hipotese};
-    `;  
-    const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
+      `;  
+      const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
 
-    sugestaoOriginal = sugestao;
-    const dominioField = document.getElementById('dominio');
-    const motivoField = document.getElementById('dominioMotivo');
+      sugestaoOriginal = sugestao;
+      const dominioField = document.getElementById('dominio');
+      const motivoField = document.getElementById('dominioMotivo');
 
-    dominioField.value = sugestao;
-    document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
-    dominioField.style.display = 'block';
-    motivoField.style.display = 'none'; 
+      dominioField.value = sugestao;
+      document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
+      dominioField.style.display = 'block';
+      motivoField.style.display = 'none'; 
 
-    dominioField.addEventListener('input', function () {
-      const sugestaoAtual = this.value;
-      if (sugestaoAtual !== sugestaoOriginal) {
-        motivoField.style.display = 'block';
-        motivoField.placeholder = 'Justifique a alteração...';
-      } else {
-        motivoField.style.display = 'none';
-        motivoField.value = '';
-      }
-    });
+      dominioField.addEventListener('input', function () {
+        const sugestaoAtual = this.value;
+        if (sugestaoAtual !== sugestaoOriginal) {
+          motivoField.style.display = 'block';
+          motivoField.placeholder = 'Justifique a alteração...';
+        } else {
+          motivoField.style.display = 'none';
+          motivoField.value = '';
+        }
+      });
 
-    hideLoading(1);
-    showStep(2);
+      showStep(2);
+    } catch (error) {
+      console.error('❌ Erro ao analisar domínio:', error.message || error);
+      alert(`${t('messages.createCardError')} ${error.message || t('messages.checkConsole')}`);
+    } finally {
+      hideLoading(1);
+    }
   }
 
   async function analyzeUncertainty() {
-    showLoading(2);
-    state.dominio = document.getElementById('dominio').value;
-    state.dominioMotivo = document.getElementById('dominioResultado').value;
-    const boardId = getBoardIdFromUrl();
-    const query = `boardId=${boardId}&column=INCERTEZA`;   
+    try {
+      showLoading(2);
+      state.dominio = document.getElementById('dominio').value;
+      state.dominioMotivo = document.getElementById('dominioResultado').value;
+      const boardId = getBoardIdFromUrl();
+      const query = `boardId=${boardId}&column=INCERTEZA`;   
 
-    const res = await fetch(`/.netlify/functions/get-uncertainty?`+query, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
- 
-      const allData = await res.json();
-      // Extrai o valor de totalCards e atribui ao estado
-      state.incertezaTotal = allData?.length || 0;
-      const data = allData ? allData.slice(0, 10) : [];
+      const res = await fetch(`/.netlify/functions/get-uncertainty?`+query, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+   
+        const allData = await res.json();
+        // Extrai o valor de totalCards e atribui ao estado
+        state.incertezaTotal = allData?.length || 0;
+        const data = allData ? allData.slice(0, 10) : [];
 
-      // Remove totalCards da string de histórico
-      const uncertaintyHistoricalStr = Array.isArray(data)
-        ? data.map(item => {
-            const { totalCards, ...rest } = item; // Remove totalCards
-            return JSON.stringify(rest);
-          }).join('; ')
-        : data;
+        // Remove totalCards da string de histórico
+        const uncertaintyHistoricalStr = Array.isArray(data)
+          ? data.map(item => {
+              const { totalCards, ...rest } = item; // Remove totalCards
+              return JSON.stringify(rest);
+            }).join('; ')
+          : data;
 
-  const input = `
-  Context: ${state.contexto}; 
-  Hypothesis: ${state.hipotese};
-  Non Functional Requirement: ${state.dominio}; 
-  Uncertainty Historical: ${uncertaintyHistoricalStr};
-    `;  
-    const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
+    const input = `
+    Context: ${state.contexto}; 
+    Hypothesis: ${state.hipotese};
+    Non Functional Requirement: ${state.dominio}; 
+    Uncertainty Historical: ${uncertaintyHistoricalStr};
+      `;  
+      const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
-    sugestaoOriginal = sugestao;
-    const incertezaField = document.getElementById('incerteza');
-    const motivoField = document.getElementById('incertezaMotivo');
+      sugestaoOriginal = sugestao;
+      const incertezaField = document.getElementById('incerteza');
+      const motivoField = document.getElementById('incertezaMotivo');
 
-    incertezaField.value = sugestao;
-    document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
-    incertezaField.style.display = 'block';
-    motivoField.style.display = 'none'; 
+      incertezaField.value = sugestao;
+      document.getElementById('incertezaResultado').innerHTML = motivoHTML(motivo);
+      incertezaField.style.display = 'block';
+      motivoField.style.display = 'none'; 
 
-    incertezaField.addEventListener('input', function () {
-      const sugestaoAtual = this.value;
-      if (sugestaoAtual !== sugestaoOriginal) {
-        motivoField.style.display = 'block';
-        motivoField.placeholder = 'Justifique a alteração...';
-      } else {
-        motivoField.style.display = 'none';
-        motivoField.value = '';
-      }
-    });
-    hideLoading(2);
-    showStep(3);
+      incertezaField.addEventListener('input', function () {
+        const sugestaoAtual = this.value;
+        if (sugestaoAtual !== sugestaoOriginal) {
+          motivoField.style.display = 'block';
+          motivoField.placeholder = 'Justifique a alteração...';
+        } else {
+          motivoField.style.display = 'none';
+          motivoField.value = '';
+        }
+      });
+      showStep(3);
+    } catch (error) {
+      console.error('❌ Erro ao analisar incerteza:', error.message || error);
+      alert(`${t('messages.createCardError')} ${error.message || t('messages.checkConsole')}`);
+    } finally {
+      hideLoading(2);
+    }
   }
 
   async function analyzeImpact() {
-    showLoading(3);
-    state.incerteza = document.getElementById('incerteza').value;
-    state.incertezaMotivo = document.getElementById('incertezaResultado').value;
+    try {
+      showLoading(3);
+      state.incerteza = document.getElementById('incerteza').value;
+      state.incertezaMotivo = document.getElementById('incertezaResultado').value;
 
-    const boardId = getBoardIdFromUrl();
-    const query = `boardId=${boardId}&column=INCERTEZA`;   
+      const boardId = getBoardIdFromUrl();
+      const query = `boardId=${boardId}&column=INCERTEZA`;   
 
-    const res = await fetch(`/.netlify/functions/get-impact?`+query, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
+      const res = await fetch(`/.netlify/functions/get-impact?`+query, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-    const allData = await res.json();
-    const data = allData ? allData.slice(0, 10) : [];
-    const impactHistoricalStr = Array.isArray(data)
-    ? data.map(item => JSON.stringify(item)).join('; ')
-    : data;
+      const allData = await res.json();
+      const data = allData ? allData.slice(0, 10) : [];
+      const impactHistoricalStr = Array.isArray(data)
+      ? data.map(item => JSON.stringify(item)).join('; ')
+      : data;
 
-  const input = `
-  Context: ${state.contexto}; 
-  Hypothesis: ${state.hipotese};
-  Non Functional Requirement: ${state.dominio}; 
-  Uncertainty: ${state.incerteza};
-  Impact Historical: ${impactHistoricalStr};
-    `;  
-    const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
+    const input = `
+    Context: ${state.contexto}; 
+    Hypothesis: ${state.hipotese};
+    Non Functional Requirement: ${state.dominio}; 
+    Uncertainty: ${state.incerteza};
+    Impact Historical: ${impactHistoricalStr};
+      `;  
+      const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
 
-    sugestaoOriginal = sugestao;
-    const impactoField = document.getElementById('impacto');
-    const motivoField = document.getElementById('impactoMotivo');
+      sugestaoOriginal = sugestao;
+      const impactoField = document.getElementById('impacto');
+      const motivoField = document.getElementById('impactoMotivo');
 
-    impactoField.value = sugestao;
-    document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
-    impactoField.style.display = 'block';
-    motivoField.style.display = 'none'; 
+      impactoField.value = sugestao;
+      document.getElementById('impactoResultado').innerHTML = motivoHTML(motivo);
+      impactoField.style.display = 'block';
+      motivoField.style.display = 'none'; 
 
-    impactoField.addEventListener('input', function () {
-      const sugestaoAtual = this.value;
-      if (sugestaoAtual !== sugestaoOriginal) {
-        motivoField.style.display = 'block';
-        motivoField.placeholder = 'Justifique a alteração...';
-      } else {
-        motivoField.style.display = 'none';
-        motivoField.value = '';
-      }
-    });
+      impactoField.addEventListener('input', function () {
+        const sugestaoAtual = this.value;
+        if (sugestaoAtual !== sugestaoOriginal) {
+          motivoField.style.display = 'block';
+          motivoField.placeholder = 'Justifique a alteração...';
+        } else {
+          motivoField.style.display = 'none';
+          motivoField.value = '';
+        }
+      });
 
-    hideLoading(3);
-    showStep(4);
+      showStep(4);
+    } catch (error) {
+      console.error('❌ Erro ao analisar impacto:', error.message || error);
+      alert(`${t('messages.createCardError')} ${error.message || t('messages.checkConsole')}`);
+    } finally {
+      hideLoading(3);
+    }
   }
 
   async function createCard() {

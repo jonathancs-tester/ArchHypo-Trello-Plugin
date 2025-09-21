@@ -158,64 +158,82 @@ document.addEventListener('DOMContentLoaded', () => {
         }),
       });
 
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || errorData.error || `HTTP ${res.status}: ${res.statusText}`);
+      }
+
       const data = await res.json();
       return data;
     }
 
     async function analyzePlan() {
-      showLoading(0);
+      try {
+        showLoading(0);
 
-      cardId = getCardIdFromUrl();
-      const res = await fetch(`/.netlify/functions/get-card-detail?cardId=${cardId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const input = await res.json();
-      const match = input.title?.match(/^(H\d+)\s*:/i);
-      const clean = str => str.replace(/[*]+/g, '').trim();
-      state.title = match ? clean(match[1]) : null;
+        cardId = getCardIdFromUrl();
+        const res = await fetch(`/.netlify/functions/get-card-detail?cardId=${cardId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        const input = await res.json();
+        const match = input.title?.match(/^(H\d+)\s*:/i);
+        const clean = str => str.replace(/[*]+/g, '').trim();
+        state.title = match ? clean(match[1]) : null;
 
-      const { sugestao, motivo, justificativa, descricao, tradeoff } = await callEndpoint('analyze-plan', input);
-      state.justificativa = justificativa;
-      state.descricao = descricao;
-      state.tradeoff = tradeoff;
+        const { sugestao, motivo, justificativa, descricao, tradeoff } = await callEndpoint('analyze-plan', input);
+        state.justificativa = justificativa;
+        state.descricao = descricao;
+        state.tradeoff = tradeoff;
 
-      let itens = [];
+        let itens = [];
 
-      if (sugestao.includes('\n'))
-        itens = sugestao.split('\n');
-      else if (sugestao.includes(';'))
-        itens = sugestao.split(';');
-      else if (sugestao.includes('.')) 
-        itens = sugestao.split('.');
-      else 
-        itens = sugestao.split("'");
+        if (sugestao.includes('\n'))
+          itens = sugestao.split('\n');
+        else if (sugestao.includes(';'))
+          itens = sugestao.split(';');
+        else if (sugestao.includes('.')) 
+          itens = sugestao.split('.');
+        else 
+          itens = sugestao.split("'");
 
-      itens = itens.map(item => item.trim()).filter(item => item !== '');
+        itens = itens.map(item => item.trim()).filter(item => item !== '');
 
-      const nextButton = document.querySelector('button[onclick="classifyPattern()"]');
-      nextButton.disabled = itens.length === 0;
+        const nextButton = document.querySelector('button[onclick="classifyPattern()"]');
+        nextButton.disabled = itens.length === 0;
 
-      const container = document.getElementById('planoItensContainer');
-      container.innerHTML = '';
+        const container = document.getElementById('planoItensContainer');
+        container.innerHTML = '';
 
-      itens.forEach((item, index) => {
-        const id = `item-${index}`;
-        const div = document.createElement('div');
-        div.className = 'plano-item';
-        div.style.marginBottom = '0.5rem';
+        itens.forEach((item, index) => {
+          const id = `item-${index}`;
+          const div = document.createElement('div');
+          div.className = 'plano-item';
+          div.style.marginBottom = '0.5rem';
 
-        div.innerHTML = `
-          <input type="checkbox" id="${id}" class="plano-checkbox" data-index="${index}" checked />
-          <label for="${id}">${state.title} - TPI ${index + 1}: ${item}</label>
-        `;
+          div.innerHTML = `
+            <input type="checkbox" id="${id}" class="plano-checkbox" data-index="${index}" checked />
+            <label for="${id}">${state.title} - TPI ${index + 1}: ${item}</label>
+          `;
 
-        container.appendChild(div);
-      });
+          container.appendChild(div);
+        });
 
-      document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);  
+        document.getElementById('planoResultado').innerHTML = motivoHTML(motivo);  
 
-      hideLoading(0);
+      } catch (error) {
+        console.error('❌ Erro ao analisar plano:', error.message || error);
+        alert(`${t('messages.createCardError')} ${error.message || t('messages.checkConsole')}`);
+        
+        // Limpar interface em caso de erro
+        const container = document.getElementById('planoItensContainer');
+        container.innerHTML = '<p style="color: red;">Erro ao gerar plano técnico. Tente novamente.</p>';
+        
+        const nextButton = document.querySelector('button[onclick="classifyPattern()"]');
+        nextButton.disabled = true;
+      } finally {
+        hideLoading(0);
+      }
     }
 
     async function editPlan() {

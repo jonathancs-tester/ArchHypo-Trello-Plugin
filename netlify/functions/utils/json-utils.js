@@ -1,6 +1,6 @@
 // Utilitário para limpeza e parsing seguro de JSON da LLM
 
-export function cleanAndParseJSON(rawContent, fallbackData = {}) {
+export function cleanAndParseJSON(rawContent, fallbackData = null) {
   let cleaned = rawContent.trim();
   
   // Remover blocos de código markdown
@@ -48,7 +48,14 @@ export function cleanAndParseJSON(rawContent, fallbackData = {}) {
     console.error("❌ Erro ao parsear JSON:", cleaned.substring(0, 200) + '...');
     console.error("❌ Erro detalhado:", parseError.message);
     
-    // Retornar dados de fallback
-    return fallbackData;
+    // Só retornar fallback se foi explicitamente fornecido
+    if (fallbackData !== null) {
+      console.log("🔄 Usando dados de fallback fornecidos");
+      return fallbackData;
+    }
+    
+    // Se não há fallback, retornar null para indicar erro
+    console.log("⚠️ Nenhum fallback fornecido, retornando null");
+    return null;
   }
 }

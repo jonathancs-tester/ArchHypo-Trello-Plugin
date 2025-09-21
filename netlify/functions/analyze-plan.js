@@ -29,17 +29,40 @@
     const chain = prompt.pipe(model);
     const result = await chain.invoke({ input });
 
-    // Usar a função de parse robusto com fallback específico
-    const fallbackData = {
-      sugestao: "Erro ao processar resposta da IA. Tente novamente.",
-      motivo: "Falha na geração do plano técnico",
-      justificativa: "Sistema indisponível temporariamente",
-      descricao: "Tente novamente em alguns segundos",
-      tradeoff: "N/A"
-    };
+    // Usar a função de parse robusto sem fallback para detectar erros
+    const parsedResult = cleanAndParseJSON(result.content);
     
-    const parsedResult = cleanAndParseJSON(result.content, fallbackData);
+    // Verificar se o parsing foi bem-sucedido
+    if (!parsedResult || !parsedResult.sugestao || parsedResult.sugestao.includes("Erro ao processar")) {
+      console.error("❌ Falha na geração do plano técnico:", result.content.substring(0, 200));
+      
+      return {
+        statusCode: 422, // Unprocessable Entity
+        headers: corsHeaders,
+        body: JSON.stringify({ 
+          error: "Falha na geração do plano técnico",
+          message: "A IA não conseguiu processar o contexto fornecido. Tente reformular ou fornecer mais detalhes.",
+          retry: true
+        }),
+      };
+    }
+
     const { sugestao, motivo, justificativa, descricao, tradeoff } = parsedResult;
+
+    // Validar campos obrigatórios
+    if (!sugestao || !motivo || !justificativa || !descricao) {
+      console.error("❌ Resposta da IA incompleta:", parsedResult);
+      
+      return {
+        statusCode: 422,
+        headers: corsHeaders,
+        body: JSON.stringify({ 
+          error: "Resposta incompleta da IA",
+          message: "Nem todos os campos necessários foram gerados. Tente novamente.",
+          retry: true
+        }),
+      };
+    }
 
     return {
       statusCode: 200,
