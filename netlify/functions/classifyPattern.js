@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { Pinecone } from "@pinecone-database/pinecone";
-import { franc } from 'franc';
+import { cleanAndParseJSON } from './utils/json-utils.js';
 
 dotenv.config();
 
@@ -67,7 +67,7 @@ async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
 }
 
 // --- Classificação com LLM ---
-async function classifyPattern(hypothesis, patternCandidates = []) {
+async function classifyPattern(hypothesis, patternCandidates = [], language = 'pt') {
   const llm = new ChatGoogleGenerativeAI({
     model: "gemini-2.5-flash-lite",
     apiKey: API_KEY,
@@ -77,8 +77,8 @@ async function classifyPattern(hypothesis, patternCandidates = []) {
   const relevantDocs = await queryPinecone(hypothesis, 20, patternCandidates);
   const context = relevantDocs.join("\n\n---\n\n");
 
-  const idioma = franc(hypothesis);
-  const idiomaTexto = idioma === 'por' ? 'português' : 'inglês';
+  // Usar idioma enviado pelo frontend em vez de detecção automática
+  const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
   const prompt = `
 You are an expert in software architecture.
@@ -100,9 +100,16 @@ ${context}
 
   const response = await llm.invoke(prompt);
   const rawOutput = response.text || response.candidates?.[0]?.content || '';
-  const cleaned = rawOutput.replace(/```(?:json)?\s*/gi, '').replace(/```/g, '').trim();
 
-  return await parser.parse(cleaned);
+  try {
+    const parsed = cleanAndParseJSON(rawOutput);
+    console.log("✅ JSON válido recebido do LLM:", parsed);
+    return parsed;
+  } catch (error) {
+    console.error("❌ Erro ao parsear JSON:", rawOutput);
+    throw error;
+  }
+
 }
 
 // --- Métricas de avaliação ---
@@ -182,12 +189,10 @@ export async function handler(event) {
   }
 
   try {
-    const { hypothesis, patternCandidates = [] } = JSON.parse(event.body);
-    if (!hypothesis) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
-    }
+    const { hypothesis, patternCandidates = [], language = 'pt' } = JSON.parse(event.body);
+    if (!hypothesis) return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
 
-    const result = await classifyPattern(hypothesis, patternCandidates);
+    const result = await classifyPattern(hypothesis, patternCandidates, language);
     const retrievedDocs = await queryPinecone(hypothesis, 20, patternCandidates);
     const relevantDocs = retrievedDocs;
 
