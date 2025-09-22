@@ -1,48 +1,69 @@
-  import { handleCors, corsHeaders } from './utils/cors.js';
-  import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-  import { ChatPromptTemplate } from "@langchain/core/prompts";
-  import { cleanAndParseJSON } from './utils/json-utils.js';
+import { handleCors, corsHeaders } from './utils/cors.js';
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { cleanAndParseJSON } from './utils/json-utils.js';
 
-  export async function handler(event) {
-    const corsResponse = handleCors(event);
-    if (corsResponse) return corsResponse;
+export async function handler(event) {
+  const corsResponse = handleCors(event);
+  if (corsResponse) return corsResponse;
 
-    const { input, language = 'pt' } = JSON.parse(event.body);
+  const { input, language = 'pt' } = JSON.parse(event.body);
 
-    const model = new ChatGoogleGenerativeAI({
-      model: "gemini-2.5-flash-lite",
-      apiKey: process.env.GENAI_API_KEY,
-    });
+  const model = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash-lite",
+    apiKey: process.env.GENAI_API_KEY,
+  });
 
-    // Usar idioma enviado pelo frontend em vez de detecção automática
-    const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
-    
-    const prompt = ChatPromptTemplate.fromTemplate(
-      `Dado o contexto: "{input}", classifique o nível de incerteza ("Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto") e explique o motivo utilizando o Uncertainty Historical:
-      -------------------------------------------------------------
-      Caso o Uncertainty Historical não tem informação, seguir a regra abaixo: 
-          Muito Baixo: A hipótese é baseada em informações sólidas e bem preparadas. Há alta confiança na análise e pouca margem para erro.
-          Baixo: A hipótese tem uma boa base de conhecimento e dúvida. A situação é conhecida e há evidências para apoiar a análise.
-          Médio: A hipótese envolve um certo grau de incerteza. Existem dados úteis, mas ainda há pontos que requerem validação ou investigação.
-          Alto: A hipótese é baseada em suposições e poucas evidências concretas. A análise requer cautela e pode envolver riscos.
-          Muito Alto: A hipótese é altamente especulativa. Não há dados disponíveis e o cenário é desconhecido, exigindo investigação aprofundada.
+  // Usar idioma enviado pelo frontend em vez de detecção automática
+  const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
-      **Responda em: ${idiomaTexto}**
+  const prompt = ChatPromptTemplate.fromTemplate(
+    `Você é um Gerente de Produto Técnico (Technical Product Manager) sênior, especialista em análise de risco e validação de hipóteses. Sua tarefa é analisar o contexto fornecido em "{input}" e as evidências em "{historico_e_evidencias}" para classificar o nível de incerteza associado.
 
-  Responda no formato JSON:
-  {{"sugestao": "incerteza", "motivo": "explicação"}}.`
-    );
-    
-    const chain = prompt.pipe(model);
-    const result = await chain.invoke({ input });
+**Contexto / Hipótese para Análise:** "{input}"
 
-    // Usar a função de parse robusto
-    const parsedResult = cleanAndParseJSON(result.content);
-    const { sugestao, motivo } = parsedResult;
+---
 
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({ sugestao, motivo }),
-    };
-  }
+**Instruções de Análise:**
+1.  **Analise o Contexto:** Entenda a natureza da hipótese ou situação descrita em "{input}".
+2.  **Avalie as Evidências:** Use o campo "{historico_e_evidencias}" como a principal fonte para sua análise. A presença (ou ausência) de dados, experiência prévia ou provas de conceito é o fator determinante.
+3.  **Classifique a Incerteza:** Compare as evidências disponíveis com a escala de classificação abaixo e escolha o nível mais apropriado.
+4.  **Justifique sua Decisão:** No campo "motivo", explique seu raciocínio, conectando diretamente as evidências (ou a falta delas) à classificação escolhida.
+
+**Escala de Classificação de Incerteza:**
+- **Muito Baixo:** A situação é bem conhecida. Temos métricas, logs ou dados quantitativos que confirmam o comportamento. Já executamos tarefas idênticas ou muito similares no passado com sucesso.
+- **Baixo:** Temos uma boa base de conhecimento. Embora não tenhamos dados quantitativos perfeitos, há forte experiência interna, documentação clara ou projetos análogos que nos dão alta confiança.
+- **Médio:** Existem algumas evidências, mas são incompletas. Temos dados qualitativos (ex: feedback de usuários), mas não quantitativos. A equipe tem alguma familiaridade com o domínio, mas não com a tecnologia específica.
+- **Alto:** A análise é baseada principalmente em suposições. As evidências são fracas ou inexistentes. É uma tecnologia nova para a equipe ou um problema que nunca enfrentamos antes.
+- **Muito Alto:** Cenário puramente especulativo ou de P&D (Pesquisa e Desenvolvimento). Não há dados, experiência interna ou precedentes de mercado claros. A solução exigirá uma prova de conceito do zero.
+
+**Exemplo de Execução:**
+- **input:** "Hipótese: Adotar um novo banco de dados NoSQL (ex: ScyllaDB) para nosso serviço de mensageria pode melhorar a escalabilidade em 10x."
+- **Output Esperado (para idiomaTexto='Português'):**
+  {{
+    "sugestao": "Muito Alto",
+    "motivo": "A incerteza é classificada como 'Muito Alto' porque a equipe não possui qualquer experiência prévia com a tecnologia proposta (ScyllaDB). A análise seria baseada apenas em documentação externa, sem dados, benchmarks ou provas de conceito internas, tornando o cenário altamente especulativo e exploratório."
+  }}
+
+---
+
+**Regras de Saída:**
+- A resposta **deve** ser um objeto JSON válido.
+- O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}
+- O JSON deve conter apenas as chaves "sugestao" e "motivo".
+`
+  );
+
+  const chain = prompt.pipe(model);
+  const result = await chain.invoke({ input });
+
+  // Usar a função de parse robusto
+  const parsedResult = cleanAndParseJSON(result.content);
+  const { sugestao, motivo } = parsedResult;
+
+  return {
+    statusCode: 200,
+    headers: corsHeaders,
+    body: JSON.stringify({ sugestao, motivo }),
+  };
+}

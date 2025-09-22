@@ -1,48 +1,69 @@
-  // Igual ao de incerteza, só muda o prompt:
-  import { handleCors, corsHeaders } from './utils/cors.js';
-  import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-  import { ChatPromptTemplate } from "@langchain/core/prompts";
-  import { cleanAndParseJSON } from './utils/json-utils.js';
+// Igual ao de incerteza, só muda o prompt:
+import { handleCors, corsHeaders } from './utils/cors.js';
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { cleanAndParseJSON } from './utils/json-utils.js';
 
-  export async function handler(event) {
-    const corsResponse = handleCors(event);
-    if (corsResponse) return corsResponse;
+export async function handler(event) {
+  const corsResponse = handleCors(event);
+  if (corsResponse) return corsResponse;
 
-    const { input, language = 'pt' } = JSON.parse(event.body);
+  const { input, language = 'pt' } = JSON.parse(event.body);
 
-    const model = new ChatGoogleGenerativeAI({
-      model: "gemini-2.5-flash-lite",
-      apiKey: process.env.GENAI_API_KEY,
-    });
-    
-    // Usar idioma enviado pelo frontend em vez de detecção automática
-    const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
-    
-    const prompt = ChatPromptTemplate.fromTemplate(
-      `Dado o contexto: "{input}", classifique o impacto ("Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto") e explique o motivo utilizando o Impact Historical: 
-      -------------------------------------------------------------
-    Caso o Impact Historical não tenha informação, seguir a regra abaixo:  
-      Muito Baixo: A situação é clara e bem compreendida. Há dados sólidos e experiência anterior que confirmam o comportamento esperado.
-      Baixo: Há pouca incerteza. O problema é conhecido e já existem soluções testadas ou documentadas.
-      Médio: A situação é moderadamente complexa. Existem dados úteis na análise, mas ainda há pontos que requerem validação.
-      Alto: O problema é significativo e afeta áreas críticas. Há poucas evidências concretas, e uma solução pode exigir investigação ou testes.
-      Muito Alto: A situação é altamente incerta. Não há dados disponíveis, e o impacto pode ser imprevisível. Exige análise aprofundada e cautela.
-    
-    **Responda em: ${idiomaTexto}**
+  const model = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash-lite",
+    apiKey: process.env.GENAI_API_KEY,
+  });
 
-  Responda no formato JSON: 
-  {{"sugestao": "impacto", "motivo": "explicação"}}.`
+  // Usar idioma enviado pelo frontend em vez de detecção automática
+  const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
+
+  const prompt = ChatPromptTemplate.fromTemplate(
+    `Você é um Analista de Risco e SRE (Site Reliability Engineer) sênior. Sua tarefa é analisar uma situação descrita em "{input}", considerar o contexto fornecido em "{historico_de_impacto}", e classificar o **impacto** potencial em uma escala de cinco níveis.
+
+**Situação para Análise:** "{input}"
+
+**Contexto e Histórico de Impacto:** "{historico_de_impacto}"
+
+---
+
+**Instruções de Análise:**
+1.  **Avalie a Situação:** Entenda qual componente, fluxo ou grupo de usuários é afetado pelo "{input}".
+2.  **Considere o Histórico:** Use o "{historico_de_impacto}" como principal fonte de evidência. Se um evento similar já ocorreu, sua classificação deve ser fortemente baseada no resultado passado.
+3.  **Use a Escala de Impacto:** Se o histórico for insuficiente ou inexistente, use as definições abaixo para classificar o impacto potencial.
+4.  **Justifique sua Resposta:** No campo "motivo", explique seu raciocínio, citando o histórico quando aplicável ou a definição da escala que usou.
+
+**Escala de Classificação de Impacto:**
+- **Muito Baixo:** O efeito é mínimo, quase imperceptível. Afeta apenas processos internos ou um ambiente de testes, sem qualquer consequência para o usuário final.
+- **Baixo:** Afeta um grupo muito pequeno e específico de usuários ou uma funcionalidade secundária com alternativas fáceis. O contorno é simples.
+- **Médio:** Causa inconveniência ou degradação da experiência para um subconjunto de usuários. Afeta uma funcionalidade importante, mas não crítica.
+- **Alto:** Causa uma interrupção significativa do serviço para muitos usuários ou afeta uma funcionalidade crítica (ex: login, busca principal). Gera frustração e perda de confiança.
+- **Muito Alto:** Causa indisponibilidade geral do serviço (downtime), perda de dados, falha grave de segurança ou impacto financeiro direto.
+
+**Exemplo de Execução:**
+- **input:** "Estamos planejando migrar o banco de dados de usuários para um novo cluster."
+- **historico_de_impacto:** "Na última migração de um serviço similar (o serviço de pagamentos), houve 2 horas de downtime e a equipe levou 6 horas para estabilizar o sistema."
+- **Output Esperado (para idiomaTexto='Português'):**
+  {{"sugestao": "Muito Alto", "motivo": "A migração afeta um componente central (banco de dados de usuários) e o histórico de migrações similares na empresa resultou em downtime significativo. Portanto, o risco de um impacto severo na disponibilidade do serviço é a principal justificativa."}}
+
+---
+
+**Regras de Saída:**
+- A resposta **deve** ser um objeto JSON válido.
+- O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}
+- O JSON deve conter apenas as chaves "sugestao" e "motivo".
+`
   );
-    const chain = prompt.pipe(model);
-    const result = await chain.invoke({ input });
+  const chain = prompt.pipe(model);
+  const result = await chain.invoke({ input });
 
-    // Usar a função de parse robusto
-    const parsedResult = cleanAndParseJSON(result.content);
-    const { sugestao, motivo } = parsedResult;
+  // Usar a função de parse robusto
+  const parsedResult = cleanAndParseJSON(result.content);
+  const { sugestao, motivo } = parsedResult;
 
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({ sugestao, motivo }),
-    };
-  }
+  return {
+    statusCode: 200,
+    headers: corsHeaders,
+    body: JSON.stringify({ sugestao, motivo }),
+  };
+}
