@@ -10,7 +10,7 @@ const nomesDasListas = [
 "EM ANDAMENTO",
 "A FAZER",
 "ITEM PLANO TECNICO",
-"INCERTEZA",
+"HIPÓTESES",
 ];
 
 // Suporte ao CORS

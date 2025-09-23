@@ -39,95 +39,98 @@
             });
           }
 
-          // Botão "Add/Atualizar Métrica" sempre aparece
           buttons.push({
             icon: "https://img.icons8.com/ios-filled/50/000000/process.png",
             text: "Add/Atualizar Métrica",
             callback: function (t) {
-              return t.card('name')
-                .then(function (card) {
-                  if (!card || !card.name) {
-                    console.error("Error: Unable to get the card title.");
-                    return t.alert({
-                      message: "Error getting the card title!",
-                      duration: 3,
-                      display: "error"
-                    });
-                  }
+              function atualizarMetricas() {
+                return t.card('name')
+                  .then(function (card) {
+                    if (!card || !card.name) {
+                      console.error("Error: Unable to get the card title.");
+                      return t.alert({
+                        message: "Error getting the card title!",
+                        duration: 3,
+                        display: "error"
+                      });
+                    }
 
-                  const titulo = card.name.trim();
+                    const titulo = card.name.trim();
 
-                  return t.card('desc')
-                    .then(function (cardDesc) {
-                      const descricao = cardDesc?.desc?.trim() || "";
-
-                      if (titulo.startsWith("H")) {
+                    return t.card('desc')
+                      .then(function (cardDesc) {
+                        const descricao = cardDesc?.desc?.trim() || "";
 
                         function extrairValor(chave) {
                           const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
                           const match = descricao.match(regex);
                           return match ? match[1].trim() : "";
                         }
-                        const dominio_problema = extrairValor("Requisitos Não Funcionais");
-                        const incerteza = extrairValor("Nível de Incerteza");
-                        const impacto = extrairValor("Nível de Impacto");
-                        const pattern = extrairValor("Padrão ArchHypo");
-                        const plano = extrairValor("Plano Técnico");
 
-                        return t.set('card', 'shared', {
-                          dominio_problema,
-                          incerteza,
-                          impacto,
-                          pattern,
-                          plano
-                        }).then(function () {
-                          return t.alert({
-                            message: "Campos adicionados/atualizados com sucesso!",
-                            duration: 3,
-                            display: "success"
+                        if (titulo.startsWith("H")) {
+                          const dominio_problema = extrairValor("Requisitos Não Funcionais");
+                          const incerteza = extrairValor("Nível de Incerteza");
+                          const impacto = extrairValor("Nível de Impacto");
+                          const pattern = extrairValor("Padrão ArchHypo");
+                          const plano = extrairValor("Plano Técnico");
+
+                          return t.set('card', 'shared', {
+                            dominio_problema,
+                            incerteza,
+                            impacto,
+                            pattern,
+                            plano
+                          }).then(function () {
+                            return t.alert({
+                              message: "Campos atualizados com sucesso!",
+                              duration: 3,
+                              display: "success"
+                            });
                           });
-                        });
-                      } else {
+                        } else {
+                          const requisito_nao_funcional = extrairValor("Requisitos Não Funcionais");
+                          const pattern = extrairValor("Padrão ArchHypo");
 
-                        function extrairValorItem(chave) {
-                          const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
-                          const match = descricao.match(regex);
-                          return match ? match[1].trim() : "";
+                          return t.set('card', 'shared', {
+                            requisito_nao_funcional,
+                            pattern
+                          }).then(function () {
+                            return t.alert({
+                              message: "Campos atualizados com sucesso!",
+                              duration: 3,
+                              display: "success"
+                            });
+                          });
                         }
-
-                        const requisito_nao_funcional = extrairValorItem("Requisitos Não Funcionais");
-                        const pattern = extrairValorItem("Padrão ArchHypo");
-
-                        return t.set('card', 'shared', {
-                          requisito_nao_funcional,
-                          pattern
-                        }).then(function () {
-                          return t.alert({
-                            message: "Campos adicionados/atualizados com sucesso!",
-                            duration: 3,
-                            display: "success"
-                          });
-                        });
-                      }
+                      });
+                  })
+                  .catch(function (error) {
+                    console.error("Error processing the card:", error);
+                    return t.alert({
+                      message: "Unexpected error!",
+                      duration: 3,
+                      display: "error"
                     });
-                })
-                .catch(function (error) {
-                  console.error("Error processing the card:", error);
-                  return t.alert({
-                    message: "Unexpected error!",
-                    duration: 3,
-                    display: "error"
                   });
-                });
+              }
+
+              // Executa imediatamente
+              atualizarMetricas();
+
+              // Atualiza a cada 60 segundos
+              setInterval(() => {
+                atualizarMetricas();
+              }, 1000); // 1.000 ms = 1 segundo
+
+              return Promise.resolve(); // Retorna algo para o Trello não reclamar
             }
           });
-
           return buttons;
         });
       },
       'board-buttons': function (t, options) {
         return t.lists('id', 'name').then(function (lists) {
-          const hasUncertaintyColumn = lists.some(list => list.name === 'INCERTEZA');
+          const hasUncertaintyColumn = lists.some(list => list.name === 'HIPÓTESES');
 
           const buttons = [
             {
@@ -222,11 +225,11 @@
             },
             {
               icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
-              text: "Nova Incerteza",
+              text: "Criar Hipótese",
               callback: function (t) {
                 t.board('id').then(function (boardId) {
                   return t.modal({
-                    title: "Nova Incerteza",
+                    title: "Criar Hipótese",
                     url: `./pages/create-hyphoteses.html?boardId=${boardId.id}`,
                     height: 500
                   });

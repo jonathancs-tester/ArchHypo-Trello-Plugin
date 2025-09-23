@@ -242,33 +242,36 @@ document.addEventListener('DOMContentLoaded', () => {
       showLoading(2);
       state.dominio = document.getElementById('dominio').value;
       state.dominioMotivo = document.getElementById('dominioResultado').value;
-      const boardId = getBoardIdFromUrl();
-      const query = `boardId=${boardId}&column=INCERTEZA`;   
 
-      const res = await fetch(`/.netlify/functions/get-uncertainty?`+query, {
+      const boardId = getBoardIdFromUrl();
+      const query = `boardId=${boardId}&column=HIPÓTESES`;   
+
+      const res = await fetch(`/.netlify/functions/get-uncertainty?` + query, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-   
-        const allData = await res.json();
-        // Extrai o valor de totalCards e atribui ao estado
-        state.incertezaTotal = allData?.length || 0;
-        const data = allData ? allData.slice(0, 10) : [];
 
-        // Remove totalCards da string de histórico
-        const uncertaintyHistoricalStr = Array.isArray(data)
-          ? data.map(item => {
-              const { totalCards, ...rest } = item; // Remove totalCards
-              return JSON.stringify(rest);
-            }).join('; ')
-          : data;
+      const allData = await res.json();
+      state.incertezaTotal = allData?.length || 0;
+      const data = allData ? allData.slice(0, 10) : [];
 
-    const input = `
-    Context: ${state.contexto}; 
-    Hypothesis: ${state.hipotese};
-    Non Functional Requirement: ${state.dominio}; 
-    Uncertainty Historical: ${uncertaintyHistoricalStr};
-      `;  
+      const uncertaintyHistoricalStr = Array.isArray(data)
+        ? data.map(item => {
+            const { totalCards, ...rest } = item;
+            return JSON.stringify(rest);
+          }).join('; ')
+        : data;
+
+      // Confirmação do uso do histórico
+      const usarHistorico = confirm("Deseja usar o histórico de incerteza na análise?");
+      
+      const input = `
+        Context: ${state.contexto}; 
+        Hypothesis: ${state.hipotese};
+        Non Functional Requirement: ${state.dominio}; 
+        ${usarHistorico ? `Uncertainty Historical: ${uncertaintyHistoricalStr};` : ''}
+      `;
+
       const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
       sugestaoOriginal = sugestao;
@@ -290,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
           motivoField.value = '';
         }
       });
+
       showStep(3);
     } catch (error) {
       console.error('❌ Erro ao analisar incerteza:', error.message || error);
@@ -306,9 +310,9 @@ document.addEventListener('DOMContentLoaded', () => {
       state.incertezaMotivo = document.getElementById('incertezaResultado').value;
 
       const boardId = getBoardIdFromUrl();
-      const query = `boardId=${boardId}&column=INCERTEZA`;   
+      const query = `boardId=${boardId}&column=HIPÓTESES`;   
 
-      const res = await fetch(`/.netlify/functions/get-impact?`+query, {
+      const res = await fetch(`/.netlify/functions/get-impact?` + query, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -316,16 +320,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const allData = await res.json();
       const data = allData ? allData.slice(0, 10) : [];
       const impactHistoricalStr = Array.isArray(data)
-      ? data.map(item => JSON.stringify(item)).join('; ')
-      : data;
+        ? data.map(item => JSON.stringify(item)).join('; ')
+        : data;
 
-    const input = `
-    Context: ${state.contexto}; 
-    Hypothesis: ${state.hipotese};
-    Non Functional Requirement: ${state.dominio}; 
-    Uncertainty: ${state.incerteza};
-    Impact Historical: ${impactHistoricalStr};
-      `;  
+      // Confirmação do uso do histórico
+      const usarHistorico = confirm("Deseja usar o histórico de impacto na análise?");
+      
+      const input = `
+        Context: ${state.contexto}; 
+        Hypothesis: ${state.hipotese};
+        Non Functional Requirement: ${state.dominio}; 
+        Uncertainty: ${state.incerteza};
+        ${usarHistorico ? `Impact Historical: ${impactHistoricalStr};` : ''}
+      `;
+
       const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
 
       sugestaoOriginal = sugestao;
@@ -374,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
               "**Nível de Impacto:** " + state.impacto
       };
 
-      const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=HIPOTESES ARQUITETURAIS`, {
+      const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=HIPÓTESES`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
