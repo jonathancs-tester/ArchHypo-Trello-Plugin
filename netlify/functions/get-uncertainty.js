@@ -76,7 +76,7 @@
                 const result = cards
                 .map(card => {
                     const hypoMatch = card.name.match(/H\d+\s*:\s*(.+)/i);
-                    const uncertaintyMatch = card.desc.match(/Nível de Incerteza\s*:\s*(.+)/i);
+                    const uncertaintyMatch = card.desc.match(/(?:Nível de Incerteza|Uncertainty Level)\s*:\s*(.+)/i);
 
                     const clean = str => str.replace(/[*]+/g, '').trim(); // remove asteriscos e espaços extras
 

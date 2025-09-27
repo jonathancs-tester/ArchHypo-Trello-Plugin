@@ -1,307 +1,324 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ArchHypo.AI - Plano Técnico</title>
-    <style>
-      /* Reset básico */
-      * {
-        box-sizing: border-box;
-      }
+<!DOCTYPE html>
+<html lang="en">
 
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #172b4d;
-        margin: 40px;
-        color: #172b4d;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title id="pageTitle"></title>
+  <style>
+    /* Reset básico */
+    * {
+      box-sizing: border-box;
+    }
 
-      h1 {
-        font-weight: 700;
-        font-size: 2.5rem;
-        margin-bottom: 1.5rem;
-        color: #026aa7;
-        text-align: center;
-        user-select: none;
-      }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #172b4d;
+      margin: 40px;
+      color: #172b4d;
+    }
 
-      h2 {
-        font-weight: 600;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        color: #172b4d;
-      }
+    h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: #026aa7;
+      text-align: center;
+      user-select: none;
+    }
 
-      .step {
-        display: none;
-        background: white;
-        max-width: 480px;
-        margin: 0 auto 2rem auto;
-        padding: 1.8rem 2rem;
-        border-radius: 8px;
-        box-shadow: 0 1px 6px rgba(9,30,66,.25);
-        transition: all 0.3s ease;
-      }
+    h2 {
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #172b4d;
+    }
 
-      .step.active {
-        display: block;
-      }
+    .step {
+      display: none;
+      background: white;
+      max-width: 480px;
+      margin: 0 auto 2rem auto;
+      padding: 1.8rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(9, 30, 66, .25);
+      transition: all 0.3s ease;
+    }
 
-      #loading { 
-        display: none; 
-        font-weight: bold; 
-        color: #333;
-        margin: 20px 0; 
-      }
+    .step.active {
+      display: block;
+    }
 
-      .loading-indicator {
-        display: none;
-        font-weight: bold;
-        color: #333;
-        margin-top: 10px;
-      }
+    #loading {
+      display: none;
+      font-weight: bold;
+      color: #333;
+      margin: 20px 0;
+    }
 
-      textarea {
-        width: 100%;
-        height: 150px;
-        padding: 1rem;
-        font-size: 1.1rem;
-        border: 1px solid #dfe1e6;
-        border-radius: 6px;
-        overflow: auto;  /* ativa scroll se ultrapassar */
-        resize: none;    /* opcional, bloqueia redimensionamento */
-        white-space: pre-wrap; /* quebra de linha automática */
-        word-wrap: break-word; /* força quebra de palavra */
-      }
+    .loading-indicator {
+      display: none;
+      font-weight: bold;
+      color: #333;
+      margin-top: 10px;
+    }
 
-      input[type="text"],
-      select {
-        width: 100%;
-        padding: 0.6rem 1rem;
-        margin-top: 0.3rem;
-        margin-bottom: 1rem;
-        font-size: 1rem;
-        border: 1px solid #dfe1e6;
-        border-radius: 4px;
-        transition: border-color 0.3s ease;
-      }
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      border: 1px solid #dfe1e6;
+      border-radius: 6px;
+      overflow: auto;
+      /* ativa scroll se ultrapassar */
+      resize: none;
+      /* opcional, bloqueia redimensionamento */
+      white-space: pre-wrap;
+      /* quebra de linha automática */
+      word-wrap: break-word;
+      /* força quebra de palavra */
+    }
 
-      input[type="text"]:focus,
-      select:focus {
-        border-color: #0079bf;
-        outline: none;
-        box-shadow: 0 0 4px #0079bf;
-      }
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 0.6rem 1rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      border: 1px solid #dfe1e6;
+      border-radius: 4px;
+      transition: border-color 0.3s ease;
+    }
 
-      button {
-        background-color: #5aac44;
-        border: none;
-        color: white;
-        font-weight: 600;
-        padding: 0.6rem 1.8rem;
-        font-size: 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        user-select: none;
-        display: inline-block;
-        margin-top: 10px;
-      }
+    input[type="text"]:focus,
+    select:focus {
+      border-color: #0079bf;
+      outline: none;
+      box-shadow: 0 0 4px #0079bf;
+    }
 
-      button:hover {
-        background-color: #519839;
-      }
+    button {
+      background-color: #5aac44;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.8rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      display: inline-block;
+      margin-top: 10px;
+    }
 
-      .help-icon {
-          position: relative;
-          display: inline-block;
-          background-color: #007bff;
-          color: white;
-          border-radius: 50%;
-          width: 20px;
-          height: 20px;
-          text-align: center;
-          line-height: 20px;
-          cursor: pointer;
-          font-size: 14px;
-          margin-left: 8px;
-          user-select: none;
-      }
+    button:hover {
+      background-color: #519839;
+    }
 
-      .help-icon:focus,
-      .help-icon:hover {
-          background-color: #0056b3;
-      }
+    .help-icon {
+      position: relative;
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 8px;
+      user-select: none;
+    }
 
-      .tooltip {
-          visibility: hidden;
-          width: 280px;
-          background-color: #333;
-          color: #fff;
-          text-align: left;
-          border-radius: 8px;
-          padding: 10px;
-          position: absolute;
-          z-index: 100;
-          top: 25px;
-          left: 0;
-          opacity: 0;
-          transition: opacity 0.3s;
-          font-size: 14px;
-          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-      }
+    .help-icon:focus,
+    .help-icon:hover {
+      background-color: #0056b3;
+    }
 
-      .tooltip::before {
-          content: "";
-          position: absolute;
-          top: -6px;
-          left: 10px;
-          border-width: 6px;
-          border-style: solid;
-          border-color: transparent transparent #333 transparent;
-      }
+    .tooltip {
+      visibility: hidden;
+      width: 280px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 8px;
+      padding: 10px;
+      position: absolute;
+      z-index: 100;
+      top: 25px;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 14px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    }
 
-      .help-icon:hover .tooltip,
-      .help-icon:focus .tooltip {
-          visibility: visible;
-          opacity: 1;
-      }
+    .tooltip::before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 10px;
+      border-width: 6px;
+      border-style: solid;
+      border-color: transparent transparent #333 transparent;
+    }
 
-      /* Estilo do <details> para motivo */
-      details summary {
-        cursor: pointer;
-        font-style: italic;
-        color: #444;
-        user-select: none;
-      }
+    .help-icon:hover .tooltip,
+    .help-icon:focus .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
 
-      details summary:hover {
-        color: #0079bf;
-      }
+    /* Estilo do <details> para motivo */
+    details summary {
+      cursor: pointer;
+      font-style: italic;
+      color: #444;
+      user-select: none;
+    }
 
-      details p {
-        margin: 10px 0 0 0;
-        padding-left: 12px;
-        color: #222;
-        font-size: 0.95rem;
-        line-height: 1.4;
-      }
+    details summary:hover {
+      color: #0079bf;
+    }
 
-      button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
+    details p {
+      margin: 10px 0 0 0;
+      padding-left: 12px;
+      color: #222;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
 
-      /* Estilo do seletor de idioma */
-      .language-selector {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 1rem;
-      }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
-      .language-select {
-        background: white;
-        border: 2px solid #dfe1e6;
-        border-radius: 6px;
-        padding: 6px 8px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        min-width: 120px;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 8px center;
-        background-repeat: no-repeat;
-        background-size: 16px;
-        padding-right: 32px;
-      }
+    /* Estilo do seletor de idioma */
+    .language-selector {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
 
-      .language-select:hover {
-        border-color: #0079bf;
-        box-shadow: 0 2px 4px rgba(0, 121, 191, 0.2);
-      }
+    .language-select {
+      background: white;
+      border: 2px solid #dfe1e6;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 8px center;
+      background-repeat: no-repeat;
+      background-size: 16px;
+      padding-right: 32px;
+    }
 
-      .language-select:focus {
-        border-color: #0079bf;
-        outline: none;
-        box-shadow: 0 2px 4px rgba(0, 121, 191, 0.3);
-      }
+    .language-select:hover {
+      border-color: #0079bf;
+      box-shadow: 0 2px 4px rgba(0, 121, 191, 0.2);
+    }
 
-      .language-select option {
-        padding: 8px;
-        background: white;
-      }
-      .pattern-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
+    .language-select:focus {
+      border-color: #0079bf;
+      outline: none;
+      box-shadow: 0 2px 4px rgba(0, 121, 191, 0.3);
+    }
 
-      .hover-info {
-        position: relative;
-        cursor: pointer;
-      }
+    .language-select option {
+      padding: 8px;
+      background: white;
+    }
 
-      .hover-box {
-        display: none;
-        position: absolute;
-        top: 20px;
-        left: 0;
-        background: #f9f9f9;
-        border: 1px solid #ccc;
-        padding: 10px;
-        width: 250px;
-        z-index: 10;
-        font-size: 0.9em;
-      }
+    .pattern-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-      .hover-info:hover .hover-box {
-        display: block;
-      }
-    </style>
-  </head>
-  <body>
+    .hover-info {
+      position: relative;
+      cursor: pointer;
+    }
 
-    <div id="step0" class="step active">
-      <!-- Seletor de Idioma -->
-      <div class="language-selector">
-        <select class="language-select" onchange="updateLanguage(this.value)" id="languageSelect">
-          <option value="pt">🇧🇷 Português</option>
-          <option value="en">🇺🇸 English</option>
-        </select>
-      </div>
-      
-      <h2>1. Plano Técnico</h2>
-      <div id="planoItensContainer"></div>
-      <p id="planoResultado"></p>
-      <button onclick="analyzePlan()">Gerar</button>
-      <button onclick="editPlan()" disabled>Editar</button>
-      <button onclick="classifyPattern()" disabled>Próximo</button>
-      <div id="loading0" class="loading-indicator">⏳ Processando...</div>
+    .hover-box {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 0;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 250px;
+      z-index: 10;
+      font-size: 0.9em;
+    }
+
+    .hover-info:hover .hover-box {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="step0" class="step active">
+    <!-- Seletor de Idioma -->
+    <div class="language-selector">
+      <select class="language-select" onchange="updateLanguage(this.value)" id="languageSelect">
+        <option value="pt">🇧🇷 Português</option>
+        <option value="en">🇺🇸 English</option>
+      </select>
     </div>
 
-    <div id="step1" class="step">
-      <h2>1. Editar Plano Técnico</h2>
-      <div id="editItensContainer"></div>
-      <div id="loading1" class="loading-indicator">⏳ Processando...</div>
-      <button onclick="previousStep()">Anterior</button>
-      <button onclick="classifyPattern()">Próximo</button>
-    </div>
+    <h2 id="step0Title"></h2>
+    <div id="planoItensContainer"></div>
+    <p id="planoResultado"></p>
+    <button onclick="analyzePlan()" id="generateBtn"></button>
+    <button onclick="editPlan()" disabled id="editBtn"></button>
+    <button onclick="classifyPattern()" disabled id="step0NextBtn"></button>
+    <div id="loading0" class="loading-indicator"></div>
+  </div>
 
-    <div id="step2" class="step">
-      <h2>2. Padrão ArchHypo</h2>
-      <div id="patternItensContainer"></div>
-      <div id="loading2" class="loading-indicator">⏳ Processando...</div>
-      <button onclick="previousEditStep()">Anterior</button>
-      <button onclick="createCard()">Criar</button>
-    </div>
+  <div id="step1" class="step">
+    <h2 id="step1Title"></h2>
+    <div id="editItensContainer"></div>
+    <div id="loading1" class="loading-indicator"></div>
+    <button onclick="previousStep()" id="step1PrevBtn"></button>
+    <button onclick="classifyPattern()" id="step1NextBtn"></button>
+  </div>
 
-    <div id="step3" class="step">
-      <h2>✅ Itens do Plano Técnico criados!</h2>
-      <p id="cardLink"></p>
-    </div>
+  <div id="step2" class="step">
+    <h2 id="step2Title"></h2>
+    <div id="patternItensContainer"></div>
+    <div id="loading2" class="loading-indicator"></div>
+    <button onclick="previousEditStep()" id="step2PrevBtn"></button>
+    <button onclick="createCard()" id="step2CreateBtn"></button>
+  </div>
 
-    <script src="../src/create-techplan.js"></script>
-  </body>
-  </html>
+  <div id="step3" class="step">
+    <h2 id="step3Title"></h2>
+    <p id="cardLink"></p>
+  </div>
+
+  <script src="../src/i18n.js"></script>
+  <script src="../src/create-techplan.js"></script>
+  <script>
+    // Initialize i18n for this page
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('lang');
+    if (lang) {
+      I18N.setLanguage(lang);
+    }
+  </script>
+</body>
+
+</html>

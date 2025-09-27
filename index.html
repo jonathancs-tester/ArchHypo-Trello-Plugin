@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ArchHypo.AI - Trello Power App</title>
+  <title id="pageTitle"></title>
   <style>
     .popup-content {
       text-align: center;
@@ -15,23 +15,28 @@
 
 <body>
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="./src/i18n.js"></script>
   <script src="./src/create-board-template.js"></script>
+  <script>
+    // Update title based on current language
+    document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+  </script>
   <script>
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
         return t.card('id', 'name').then(function (card) {
           const buttons = [];
 
-          // Botão "Plano Técnico" só aparece se o título do card tiver "TPI"
+          // I18N.t('commentTechnicalPlan')
           if (card.name && !card.name.includes("TPI")) {
             buttons.push({
               icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
-              text: "Plano Técnico",
+              text: I18N.t('technicalPlan'),
               callback: function (t) {
                 return t.board('id').then(function (boardId) {
                   return t.modal({
-                    title: "Gerar Plano Técnico",
-                    url: `./pages/create-techplan.html?boardId=${boardId.id}&cardId=${card.id}`,
+                    title: I18N.t('generateTechnicalPlan'),
+                    url: `./pages/create-techplan.html?boardId=${boardId.id}&cardId=${card.id}&lang=${I18N.getCurrentLanguage()}`,
                     height: 500
                   });
                 });
@@ -39,17 +44,17 @@
             });
           }
 
-          // Botão "Add/Atualizar Métrica" sempre aparece
+          // I18N.t('commentMetricButton')
           buttons.push({
             icon: "https://img.icons8.com/ios-filled/50/000000/process.png",
-            text: "Add/Atualizar Métrica",
+            text: I18N.t('addUpdateMetric'),
             callback: function (t) {
               return t.card('name')
                 .then(function (card) {
                   if (!card || !card.name) {
-                    console.error("Error: Unable to get the card title.");
+                    console.error(I18N.t('errorGettingCardTitle'));
                     return t.alert({
-                      message: "Error getting the card title!",
+                      message: I18N.t('errorCardTitle'),
                       duration: 3,
                       display: "error"
                     });
@@ -68,11 +73,18 @@
                           const match = descricao.match(regex);
                           return match ? match[1].trim() : "";
                         }
-                        const dominio_problema = extrairValor("Requisitos Não Funcionais");
-                        const incerteza = extrairValor("Nível de Incerteza");
-                        const impacto = extrairValor("Nível de Impacto");
-                        const pattern = extrairValor("Padrão ArchHypo");
-                        const plano = extrairValor("Plano Técnico");
+                        // Use language-appropriate labels for extraction
+                        const nfrLabel = I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', '');
+                        const uncertaintyLabel = I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', '');
+                        const impactLabel = I18N.t('impactLevelLabel').replace('**', '').replace(':** ', '');
+                        const patternLabel = I18N.t('patternLevelLabel').replace('**', '').replace(':** ', '');
+                        const planLabel = I18N.t('planLevelLabel').replace('**', '').replace(':** ', '');
+                        
+                        const dominio_problema = extrairValor(nfrLabel);
+                        const incerteza = extrairValor(uncertaintyLabel);
+                        const impacto = extrairValor(impactLabel);
+                        const pattern = extrairValor(patternLabel);
+                        const plano = extrairValor(planLabel);
 
                         return t.set('card', 'shared', {
                           dominio_problema,
@@ -82,7 +94,7 @@
                           plano
                         }).then(function () {
                           return t.alert({
-                            message: "Campos adicionados/atualizados com sucesso!",
+                            message: I18N.t('fieldsUpdatedSuccess'),
                             duration: 3,
                             display: "success"
                           });
@@ -103,7 +115,7 @@
                           pattern
                         }).then(function () {
                           return t.alert({
-                            message: "Campos adicionados/atualizados com sucesso!",
+                            message: I18N.t('fieldsUpdatedSuccess'),
                             duration: 3,
                             display: "success"
                           });
@@ -112,9 +124,9 @@
                     });
                 })
                 .catch(function (error) {
-                  console.error("Error processing the card:", error);
+                  console.error(I18N.t('errorProcessingCard'), error);
                   return t.alert({
-                    message: "Unexpected error!",
+                    message: I18N.t('errorUnexpected'),
                     duration: 3,
                     display: "error"
                   });
@@ -127,18 +139,23 @@
       },
       'board-buttons': function (t, options) {
         return t.lists('id', 'name').then(function (lists) {
-          const hasUncertaintyColumn = lists.some(list => list.name === 'INCERTEZA');
+          const hasUncertaintyColumn = lists.some(list => 
+            list.name === 'INCERTEZA' || 
+            list.name === 'UNCERTAINTY' || 
+            list.name.toUpperCase().includes('INCERTEZA') || 
+            list.name.toUpperCase().includes('UNCERTAINTY')
+          );
 
           const buttons = [
             {
               icon: "https://img.icons8.com/ios-filled/50/000000/combo-chart.png",
-              text: "ArchHypo Métricas",
+              text: I18N.t('archHypoMetrics'),
               callback: function (t) {
                 return t.cards('all').then(function (cards) {
                   if (!cards || cards.length === 0) {
                     return t.popup({
                       title: 'Error',
-                      items: [{ text: 'Nenhum cartão encontrado!', interactive: false }]
+                      items: [{ text: I18N.t('errorNoCards'), interactive: false }]
                     });
                   }
 
@@ -209,25 +226,25 @@
                     }).toString();
 
                     return t.modal({
-                      title: "ArchHypo Métricas",
-                      url: `pages/metrics-graph.html?${params}`,
+                      title: I18N.t('archHypoMetrics'),
+                      url: `pages/metrics-graph.html?${params}&lang=${I18N.getCurrentLanguage()}`,
                       fullscreen: false,
                       height: 800
                     });
                   });
                 }).catch(function (error) {
-                  console.error("Error retrieving cards:", error);
+                  console.error(I18N.t('errorRetrievingCards'), error);
                 });
               }
             },
             {
               icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
-              text: "Nova Incerteza",
+              text: I18N.t('newUncertainty'),
               callback: function (t) {
                 t.board('id').then(function (boardId) {
                   return t.modal({
-                    title: "Nova Incerteza",
-                    url: `./pages/create-hyphoteses.html?boardId=${boardId.id}`,
+                    title: I18N.t('newUncertainty'),
+                    url: `./pages/create-hyphoteses.html?boardId=${boardId.id}&lang=${I18N.getCurrentLanguage()}`,
                     height: 500
                   });
                 });
@@ -238,15 +255,15 @@
           if (!hasUncertaintyColumn) {
             buttons.push({
               icon: "https://img.icons8.com/ios-filled/50/000000/whiteboard.png",
-              text: "Criar Modelo de Quadro",
+              text: I18N.t('createBoardTemplate'),
               callback: async function (t) {
                 try {
                   const board = await t.board('id');
                   await createBoardTemplate(board.id);
 
                 } catch (error) {
-                  console.error("❌ Error creating board template:", error);
-                  alert("Failed to create board template. Check the console for details.");
+                  console.error("❌ " + I18N.t('errorCreateBoardTemplate'), error);
+                  alert(I18N.t('errorCreateBoardTemplate'));
                 }
               }
             });
@@ -259,7 +276,7 @@
         return t.card('name')
           .then(function (card) {
             if (!card || !card.name) {
-              console.error("Error: Unable to get the card title.");
+              console.error(I18N.t('errorGettingCardTitle'));
               return [];
             }
 
@@ -269,18 +286,18 @@
               let badges = [];
 
               if (titulo.includes("TPI")) {
-                if (data.pattern) badges.push({ text: `Padrão ArchHypo: ${data.pattern}`, color: 'yellow' });
+                if (data.pattern) badges.push({ text: `${I18N.t('archHypoPattern')}: ${data.pattern}`, color: 'yellow' });
               } else {
-                if (data.incerteza) badges.push({ text: `Incerteza: ${data.incerteza}`, color: 'red' });
-                if (data.impacto) badges.push({ text: `Impacto: ${data.impacto}`, color: 'blue' });
-                if (data.dominio_problema) badges.push({ text: `NFR: ${data.dominio_problema}`, color: 'green' });
+                if (data.incerteza) badges.push({ text: `${I18N.t('uncertainty')}: ${data.incerteza}`, color: 'red' });
+                if (data.impacto) badges.push({ text: `${I18N.t('impact')}: ${data.impacto}`, color: 'blue' });
+                if (data.dominio_problema) badges.push({ text: `${I18N.t('nfr')}: ${data.dominio_problema}`, color: 'green' });
               }
 
               return badges;
             });
           })
           .catch(function (error) {
-            console.error("Error processing badges:", error);
+            console.error(I18N.t('errorProcessingBadges'), error);
             return [];
           });
       }

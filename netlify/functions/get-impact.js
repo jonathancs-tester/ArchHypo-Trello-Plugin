@@ -75,7 +75,8 @@
                 const result = cards
                 .map(card => {
                     const hypoMatch = card.name.match(/H\d+\s*:\s*(.+)/i);
-                    const uncertaintyMatch = card.desc.match(/Nível de Impacto\s*:\s*(.+)/i);
+                    // Try both Portuguese and English patterns
+                    const uncertaintyMatch = card.desc.match(/(?:Nível de Impacto|Impact Level)\s*:\s*(.+)/i);
 
                     const clean = str => str.replace(/[*]+/g, '').trim(); // remove asteriscos e espaços extras
 
