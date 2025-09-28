@@ -74,12 +74,12 @@
                           return match ? match[1].trim() : "";
                         }
                         // Use language-appropriate labels for extraction
-                        const nfrLabel = I18N.t('nfrLevelLabel')
-                        const uncertaintyLabel = I18N.t('uncertaintyLevelLabel')
-                        const impactLabel = I18N.t('impactLevelLabel')
+                        const nfrLabel = I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', '');
+                        const uncertaintyLabel = I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', '');
+                        const impactLabel = I18N.t('impactLevelLabel').replace('**', '').replace(':** ', '');
                         const patternLabel = I18N.t('patternLevelLabel').replace('**', '').replace(':** ', '');
                         const planLabel = I18N.t('planLevelLabel').replace('**', '').replace(':** ', '');
-                        
+                        print(uncertaintyLabel)
                         const dominio_problema = extrairValor(nfrLabel);
                         const incerteza = extrairValor(uncertaintyLabel);
                         const impacto = extrairValor(impactLabel);
