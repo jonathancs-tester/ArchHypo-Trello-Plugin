@@ -188,74 +188,56 @@
               }
             },
             {
-              text: I18N.t('metricsToggle'), // texto do botão
+              text: I18N.t('metricsToggle'), // texto inicial
               icon: "https://img.icons8.com/ios-filled/50/000000/process.png", // ícone inicial
               callback: function (t) {
-                // Aqui retornamos o botão dinâmico
-                return t.get('board', 'shared', 'enabledMetrics').then(enabled => {
-                  const isEnabled = enabled === true;
-                  console.log(isEnabled)
-                  return {
-                    text: isEnabled ? I18N.t('metricsEnabled') : I18N.t('metricsDisabled'),
-                    icon: isEnabled
-                      ? "https://img.icons8.com/ios-filled/50/4CAF50/process.png" // verde
-                      : "https://img.icons8.com/ios-filled/50/000000/process.png", // cinza
-                    callback: function (t) {
-                      // Toggle habilitar/desabilitar métricas
-                      return t.get('board', 'shared', 'enabledMetrics').then(current => {
-                        const ativo = current === true;
-                        console.log(ativo)
-                        function atualizarMetricas() {
-                          return t.cards('all').then(cards => {
-                            if (!cards || cards.length === 0) return;
-                            console.log(cards)
-
-                            const promises = cards.map(card =>
-                              t.card('name', 'desc', { cardId: card.id }).then(info => {
-                                const titulo = info.name?.trim();
-                                const descricao = info.desc?.trim() || "";
-                                console.log(titulo)
-
-                                if (titulo && titulo.startsWith("H")) {
-                                  const extrair = chave => {
-                                    const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, 'i'));
-                                    return match ? match[1].trim() : '';
-                                  };
-
-                                  const dominio = extrair(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
-                                  const incerteza = extrair(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
-                                  const impacto = extrair(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
-                                  const pattern = extrair(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
-                                  const plano = extrair(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
-
-                                  return t.set(card.id, 'shared', { dominio, incerteza, impacto, pattern, plano });
-                                }
-                              })
-                            );
-
-                            return Promise.all(promises);
-                          });
-                        }
-
-                        if (!ativo) {
-                          return t.set('board', 'shared', 'enabledMetrics', true).then(() => {
-                            atualizarMetricas();
-                            if (window.metricsInterval) clearInterval(window.metricsInterval);
-                            window.metricsInterval = setInterval(atualizarMetricas, 1000);
-                            return t.alert({ message: "Métricas habilitadas ✅", duration: 2 });
-                          });
-                        } else {
-                          if (window.metricsInterval) {
-                            clearInterval(window.metricsInterval);
-                            window.metricsInterval = null;
+                // aqui só executa ao clicar
+                return t.get('board', 'shared', 'enabledMetrics').then(current => {
+                  const ativo = current === true;
+                  console.log(ativo)
+                  function atualizarMetricas() {
+                    return t.cards('all').then(cards => {
+                      if (!cards) return;
+                      return Promise.all(cards.map(card =>
+                        t.card('name', 'desc', { cardId: card.id }).then(info => {
+                          const titulo = info.name?.trim();
+                          const descricao = info.desc?.trim() || "";
+                          if (titulo?.startsWith("H")) {
+                            const extrair = chave => {
+                              const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, 'i'));
+                              return match ? match[1].trim() : '';
+                            };
+                            const dominio = extrair(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
+                            const incerteza = extrair(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
+                            const impacto = extrair(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
+                            const pattern = extrair(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
+                            const plano = extrair(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
+                            console.log(impacto)
+                            return t.set(card.id, 'shared', { dominio, incerteza, impacto, pattern, plano });
                           }
-                          return t.set('board', 'shared', 'enabledMetrics', false).then(() => {
-                            return t.alert({ message: "Métricas desabilitadas ❌", duration: 2 });
-                          });
-                        }
-                      });
+                        })
+                      ));
+                    });
+                  }
+
+                  if (!ativo) {
+                    return t.set('board', 'shared', 'enabledMetrics', true).then(() => {
+                      atualizarMetricas();
+                      if (window.metricsInterval) clearInterval(window.metricsInterval);
+                      window.metricsInterval = setInterval(atualizarMetricas, 60000);
+                      t.alert({ message: "Métricas habilitadas ✅", duration: 2 });
+                      t.render(); // atualiza botão
+                    });
+                  } else {
+                    if (window.metricsInterval) {
+                      clearInterval(window.metricsInterval);
+                      window.metricsInterval = null;
                     }
-                  };
+                    return t.set('board', 'shared', 'enabledMetrics', false).then(() => {
+                      t.alert({ message: "Métricas desabilitadas ❌", duration: 2 });
+                      t.render(); // atualiza botão
+                    });
+                  }
                 });
               }
             }
