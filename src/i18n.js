@@ -6,6 +6,13 @@ const I18N = {
             pluginTitle: "ArchHypo.AI - Trello Power App",
             selectLanguage: "Selecionar Idioma",
 
+            //List
+            col5: "CONCLUIDO",
+            col4: "EM ANDAMENTO",
+            col3: "A FAZER",
+            col2: "ITEM PLANO TECNICO",
+            col1: "INCERTEZA",
+
             // Card buttons
             technicalPlan: "Plano Técnico",
             addUpdateMetric: "Add/Atualizar Métrica",
@@ -173,6 +180,13 @@ const I18N = {
             // Main plugin
             pluginTitle: "ArchHypo.AI - Trello Power App",
             selectLanguage: "Select Language",
+
+            //List
+            col5: "DONE",
+            col4: "IN PROGRESS",
+            col3: "TO DO",
+            col2: "TECHNICAL PLAN ITEM",
+            col1: "UNCERTAINTY",
 
             // Card buttons
             technicalPlan: "Technical Plan",

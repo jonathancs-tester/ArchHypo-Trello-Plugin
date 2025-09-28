@@ -5,14 +5,6 @@ const TRELLO_KEY = process.env.TRELLO_KEY;
 const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
 
 export async function handler(event) {
-const nomesDasListas = [
-"CONCLUIDO",
-"EM ANDAMENTO",
-"A FAZER",
-"ITEM PLANO TECNICO",
-"INCERTEZA",
-];
-
 // Suporte ao CORS
 if (event.httpMethod === "OPTIONS") {
 return {
@@ -35,6 +27,7 @@ return {
 }
 
 try {
+const { input, language = 'pt' } = JSON.parse(event.body);
 const { boardId } = event.queryStringParameters;
 
 if (!boardId) {
@@ -56,7 +49,7 @@ const idListResponse = await fetch(
 const idList = await idListResponse.json();
 
 // Criar listas que não existem
-for (const nameList of nomesDasListas) {
+for (const nameList of input) {
     const existList = idList.some(
     (lista) => lista.name.toUpperCase() === nameList.toUpperCase()
     );

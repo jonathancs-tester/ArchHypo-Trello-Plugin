@@ -1,19 +1,57 @@
-    async function createBoardTemplate(boardId) {
-        try {
-            const res = await fetch(`/.netlify/functions/create-board-template?boardId=${boardId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
+const state = {
+    language: 'pt' // Idioma padrão
+};
 
-            const result = await res.json();
+function initializeLanguage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get('lang');
 
-            if (!res.ok) {
-                alert(`${I18N.t('createCardError')} ${result.error || result.erro || I18N.t('unknownError')}`);
-                return;
-            }
-
-        } catch (error) {
-            console.error('❌ Request error:', error);
-            alert(`${I18N.t('createCardError')} ${I18N.t('checkConsole')}`);
-        }
+    if (urlLang && I18N.translations[urlLang]) {
+        I18N.setLanguage(urlLang);
+        state.language = urlLang;
+    } else {
+        state.language = I18N.getCurrentLanguage();
     }
+
+    // Set language selector
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.value = state.language;
+    }
+}
+
+async function createBoardTemplate(boardId) {
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeLanguage();
+    });
+
+    const nomesDasListas = [
+        I18N.t('col5'),
+        I18N.t('col4'),,
+        I18N.t('col3'),,
+        I18N.t('col2'),,
+        I18N.t('col1'),,
+    ];
+    try {
+        const res = await fetch(`/.netlify/functions/create-board-template?boardId=${boardId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nomesDasListas,
+                language: state.language
+            }),
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+            alert(`${I18N.t('createCardError')} ${result.error || result.erro || I18N.t('unknownError')}`);
+            return;
+        }
+
+    } catch (error) {
+        console.error('❌ Request error:', error);
+        alert(`${I18N.t('createCardError')} ${I18N.t('checkConsole')}`);
+    }
+}
