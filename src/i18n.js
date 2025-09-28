@@ -34,7 +34,7 @@ const I18N = {
             // Badge labels
             uncertaintyBadge: "Incerteza",
             impactBadge: "Impacto",
-            nfrBadge: "NFR",
+            nfrBadge: "Requisito Não Funcional",
             archHypoPatternBadge: "Padrão ArchHypo",
             metricsToggle: "Adicionar/Atualizar Métricas",
             metricsSuccess: "Métricas habilitadas ✅",
