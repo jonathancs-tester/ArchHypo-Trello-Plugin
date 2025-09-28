@@ -481,13 +481,10 @@ async function createCard() {
         I18N.t('impactLevelLabel') + state.impacto
     };
 
-    const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=HIPOTESES ARQUITETURAIS`, {
+    const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=INCERTEZA`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: state.hipotese,
-        detalhes: `${I18N.t('objective')} ${state.hipoteseMotivo}\n${I18N.t('domain')} ${state.dominio}\n${I18N.t('uncertainty')} ${state.incerteza}\n${I18N.t('impact')} ${state.impacto}`
-      })
+      body: JSON.stringify(data)
     });
 
     const result = await res.json();
