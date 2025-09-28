@@ -187,32 +187,24 @@
                 });
               }
             },
-            ,
-            // 🔥 Aqui entra o SEU botão dinâmico de toggle/habilitar métricas
-            function (t, options) {
-              return t.get('board', 'shared', 'enabledMetrics').then((enabled) => {
-                const isEnabled = enabled === true;
+            {
+              icon: "https://img.icons8.com/ios-filled/50/000000/process.png", // inicial, vai mudar dinamicamente
+              text: I18N.t('metricsDisabled'), // inicial, vai mudar dinamicamente
+              callback: function (t) {
+                return t.get('board', 'shared', 'enabledMetrics').then((enabled) => {
+                  const isEnabled = enabled === true;
 
-                return {
-                  icon: isEnabled
-                    ? "https://img.icons8.com/ios-filled/50/4CAF50/process.png"   // verde se ativo
-                    : "https://img.icons8.com/ios-filled/50/000000/process.png",  // cinza se inativo
-                  text: isEnabled ? I18N.t('metricsEnabled') : I18N.t('metricsDisabled'),
+                  return {
+                    icon: isEnabled
+                      ? "https://img.icons8.com/ios-filled/50/4CAF50/process.png"   // verde se ativo
+                      : "https://img.icons8.com/ios-filled/50/000000/process.png",  // cinza se inativo
+                    text: isEnabled ? I18N.t('metricsEnabled') : I18N.t('metricsDisabled'),
 
-                  callback: function (t) {
-                    return t.get('board', 'shared', 'enabledMetrics').then((enabled) => {
-                      const isEnabledNow = enabled === true;
+                    callback: function (t) {
+                      return t.get('board', 'shared', 'enabledMetrics').then((enabled) => {
+                        const isEnabledNow = enabled === true;
 
-                      if (!isEnabledNow) {
-                        return t.set('board', 'shared', 'enabledMetrics', true)
-                          .then(() => t.alert({
-                            message: "Métricas habilitadas ✅",
-                            duration: 2
-                          }));
-                      }
-
-                      // --- Lógica de atualizar métricas ---
-                      return t.card('id', 'name').then(function (card) {
+                        // --- Função para atualizar métricas ---
                         function atualizarMetricas() {
                           return t.card('name')
                             .then(function (card) {
@@ -276,17 +268,42 @@
                             });
                         }
 
-                        atualizarMetricas();
-                        setInterval(() => atualizarMetricas(), 60000);
+                        // --- Toggle habilitar/desabilitar ---
+                        if (!isEnabledNow) {
+                          // Habilita métricas
+                          return t.set('board', 'shared', 'enabledMetrics', true)
+                            .then(() => {
+                              atualizarMetricas();
 
-                        return Promise.resolve();
+                              // Evita múltiplos setInterval
+                              if (window.metricsInterval) {
+                                clearInterval(window.metricsInterval);
+                              }
+                              window.metricsInterval = setInterval(() => atualizarMetricas(), 60000);
+
+                              return t.alert({
+                                message: "Métricas habilitadas ✅",
+                                duration: 2
+                              });
+                            });
+                        } else {
+                          // Desabilita métricas
+                          if (window.metricsInterval) {
+                            clearInterval(window.metricsInterval);
+                            window.metricsInterval = null;
+                          }
+                          return t.set('board', 'shared', 'enabledMetrics', false)
+                            .then(() => t.alert({
+                              message: "Métricas desabilitadas ❌",
+                              duration: 2
+                            }));
+                        }
                       });
-                    });
-                  }
-                };
-              });
-            }
-          ];
+                    }
+                  };
+                });
+              }
+            },
 
           if (!hasUncertaintyColumn) {
             buttons.push({
