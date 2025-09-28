@@ -188,13 +188,12 @@
               }
             },
             {
-              text: I18N.t('metricsToggle'), // texto inicial
-              icon: "https://img.icons8.com/ios-filled/50/000000/process.png", // ícone inicial
+              text: I18N.t('metricsToggle'), // texto fixo
+              icon: "https://img.icons8.com/ios-filled/50/000000/process.png", // ícone fixo
               callback: function (t) {
-                // aqui só executa ao clicar
                 return t.get('board', 'shared', 'enabledMetrics').then(current => {
                   const ativo = current === true;
-                  console.log(ativo)
+
                   function atualizarMetricas() {
                     return t.cards('all').then(cards => {
                       if (!cards) return;
@@ -202,11 +201,13 @@
                         t.card('name', 'desc', { cardId: card.id }).then(info => {
                           const titulo = info.name?.trim();
                           const descricao = info.desc?.trim() || "";
+
                           if (titulo?.startsWith("H")) {
                             const extrair = chave => {
                               const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, 'i'));
                               return match ? match[1].trim() : '';
                             };
+
                             const dominio = extrair(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
                             const incerteza = extrair(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
                             const impacto = extrair(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
@@ -221,21 +222,21 @@
                   }
 
                   if (!ativo) {
+                    // habilitar
                     return t.set('board', 'shared', 'enabledMetrics', true).then(() => {
                       atualizarMetricas();
                       if (window.metricsInterval) clearInterval(window.metricsInterval);
                       window.metricsInterval = setInterval(atualizarMetricas, 60000);
-                      t.alert({ message: "Métricas habilitadas ✅", duration: 2 });
-                      t.render(); // atualiza botão
+                      return t.alert({ message: "Métricas habilitadas ✅", duration: 2 });
                     });
                   } else {
+                    // desabilitar
                     if (window.metricsInterval) {
                       clearInterval(window.metricsInterval);
                       window.metricsInterval = null;
                     }
                     return t.set('board', 'shared', 'enabledMetrics', false).then(() => {
-                      t.alert({ message: "Métricas desabilitadas ❌", duration: 2 });
-                      t.render(); // atualiza botão
+                      return t.alert({ message: "Métricas desabilitadas ❌", duration: 2 });
                     });
                   }
                 });
