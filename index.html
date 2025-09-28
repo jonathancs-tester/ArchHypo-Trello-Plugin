@@ -79,7 +79,7 @@
                         const impactLabel = I18N.t('impactLevelLabel').replace('**', '').replace(':** ', '');
                         const patternLabel = I18N.t('patternLevelLabel').replace('**', '').replace(':** ', '');
                         const planLabel = I18N.t('planLevelLabel').replace('**', '').replace(':** ', '');
-                        
+
                         const dominio_problema = extrairValor(nfrLabel);
                         const incerteza = extrairValor(uncertaintyLabel);
                         const impacto = extrairValor(impactLabel);
@@ -119,10 +119,10 @@
       },
       'board-buttons': function (t, options) {
         return t.lists('id', 'name').then(function (lists) {
-          const hasUncertaintyColumn = lists.some(list => 
-            list.name === 'INCERTEZA' || 
-            list.name === 'UNCERTAINTY' || 
-            list.name.toUpperCase().includes('INCERTEZA') || 
+          const hasUncertaintyColumn = lists.some(list =>
+            list.name === 'INCERTEZA' ||
+            list.name === 'UNCERTAINTY' ||
+            list.name.toUpperCase().includes('INCERTEZA') ||
             list.name.toUpperCase().includes('UNCERTAINTY')
           );
 
@@ -226,6 +226,30 @@
                     url: `./pages/create-hyphoteses.html?boardId=${boardId.id}&lang=${I18N.getCurrentLanguage()}`,
                     height: 500
                   });
+                });
+              }
+            },
+            {
+              icon: "https://img.icons8.com/emoji/48/000000/flag-brazil.png",
+              text: "Português",
+              callback: function (t) {
+                I18N.setLanguage("pt");
+                document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+                return t.alert({
+                  message: "Idioma alterado para Português 🇧🇷",
+                  duration: 2
+                });
+              }
+            },
+            {
+              icon: "https://img.icons8.com/emoji/48/000000/flag-united-kingdom.png",
+              text: "English",
+              callback: function (t) {
+                I18N.setLanguage("en");
+                document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+                return t.alert({
+                  message: "Language switched to English 🇬🇧",
+                  duration: 2
                 });
               }
             }
