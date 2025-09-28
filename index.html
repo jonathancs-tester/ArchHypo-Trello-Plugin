@@ -235,11 +235,10 @@
               callback: function (t) {
                 I18N.setLanguage("pt");
                 document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
-                window.location.reload(true);
-                return t.alert({
-                  message: "Idioma alterado para Português 🇧🇷",
-                  duration: 2
-                });
+                t.set('board', 'shared', 'language', 'pt')
+                  .then(() => {
+                    return t.alert({ message: "Idioma alterado para Português 🇧🇷", duration: 2 });
+                  });
               }
             },
             {
@@ -248,7 +247,7 @@
               callback: function (t) {
                 I18N.setLanguage("en");
                 document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
-                lwindow.location.reload(true);
+                window.location.reload(true);
                 return t.alert({
                   message: "Language switched to English 🇬🇧",
                   duration: 2
