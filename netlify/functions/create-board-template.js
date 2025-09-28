@@ -27,7 +27,7 @@ return {
 }
 
 try {
-const { input } = JSON.parse(event.body);
+const { nomesDasListas } = JSON.parse(event.body);
 const { boardId } = event.queryStringParameters;
 
 if (!boardId) {
@@ -47,9 +47,9 @@ const idListResponse = await fetch(
 );
 
 const idList = await idListResponse.json();
-
+console.log(nomesDasListas)
 // Criar listas que não existem
-for (const nameList of input) {
+for (const nameList of nomesDasListas) {
     const existList = idList.some(
     (lista) => lista.name.toUpperCase() === nameList.toUpperCase()
     );
