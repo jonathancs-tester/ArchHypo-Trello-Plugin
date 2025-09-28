@@ -48,247 +48,249 @@
         });
       },
       'board-buttons': function (t, options) {
-        return t.lists('id', 'name').then(function (lists) {
-          const hasUncertaintyColumn = lists.some(list =>
-            list.name === 'INCERTEZA' ||
-            list.name === 'UNCERTAINTY' ||
-            list.name.toUpperCase().includes('INCERTEZA') ||
-            list.name.toUpperCase().includes('UNCERTAINTY')
-          );
+        return t.card('id', 'name').then(function (card) {
+          return t.lists('id', 'name').then(function (lists) {
+            const hasUncertaintyColumn = lists.some(list =>
+              list.name === 'INCERTEZA' ||
+              list.name === 'UNCERTAINTY' ||
+              list.name.toUpperCase().includes('INCERTEZA') ||
+              list.name.toUpperCase().includes('UNCERTAINTY')
+            );
 
-          const buttons = [
-            {
-              icon: "https://img.icons8.com/ios-filled/50/000000/combo-chart.png",
-              text: I18N.t('archHypoMetrics'),
-              callback: function (t) {
-                return t.cards('all').then(function (cards) {
-                  if (!cards || cards.length === 0) {
-                    return t.popup({
-                      title: 'Error',
-                      items: [{ text: I18N.t('errorNoCards'), interactive: false }]
-                    });
-                  }
-
-                  let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
-                  let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
-                  let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
-                  let countNaoFuncional = {
-                    "Desempenho": 0, "Segurança": 0, "Confiabilidade": 0,
-                    "Flexibilidade": 0, "Usabilidade": 0, "Productividade": 0
-                  };
-                  let countPattern = {
-                    "Architectural Spike": 0,
-                    "Architectural Trigger": 0,
-                    "Bring the Specialist": 0,
-                    "Continuous Inspection": 0,
-                    "Learning from Experiments": 0,
-                    "Plan for Preparation": 0,
-                    "Postpone Uncertain Decisions": 0,
-                    "Protective Guideline": 0,
-                    "Quality Checkpoint": 0,
-                    "Software Analytics": 0,
-                    "Technical Debt Management": 0,
-                    "Tracer Bullets": 0
-                    // "Architectural Hypotheses": 0, "Architectural Spike": 0, "Architectural Trigger": 0,
-                    // "Architecture in the Backlog": 0, "Bring the Specialist": 0, "Choose the Means": 0,
-                    // "Climbing on the Shoulders of Giants": 0, "Continuous Inspection": 0,
-                    // "Define Quality Standards": 0, "Find Where it Hurts": 0, "Hypothesis Impact": 0,
-                    // "Learning from Experiments": 0, "Plan Analytics Implementation": 0,
-                    // "Plan for Preparation": 0, "Plan for Responsible Moments": 0,
-                    // "Postpone Uncertain Decisions": 0, "Protective Guideline": 0,
-                    // "Quality Checkpoint": 0, "Reachable Goals": 0, "Small Steps for Analytics": 0,
-                    // "Suspend Measurement": 0, "Technical Debt Management": 0,
-                    // "Test Architecture": 0, "Tracer Bullets": 0, "Uncertainty Level": 0,
-                    // "What you Need to Know": 0
-                  };
-
-                  let cardPromises = cards.map(function (card) {
-                    return Promise.all([
-                      t.get(card.id, 'shared', 'incerteza'),
-                      t.get(card.id, 'shared', 'impacto'),
-                      t.get(card.id, 'shared', 'dominio_problema'),
-                      t.get(card.id, 'shared', 'pattern')
-                    ]).then(function ([incerteza, impacto, dominio_problema, pattern]) {
-                      if (levels.includes(incerteza)) countIncerteza[incerteza]++;
-                      if (levels.includes(impacto)) countImpacto[impacto]++;
-                      if (Object.keys(countNaoFuncional).includes(dominio_problema)) countNaoFuncional[dominio_problema]++;
-                      if (pattern) {
-                        const patterns = pattern.split(',').map(p => p.trim()).filter(p => p !== '');
-                        patterns.forEach(p => {
-                          if (Object.keys(countPattern).includes(p)) {
-                            countPattern[p]++;
-                          }
-                        });
-                      }
-
-                    }).catch(function (error) {
-                      console.error(`Error retrieving card values ${card.id}:`, error);
-                    });
-                  });
-
-                  return Promise.all(cardPromises).then(function () {
-                    const params = new URLSearchParams({
-                      incerteza: JSON.stringify(countIncerteza),
-                      impacto: JSON.stringify(countImpacto),
-                      naoFuncional: JSON.stringify(countNaoFuncional),
-                      pattern: JSON.stringify(countPattern)
-                    }).toString();
-
-                    return t.modal({
-                      title: I18N.t('archHypoMetrics'),
-                      url: `pages/metrics-graph.html?${params}&lang=${I18N.getCurrentLanguage()}`,
-                      fullscreen: false,
-                      height: 800
-                    });
-                  });
-                }).catch(function (error) {
-                  console.error(I18N.t('errorRetrievingCards'), error);
-                });
-              }
-            },
-            {
-              icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
-              text: I18N.t('newUncertainty'),
-              callback: function (t) {
-                t.board('id').then(function (boardId) {
-                  return t.modal({
-                    title: I18N.t('newUncertainty'),
-                    url: `./pages/create-hyphoteses.html?boardId=${boardId.id}&lang=${I18N.getCurrentLanguage()}`,
-                    height: 500
-                  });
-                });
-              }
-            },
-            {
-              text: I18N.t('selectLanguage'), // texto do botão principal
-              icon: "https://img.icons8.com/?size=100&id=30633&format=png&color=000000",
-              callback: function (t) {
-                return t.popup({
-                  title: I18N.t('selectLanguage'),
-                  items: [
-                    {
-                      text: "🇧🇷 Português",
-                      callback: function (t) {
-                        I18N.setLanguage("pt");
-                        document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
-                        t.set('board', 'shared', 'language', 'pt')
-                          .then(() => t.alert({ message: "Idioma alterado para Português 🇧🇷", duration: 2 }));
-                      }
-                    },
-                    {
-                      text: "🇬🇧 English",
-                      callback: function (t) {
-                        I18N.setLanguage("en");
-                        document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
-                        t.set('board', 'shared', 'language', 'en')
-                          .then(() => t.alert({ message: "Language switched to English 🇬🇧", duration: 2 }));
-                      }
+            const buttons = [
+              {
+                icon: "https://img.icons8.com/ios-filled/50/000000/combo-chart.png",
+                text: I18N.t('archHypoMetrics'),
+                callback: function (t) {
+                  return t.cards('all').then(function (cards) {
+                    if (!cards || cards.length === 0) {
+                      return t.popup({
+                        title: 'Error',
+                        items: [{ text: I18N.t('errorNoCards'), interactive: false }]
+                      });
                     }
-                  ]
-                });
-              }
-            },
-            {
-              icon: "https://img.icons8.com/ios-filled/50/000000/process.png",
-              text: I18N.t('addUpdateMetric'),
-              callback: function (t) {
-                function atualizarMetricas() {
-                  return t.card('name')
-                    .then(function (card) {
-                      if (!card || !card.name) {
-                        console.error(I18N.t('errorGettingCardTitle'));
+
+                    let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+                    let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+                    let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
+                    let countNaoFuncional = {
+                      "Desempenho": 0, "Segurança": 0, "Confiabilidade": 0,
+                      "Flexibilidade": 0, "Usabilidade": 0, "Productividade": 0
+                    };
+                    let countPattern = {
+                      "Architectural Spike": 0,
+                      "Architectural Trigger": 0,
+                      "Bring the Specialist": 0,
+                      "Continuous Inspection": 0,
+                      "Learning from Experiments": 0,
+                      "Plan for Preparation": 0,
+                      "Postpone Uncertain Decisions": 0,
+                      "Protective Guideline": 0,
+                      "Quality Checkpoint": 0,
+                      "Software Analytics": 0,
+                      "Technical Debt Management": 0,
+                      "Tracer Bullets": 0
+                      // "Architectural Hypotheses": 0, "Architectural Spike": 0, "Architectural Trigger": 0,
+                      // "Architecture in the Backlog": 0, "Bring the Specialist": 0, "Choose the Means": 0,
+                      // "Climbing on the Shoulders of Giants": 0, "Continuous Inspection": 0,
+                      // "Define Quality Standards": 0, "Find Where it Hurts": 0, "Hypothesis Impact": 0,
+                      // "Learning from Experiments": 0, "Plan Analytics Implementation": 0,
+                      // "Plan for Preparation": 0, "Plan for Responsible Moments": 0,
+                      // "Postpone Uncertain Decisions": 0, "Protective Guideline": 0,
+                      // "Quality Checkpoint": 0, "Reachable Goals": 0, "Small Steps for Analytics": 0,
+                      // "Suspend Measurement": 0, "Technical Debt Management": 0,
+                      // "Test Architecture": 0, "Tracer Bullets": 0, "Uncertainty Level": 0,
+                      // "What you Need to Know": 0
+                    };
+
+                    let cardPromises = cards.map(function (card) {
+                      return Promise.all([
+                        t.get(card.id, 'shared', 'incerteza'),
+                        t.get(card.id, 'shared', 'impacto'),
+                        t.get(card.id, 'shared', 'dominio_problema'),
+                        t.get(card.id, 'shared', 'pattern')
+                      ]).then(function ([incerteza, impacto, dominio_problema, pattern]) {
+                        if (levels.includes(incerteza)) countIncerteza[incerteza]++;
+                        if (levels.includes(impacto)) countImpacto[impacto]++;
+                        if (Object.keys(countNaoFuncional).includes(dominio_problema)) countNaoFuncional[dominio_problema]++;
+                        if (pattern) {
+                          const patterns = pattern.split(',').map(p => p.trim()).filter(p => p !== '');
+                          patterns.forEach(p => {
+                            if (Object.keys(countPattern).includes(p)) {
+                              countPattern[p]++;
+                            }
+                          });
+                        }
+
+                      }).catch(function (error) {
+                        console.error(`Error retrieving card values ${card.id}:`, error);
+                      });
+                    });
+
+                    return Promise.all(cardPromises).then(function () {
+                      const params = new URLSearchParams({
+                        incerteza: JSON.stringify(countIncerteza),
+                        impacto: JSON.stringify(countImpacto),
+                        naoFuncional: JSON.stringify(countNaoFuncional),
+                        pattern: JSON.stringify(countPattern)
+                      }).toString();
+
+                      return t.modal({
+                        title: I18N.t('archHypoMetrics'),
+                        url: `pages/metrics-graph.html?${params}&lang=${I18N.getCurrentLanguage()}`,
+                        fullscreen: false,
+                        height: 800
+                      });
+                    });
+                  }).catch(function (error) {
+                    console.error(I18N.t('errorRetrievingCards'), error);
+                  });
+                }
+              },
+              {
+                icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
+                text: I18N.t('newUncertainty'),
+                callback: function (t) {
+                  t.board('id').then(function (boardId) {
+                    return t.modal({
+                      title: I18N.t('newUncertainty'),
+                      url: `./pages/create-hyphoteses.html?boardId=${boardId.id}&lang=${I18N.getCurrentLanguage()}`,
+                      height: 500
+                    });
+                  });
+                }
+              },
+              {
+                text: I18N.t('selectLanguage'), // texto do botão principal
+                icon: "https://img.icons8.com/?size=100&id=30633&format=png&color=000000",
+                callback: function (t) {
+                  return t.popup({
+                    title: I18N.t('selectLanguage'),
+                    items: [
+                      {
+                        text: "🇧🇷 Português",
+                        callback: function (t) {
+                          I18N.setLanguage("pt");
+                          document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+                          t.set('board', 'shared', 'language', 'pt')
+                            .then(() => t.alert({ message: "Idioma alterado para Português 🇧🇷", duration: 2 }));
+                        }
+                      },
+                      {
+                        text: "🇬🇧 English",
+                        callback: function (t) {
+                          I18N.setLanguage("en");
+                          document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+                          t.set('board', 'shared', 'language', 'en')
+                            .then(() => t.alert({ message: "Language switched to English 🇬🇧", duration: 2 }));
+                        }
+                      }
+                    ]
+                  });
+                }
+              },
+              {
+                icon: "https://img.icons8.com/ios-filled/50/000000/process.png",
+                text: I18N.t('addUpdateMetric'),
+                callback: function (t) {
+                  function atualizarMetricas() {
+                    return t.card('name')
+                      .then(function (card) {
+                        if (!card || !card.name) {
+                          console.error(I18N.t('errorGettingCardTitle'));
+                          return t.alert({
+                            message: I18N.t('errorCardTitle'),
+                            duration: 3,
+                            display: "error"
+                          });
+                        }
+
+                        const titulo = card.name.trim();
+
+                        return t.card('desc')
+                          .then(function (cardDesc) {
+                            const descricao = cardDesc?.desc?.trim() || "";
+
+                            if (titulo.startsWith("H")) {
+
+                              function extrairValor(chave) {
+                                const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                                const match = descricao.match(regex);
+                                return match ? match[1].trim() : "";
+                              }
+                              // Use language-appropriate labels for extraction
+                              const nfrLabel = I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', '');
+                              const uncertaintyLabel = I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', '');
+                              const impactLabel = I18N.t('impactLevelLabel').replace('**', '').replace(':** ', '');
+                              const patternLabel = I18N.t('patternLevelLabel').replace('**', '').replace(':** ', '');
+                              const planLabel = I18N.t('planLevelLabel').replace('**', '').replace(':** ', '');
+
+                              const dominio_problema = extrairValor(nfrLabel);
+                              const incerteza = extrairValor(uncertaintyLabel);
+                              const impacto = extrairValor(impactLabel);
+                              const pattern = extrairValor(patternLabel);
+                              const plano = extrairValor(planLabel);
+                              console.log(pattern)
+
+                              return t.set('card', 'shared', {
+                                dominio_problema,
+                                incerteza,
+                                impacto,
+                                pattern,
+                                plano
+                              }).then(function () {
+                                return t.alert({
+                                  message: I18N.t('fieldsUpdatedSuccess'),
+                                  duration: 3,
+                                  display: "success"
+                                });
+                              });
+                            }
+                          });
+                      })
+                      .catch(function (error) {
+                        console.error(I18N.t('errorProcessingCard'), error);
                         return t.alert({
-                          message: I18N.t('errorCardTitle'),
+                          message: I18N.t('errorUnexpected'),
                           duration: 3,
                           display: "error"
                         });
-                      }
-
-                      const titulo = card.name.trim();
-
-                      return t.card('desc')
-                        .then(function (cardDesc) {
-                          const descricao = cardDesc?.desc?.trim() || "";
-
-                          if (titulo.startsWith("H")) {
-
-                            function extrairValor(chave) {
-                              const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
-                              const match = descricao.match(regex);
-                              return match ? match[1].trim() : "";
-                            }
-                            // Use language-appropriate labels for extraction
-                            const nfrLabel = I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', '');
-                            const uncertaintyLabel = I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', '');
-                            const impactLabel = I18N.t('impactLevelLabel').replace('**', '').replace(':** ', '');
-                            const patternLabel = I18N.t('patternLevelLabel').replace('**', '').replace(':** ', '');
-                            const planLabel = I18N.t('planLevelLabel').replace('**', '').replace(':** ', '');
-
-                            const dominio_problema = extrairValor(nfrLabel);
-                            const incerteza = extrairValor(uncertaintyLabel);
-                            const impacto = extrairValor(impactLabel);
-                            const pattern = extrairValor(patternLabel);
-                            const plano = extrairValor(planLabel);
-                            console.log(pattern)
-
-                            return t.set('card', 'shared', {
-                              dominio_problema,
-                              incerteza,
-                              impacto,
-                              pattern,
-                              plano
-                            }).then(function () {
-                              return t.alert({
-                                message: I18N.t('fieldsUpdatedSuccess'),
-                                duration: 3,
-                                display: "success"
-                              });
-                            });
-                          }
-                        });
-                    })
-                    .catch(function (error) {
-                      console.error(I18N.t('errorProcessingCard'), error);
-                      return t.alert({
-                        message: I18N.t('errorUnexpected'),
-                        duration: 3,
-                        display: "error"
                       });
-                    });
-                }
-                // Executa imediatamente
-                atualizarMetricas();
-
-                // Atualiza a cada 60 segundos
-                setInterval(() => {
+                  }
+                  // Executa imediatamente
                   atualizarMetricas();
-                }, 1000); // 1.000 ms = 1 segundo
 
-                return Promise.resolve(); // Retorna algo para o Trello não reclamar
-              }
-            }
-          ];
+                  // Atualiza a cada 60 segundos
+                  setInterval(() => {
+                    atualizarMetricas();
+                  }, 1000); // 1.000 ms = 1 segundo
 
-          if (!hasUncertaintyColumn) {
-            buttons.push({
-              icon: "https://img.icons8.com/ios-filled/50/000000/whiteboard.png",
-              text: I18N.t('createBoardTemplate'),
-              callback: async function (t) {
-                try {
-                  const board = await t.board('id');
-                  await createBoardTemplate(board.id);
-                  const updatedBoard = await t.board('all'); // pega dados atualizados
-                  console.log("✅ Board atualizado:", updatedBoard);
-
-                } catch (error) {
-                  console.error("❌ " + I18N.t('errorCreateBoardTemplate'), error);
-                  alert(I18N.t('errorCreateBoardTemplate'));
+                  return Promise.resolve(); // Retorna algo para o Trello não reclamar
                 }
               }
-            });
-          }
+            ];
 
-          return buttons;
+            if (!hasUncertaintyColumn) {
+              buttons.push({
+                icon: "https://img.icons8.com/ios-filled/50/000000/whiteboard.png",
+                text: I18N.t('createBoardTemplate'),
+                callback: async function (t) {
+                  try {
+                    const board = await t.board('id');
+                    await createBoardTemplate(board.id);
+                    const updatedBoard = await t.board('all'); // pega dados atualizados
+                    console.log("✅ Board atualizado:", updatedBoard);
+
+                  } catch (error) {
+                    console.error("❌ " + I18N.t('errorCreateBoardTemplate'), error);
+                    alert(I18N.t('errorCreateBoardTemplate'));
+                  }
+                }
+              });
+            }
+
+            return buttons;
+          });
         });
       },
       'card-badges': function (t, options) {
