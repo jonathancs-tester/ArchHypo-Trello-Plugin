@@ -27,7 +27,7 @@ return {
 }
 
 try {
-const { input, language = 'pt' } = JSON.parse(event.body);
+const { input } = JSON.parse(event.body);
 const { boardId } = event.queryStringParameters;
 
 if (!boardId) {

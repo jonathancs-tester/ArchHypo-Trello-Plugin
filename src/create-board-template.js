@@ -12,12 +12,6 @@ function initializeLanguage() {
     } else {
         state.language = I18N.getCurrentLanguage();
     }
-
-    // Set language selector
-    const languageSelect = document.getElementById('languageSelect');
-    if (languageSelect) {
-        languageSelect.value = state.language;
-    }
 }
 
 async function createBoardTemplate(boardId) {
@@ -28,18 +22,17 @@ async function createBoardTemplate(boardId) {
 
     const nomesDasListas = [
         I18N.t('col5'),
-        I18N.t('col4'),,
-        I18N.t('col3'),,
-        I18N.t('col2'),,
-        I18N.t('col1'),,
+        I18N.t('col4'),
+        I18N.t('col3'),
+        I18N.t('col2'),
+        I18N.t('col1'),
     ];
     try {
         const res = await fetch(`/.netlify/functions/create-board-template?boardId=${boardId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                nomesDasListas,
-                language: state.language
+                nomesDasListas
             }),
         });
 
