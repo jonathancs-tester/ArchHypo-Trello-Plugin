@@ -36,9 +36,9 @@ const I18N = {
             impactBadge: "Impacto",
             nfrBadge: "NFR",
             archHypoPatternBadge: "Padrão ArchHypo",
-            metricsEnabled: "Métricas Habilitado",
-            metricsDisabled: "Métricas Disabilitado",
             metricsToggle: "Adicionar/Atualizar Métricas",
+            metricsSuccess: "Métricas habilitadas ✅",
+            metricsFailed: "Métricas desabilitadas ❌",
 
             // Levels
             veryLow: "Muito Baixo",
@@ -205,9 +205,9 @@ const I18N = {
             impactBadge: "Impact",
             nfrBadge: "NFR",
             archHypoPatternBadge: "ArchHypo Pattern",
-            metricsEnabled: "Metrics Enabled",
-            metricsDisabled: "Metrics Disabled",
             metricsToggle: "Add/Update Metrics",
+            metricsSuccess: "Metrics enabled ✅",
+            metricsFailed: "Metrics disabled ❌",
 
             // Levels
             veryLow: "Very Low",
