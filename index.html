@@ -194,7 +194,7 @@
                 // Aqui retornamos o botão dinâmico
                 return t.get('board', 'shared', 'enabledMetrics').then(enabled => {
                   const isEnabled = enabled === true;
-
+                  console.log(isEnabled)
                   return {
                     text: isEnabled ? I18N.t('metricsEnabled') : I18N.t('metricsDisabled'),
                     icon: isEnabled
@@ -204,15 +204,17 @@
                       // Toggle habilitar/desabilitar métricas
                       return t.get('board', 'shared', 'enabledMetrics').then(current => {
                         const ativo = current === true;
-
+                        console.log(ativo)
                         function atualizarMetricas() {
                           return t.cards('all').then(cards => {
                             if (!cards || cards.length === 0) return;
+                            console.log(cards)
 
                             const promises = cards.map(card =>
                               t.card('name', 'desc', { cardId: card.id }).then(info => {
                                 const titulo = info.name?.trim();
                                 const descricao = info.desc?.trim() || "";
+                                console.log(titulo)
 
                                 if (titulo && titulo.startsWith("H")) {
                                   const extrair = chave => {
@@ -239,7 +241,7 @@
                           return t.set('board', 'shared', 'enabledMetrics', true).then(() => {
                             atualizarMetricas();
                             if (window.metricsInterval) clearInterval(window.metricsInterval);
-                            window.metricsInterval = setInterval(atualizarMetricas, 60000);
+                            window.metricsInterval = setInterval(atualizarMetricas, 1000);
                             return t.alert({ message: "Métricas habilitadas ✅", duration: 2 });
                           });
                         } else {
