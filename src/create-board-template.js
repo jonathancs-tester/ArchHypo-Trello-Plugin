@@ -8,12 +8,12 @@
             const result = await res.json();
 
             if (!res.ok) {
-                alert(`Error creating card: ${result.error || result.erro || 'Unknown error'}`);
+                alert(`${I18N.t('createCardError')} ${result.error || result.erro || I18N.t('unknownError')}`);
                 return;
             }
 
         } catch (error) {
             console.error('❌ Request error:', error);
-            alert('Error creating the card. Check the console for more details.');
+            alert(`${I18N.t('createCardError')} ${I18N.t('checkConsole')}`);
         }
     }
