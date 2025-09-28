@@ -191,56 +191,55 @@
               text: I18N.t('metricsToggle'), // texto do botão
               icon: "https://img.icons8.com/ios-filled/50/000000/process.png", // ícone inicial
               callback: function (t) {
+                // Aqui retornamos o botão dinâmico
                 return t.get('board', 'shared', 'enabledMetrics').then(enabled => {
                   const isEnabled = enabled === true;
 
-                  // Retorna o objeto de botão dinâmico
                   return {
                     text: isEnabled ? I18N.t('metricsEnabled') : I18N.t('metricsDisabled'),
                     icon: isEnabled
-                      ? "https://img.icons8.com/ios-filled/50/4CAF50/process.png" // verde se ativo
-                      : "https://img.icons8.com/ios-filled/50/000000/process.png", // cinza se inativo
-
+                      ? "https://img.icons8.com/ios-filled/50/4CAF50/process.png" // verde
+                      : "https://img.icons8.com/ios-filled/50/000000/process.png", // cinza
                     callback: function (t) {
+                      // Toggle habilitar/desabilitar métricas
+                      return t.get('board', 'shared', 'enabledMetrics').then(current => {
+                        const ativo = current === true;
 
-                      function atualizarMetricas() {
-                        return t.cards('all').then(cards => {
-                          if (!cards || cards.length === 0) return;
+                        function atualizarMetricas() {
+                          return t.cards('all').then(cards => {
+                            if (!cards || cards.length === 0) return;
 
-                          const promises = cards.map(card => {
-                            return t.card('name', 'desc', { cardId: card.id }).then(cardInfo => {
-                              const titulo = cardInfo.name?.trim();
-                              const descricao = cardInfo.desc?.trim() || "";
+                            const promises = cards.map(card =>
+                              t.card('name', 'desc', { cardId: card.id }).then(info => {
+                                const titulo = info.name?.trim();
+                                const descricao = info.desc?.trim() || "";
 
-                              const extrairValor = chave => {
-                                const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i"));
-                                return match ? match[1].trim() : "";
-                              };
+                                if (titulo && titulo.startsWith("H")) {
+                                  const extrair = chave => {
+                                    const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, 'i'));
+                                    return match ? match[1].trim() : '';
+                                  };
 
-                              const dominio_problema = extrairValor(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
-                              const incerteza = extrairValor(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
-                              const impacto = extrairValor(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
-                              const pattern = extrairValor(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
-                              const plano = extrairValor(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
-                              console.log(incerteza)
-                              return t.set(card.id, 'shared', { dominio_problema, incerteza, impacto, pattern, plano });
+                                  const dominio = extrair(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
+                                  const incerteza = extrair(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
+                                  const impacto = extrair(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
+                                  const pattern = extrair(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
+                                  const plano = extrair(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
 
-                            });
+                                  return t.set(card.id, 'shared', { dominio, incerteza, impacto, pattern, plano });
+                                }
+                              })
+                            );
+
+                            return Promise.all(promises);
                           });
-
-                          return Promise.all(promises);
-                        });
-                      }
-
-                      // Alterna o estado do board
-                      return t.get('board', 'shared', 'enabledMetrics').then(enabledNow => {
-                        const ativo = enabledNow === true;
+                        }
 
                         if (!ativo) {
                           return t.set('board', 'shared', 'enabledMetrics', true).then(() => {
                             atualizarMetricas();
                             if (window.metricsInterval) clearInterval(window.metricsInterval);
-                            window.metricsInterval = setInterval(atualizarMetricas, 1000);
+                            window.metricsInterval = setInterval(atualizarMetricas, 60000);
                             return t.alert({ message: "Métricas habilitadas ✅", duration: 2 });
                           });
                         } else {

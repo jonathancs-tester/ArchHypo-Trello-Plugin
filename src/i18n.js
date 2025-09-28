@@ -38,6 +38,7 @@ const I18N = {
             archHypoPatternBadge: "Padrão ArchHypo",
             metricsEnabled: "Métricas Habilitado",
             metricsDisabled: "Métricas Disabilitado",
+            metricsToggle: "Adicionar/Atualizar Métricas",
 
             // Levels
             veryLow: "Muito Baixo",
@@ -206,6 +207,7 @@ const I18N = {
             archHypoPatternBadge: "ArchHypo Pattern",
             metricsEnabled: "Metrics Enabled",
             metricsDisabled: "Metrics Disabled",
+            metricsToggle: "Add/Update Metrics",
 
             // Levels
             veryLow: "Very Low",
