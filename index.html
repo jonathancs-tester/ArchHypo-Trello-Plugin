@@ -268,6 +268,20 @@
                   ]
                 });
               }
+            },
+            {
+              text: "Toggle", // botão novo para habilitar/desabilitar
+              icon: "https://img.icons8.com/ios-filled/50/000000/settings.png",
+              callback: function (t) {
+                return t.get('board', 'shared', 'enabled').then((enabled) => {
+                  const isEnabled = enabled === true;
+                  return t.set('board', 'shared', 'enabled', !isEnabled)
+                    .then(() => t.alert({
+                      message: !isEnabled ? "Plugin habilitado ✅" : "Plugin desabilitado ❌",
+                      duration: 2
+                    }));
+                });
+              }
             }
           ];
 
