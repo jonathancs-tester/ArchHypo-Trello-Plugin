@@ -290,7 +290,7 @@
               } else {
                 if (data.incerteza) badges.push({ text: `${I18N.t('uncertaintyBadge')}: ${data.incerteza}`, color: 'red' });
                 if (data.impacto) badges.push({ text: `${I18N.t('impactBadge')}: ${data.impacto}`, color: 'blue' });
-                if (data.dominio_problema) badges.push({ text: `${I18N.t('nfrBadge')}: ${data.dominio_problema}`, color: 'green' });
+                if (data.dominio) badges.push({ text: `${I18N.t('nfrBadge')}: ${data.dominio}`, color: 'green' });
               }
 
               return badges;
