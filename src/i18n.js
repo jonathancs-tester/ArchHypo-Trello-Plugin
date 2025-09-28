@@ -4,6 +4,7 @@ const I18N = {
         pt: {
             // Main plugin
             pluginTitle: "ArchHypo.AI - Trello Power App",
+            selectLanguage: "Selecionar Idioma",
 
             // Card buttons
             technicalPlan: "Plano Técnico",
@@ -169,6 +170,7 @@ const I18N = {
         en: {
             // Main plugin
             pluginTitle: "ArchHypo.AI - Trello Power App",
+            selectLanguage: "Select Language",
 
             // Card buttons
             technicalPlan: "Technical Plan",
