@@ -263,6 +263,8 @@
                 try {
                   const board = await t.board('id');
                   await createBoardTemplate(board.id);
+                  const updatedBoard = await t.board('all'); // pega dados atualizados
+                  console.log("✅ Board atualizado:", updatedBoard);
 
                 } catch (error) {
                   console.error("❌ " + I18N.t('errorCreateBoardTemplate'), error);
