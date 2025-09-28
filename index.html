@@ -196,29 +196,40 @@
 
                   function atualizarMetricas() {
                     return t.cards('all').then(cards => {
-                      if (!cards) return;
-                      return Promise.all(cards.map(card =>
-                        t.card('name', 'desc', { cardId: card.id }).then(info => {
-                          const titulo = info.name?.trim();
-                          const descricao = info.desc?.trim() || "";
+                      if (!cards || cards.length === 0) return;
 
-                          if (titulo?.startsWith("H")) {
-                            const extrair = chave => {
-                              const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, 'i'));
-                              return match ? match[1].trim() : '';
-                            };
+                      const promises = cards.map(card =>
+                        t.card('name', 'desc', { cardId: card.id })
+                          .then(info => {
+                            const titulo = info.name?.trim();
+                            const descricao = info.desc?.trim() || "";
 
-                            const dominio = extrair(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
-                            const incerteza = extrair(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
-                            const impacto = extrair(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
-                            const pattern = extrair(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
-                            const plano = extrair(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
-                            console.log(impacto)
-                            return t.set(card.id, 'shared', { dominio, incerteza, impacto, pattern, plano });
-                          }
-                        })
-                      ));
-                    });
+                            if (titulo?.startsWith("H")) {
+                              const extrair = chave => {
+                                const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, 'i'));
+                                return match ? match[1].trim() : '';
+                              };
+
+                              const dominio = extrair(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
+                              const incerteza = extrair(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
+                              const impacto = extrair(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
+                              const pattern = extrair(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
+                              const plano = extrair(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
+
+                              return t.set(card.id, 'shared', { dominio, incerteza, impacto, pattern, plano });
+                            }
+                          })
+                          .catch(err => {
+                            console.error("Erro ao processar card:", card.id, err);
+                            return null; // evita quebrar o Promise.all
+                          })
+                      );
+
+                      return Promise.all(promises);
+                    })
+                      .catch(err => {
+                        console.error("Erro ao pegar cards:", err);
+                      });
                   }
 
                   if (!ativo) {
