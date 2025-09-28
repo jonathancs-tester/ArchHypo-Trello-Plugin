@@ -69,7 +69,7 @@
                       if (titulo.startsWith("H")) {
 
                         function extrairValor(chave) {
-                          const regex = new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i");
+                          const regex = new RegExp(`${escapeRegExp(chave)}:\\s*(.+)`, "i");
                           const match = descricao.match(regex);
                           return match ? match[1].trim() : "";
                         }
