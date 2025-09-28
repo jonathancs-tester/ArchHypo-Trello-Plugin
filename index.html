@@ -230,29 +230,59 @@
               }
             },
             {
-              icon: "https://img.icons8.com/ios-filled/50/000000/brazil.png",
-              text: "Português",
+              text: I18N.t('selectLanguage'), // texto do botão principal
               callback: function (t) {
-                I18N.setLanguage("pt");
-                document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
-                t.set('board', 'shared', 'language', 'pt')
-                  .then(() => {
-                    return t.alert({ message: "Idioma alterado para Português 🇧🇷", duration: 2 });
-                  });
-              }
-            },
-            {
-              icon: "https://img.icons8.com/?size=100&id=8214&format=png&color=000000",
-              text: "English",
-              callback: function (t) {
-                I18N.setLanguage("en");
-                document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
-                t.set('board', 'shared', 'language', 'en')
-                  .then(() => {
-                    return t.alert({ message: "Language switched to English 🇬🇧", duration: 2 });
-                  });
+                return t.popup({
+                  title: I18N.t('selectLanguage'),
+                  items: [
+                    {
+                      text: "Português",
+                      icon: "https://img.icons8.com/ios-filled/50/000000/brazil.png",
+                      callback: function (t) {
+                        I18N.setLanguage("pt");
+                        document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+                        t.set('board', 'shared', 'language', 'pt')
+                          .then(() => t.alert({ message: "Idioma alterado para Português 🇧🇷", duration: 2 }));
+                      }
+                    },
+                    {
+                      text: "English",
+                      icon: "https://img.icons8.com/?size=100&id=8214&format=png&color=000000",
+                      callback: function (t) {
+                        I18N.setLanguage("en");
+                        document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+                        t.set('board', 'shared', 'language', 'en')
+                          .then(() => t.alert({ message: "Language switched to English 🇬🇧", duration: 2 }));
+                      }
+                    }
+                  ]
+                });
               }
             }
+            // {
+            //   icon: "https://img.icons8.com/ios-filled/50/000000/brazil.png",
+            //   text: "Português",
+            //   callback: function (t) {
+            //     I18N.setLanguage("pt");
+            //     document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+            //     t.set('board', 'shared', 'language', 'pt')
+            //       .then(() => {
+            //         return t.alert({ message: "Idioma alterado para Português 🇧🇷", duration: 2 });
+            //       });
+            //   }
+            // },
+            // {
+            //   icon: "https://img.icons8.com/?size=100&id=8214&format=png&color=000000",
+            //   text: "English",
+            //   callback: function (t) {
+            //     I18N.setLanguage("en");
+            //     document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
+            //     t.set('board', 'shared', 'language', 'en')
+            //       .then(() => {
+            //         return t.alert({ message: "Language switched to English 🇬🇧", duration: 2 });
+            //       });
+            //   }
+            // }
           ];
 
           if (!hasUncertaintyColumn) {
