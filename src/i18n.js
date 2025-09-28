@@ -31,10 +31,10 @@ const I18N = {
             fieldsUpdatedSuccess: "Campos adicionados/atualizados com sucesso!",
 
             // Badge labels
-            uncertainty: "Incerteza",
-            impact: "Impacto",
-            nfr: "NFR",
-            archHypoPattern: "Padrão ArchHypo",
+            uncertaintyBadge: "Incerteza",
+            impactBadge: "Impacto",
+            nfrBadge: "NFR",
+            archHypoPatternBadge: "Padrão ArchHypo",
 
             // Levels
             veryLow: "Muito Baixo",
@@ -196,10 +196,10 @@ const I18N = {
             fieldsUpdatedSuccess: "Fields added/updated successfully!",
 
             // Badge labels
-            uncertainty: "Uncertainty",
-            impact: "Impact",
-            nfr: "NFR",
-            archHypoPattern: "ArchHypo Pattern",
+            uncertaintyBadge: "Uncertainty",
+            impactBadge: "Impact",
+            nfrBadge: "NFR",
+            archHypoPatternBadge: "ArchHypo Pattern",
 
             // Levels
             veryLow: "Very Low",
