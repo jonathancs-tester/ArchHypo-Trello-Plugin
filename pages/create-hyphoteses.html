@@ -118,25 +118,26 @@
       background-color: #519839;
     }
 
-    .help-icon {
+    .hover-info {
       position: relative;
-      display: inline-block;
-      background-color: #007bff;
-      color: white;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      text-align: center;
-      line-height: 20px;
       cursor: pointer;
-      font-size: 14px;
-      margin-left: 8px;
-      user-select: none;
     }
 
-    .help-icon:focus,
-    .help-icon:hover {
-      background-color: #0056b3;
+    .hover-box {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 0;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 250px;
+      z-index: 10;
+      font-size: 0.9em;
+    }
+
+    .hover-info:hover .hover-box {
+      display: block;
     }
 
     .tooltip {
@@ -278,9 +279,9 @@
   <!-- Step 3 -->
   <div id="step3" class="step">
     <h2 id="step3Title">
-      <span class="help-icon" tabindex="0" aria-label="Help">
-        ❔
-        <span class="tooltip" id="uncertaintyTooltip"></span>
+      <span class="hover-info" tabindex="0" aria-label="Help">
+        ℹ️
+        <span class="hover-box" id="uncertaintyTooltip"></span>
       </span>
     </h2>
     <select id="incerteza">
