@@ -85,6 +85,7 @@
                         const impacto = extrairValor(impactLabel);
                         const pattern = extrairValor(patternLabel);
                         const plano = extrairValor(planLabel);
+                        console.log(plano)
 
                         return t.set('card', 'shared', {
                           dominio_problema,
@@ -176,9 +177,8 @@
                       t.get(card.id, 'shared', 'incerteza'),
                       t.get(card.id, 'shared', 'impacto'),
                       t.get(card.id, 'shared', 'dominio_problema'),
-                      t.get(card.id, 'shared', 'requisito_nao_funcional'),
                       t.get(card.id, 'shared', 'pattern')
-                    ]).then(function ([incerteza, impacto, dominio_problema, requisito_nao_funcional, pattern]) {
+                    ]).then(function ([incerteza, impacto, dominio_problema, pattern]) {
                       if (levels.includes(incerteza)) countIncerteza[incerteza]++;
                       if (levels.includes(impacto)) countImpacto[impacto]++;
                       if (Object.keys(countNaoFuncional).includes(dominio_problema)) countNaoFuncional[dominio_problema]++;
