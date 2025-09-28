@@ -36,7 +36,6 @@ const I18N = {
             impactBadge: "Impacto",
             nfrBadge: "Requisito Não Funcional",
             archHypoPatternBadge: "Padrão ArchHypo",
-            metricsToggle: "Adicionar/Atualizar Métricas",
             metricsSuccess: "Métricas habilitadas ✅",
             metricsFailed: "Métricas desabilitadas ❌",
 
