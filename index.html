@@ -235,7 +235,7 @@
               callback: function (t) {
                 I18N.setLanguage("pt");
                 document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
-                location.reload();
+                window.location.reload(true);
                 return t.alert({
                   message: "Idioma alterado para Português 🇧🇷",
                   duration: 2
@@ -248,7 +248,7 @@
               callback: function (t) {
                 I18N.setLanguage("en");
                 document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
-                location.reload();
+                lwindow.location.reload(true);
                 return t.alert({
                   message: "Language switched to English 🇬🇧",
                   duration: 2
