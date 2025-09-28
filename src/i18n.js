@@ -36,6 +36,8 @@ const I18N = {
             impactBadge: "Impacto",
             nfrBadge: "NFR",
             archHypoPatternBadge: "Padrão ArchHypo",
+            metricsEnabled: "Métricas Habilitado",
+            metricsDisabled: "Métricas Disabilitado",
 
             // Levels
             veryLow: "Muito Baixo",
@@ -202,6 +204,8 @@ const I18N = {
             impactBadge: "Impact",
             nfrBadge: "NFR",
             archHypoPatternBadge: "ArchHypo Pattern",
+            metricsEnabled: "Metrics Enabled",
+            metricsDisabled: "Metrics Disabled",
 
             // Levels
             veryLow: "Very Low",

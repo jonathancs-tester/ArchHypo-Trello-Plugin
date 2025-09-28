@@ -212,20 +212,19 @@
                               const titulo = cardInfo.name?.trim();
                               const descricao = cardInfo.desc?.trim() || "";
 
-                              if (titulo && titulo.startsWith("H")) {
-                                const extrairValor = chave => {
-                                  const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i"));
-                                  return match ? match[1].trim() : "";
-                                };
+                              const extrairValor = chave => {
+                                const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, "i"));
+                                return match ? match[1].trim() : "";
+                              };
 
-                                const dominio_problema = extrairValor(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
-                                const incerteza = extrairValor(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
-                                const impacto = extrairValor(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
-                                const pattern = extrairValor(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
-                                const plano = extrairValor(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
+                              const dominio_problema = extrairValor(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
+                              const incerteza = extrairValor(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
+                              const impacto = extrairValor(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
+                              const pattern = extrairValor(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
+                              const plano = extrairValor(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
+                              console.log(incerteza)
+                              return t.set(card.id, 'shared', { dominio_problema, incerteza, impacto, pattern, plano });
 
-                                return t.set(card.id, 'shared', { dominio_problema, incerteza, impacto, pattern, plano });
-                              }
                             });
                           });
 
@@ -241,7 +240,7 @@
                           return t.set('board', 'shared', 'enabledMetrics', true).then(() => {
                             atualizarMetricas();
                             if (window.metricsInterval) clearInterval(window.metricsInterval);
-                            window.metricsInterval = setInterval(atualizarMetricas, 60000);
+                            window.metricsInterval = setInterval(atualizarMetricas, 1000);
                             return t.alert({ message: "Métricas habilitadas ✅", duration: 2 });
                           });
                         } else {
