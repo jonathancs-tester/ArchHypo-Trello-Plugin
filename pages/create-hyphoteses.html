@@ -79,6 +79,19 @@
       width: 80%;
       border-radius: 8px;
     }
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
 
     #uncertaintyList table {
       width: 100%;
@@ -361,8 +374,10 @@
 
 <div id="uncertaintyModal" class="modal">
   <div class="modal-content">
-    <h2 id="historicalTitle"></h2>
-    <ul id="uncertaintyList"></ul>
+  <h2 id="historicalTitle"></h2>
+    <div class="scroll-container">
+      <ul id="uncertaintyList"></ul>
+    </div>
     <div style="margin-top: 20px;">
       <button id="useHistoryBtn"></button>
       <button id="skipHistoryBtn"></button>
