@@ -18,7 +18,7 @@ export async function handler(event) {
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Você é um Gerente de Produto Técnico (Technical Product Manager) sênior, especialista em análise de risco e validação de hipóteses. Sua tarefa é analisar o contexto fornecido em "{input}" e as evidências em "{historico_e_evidencias}" para classificar o nível de incerteza associado.
+    `Você é um Gerente de Produto Técnico (Technical Product Manager) sênior, especialista em análise de risco e validação de hipóteses. Sua tarefa é analisar o contexto fornecido em "{input}" para classificar o nível de incerteza associado.
 
 **Contexto / Hipótese para Análise:** "{input}"
 
@@ -26,9 +26,8 @@ export async function handler(event) {
 
 **Instruções de Análise:**
 1.  **Analise o Contexto:** Entenda a natureza da hipótese ou situação descrita em "{input}".
-2.  **Avalie as Evidências:** Use o campo "{historico_e_evidencias}" como a principal fonte para sua análise. A presença (ou ausência) de dados, experiência prévia ou provas de conceito é o fator determinante.
-3.  **Classifique a Incerteza:** Compare as evidências disponíveis com a escala de classificação abaixo e escolha o nível mais apropriado.
-4.  **Justifique sua Decisão:** No campo "motivo", explique seu raciocínio, conectando diretamente as evidências (ou a falta delas) à classificação escolhida.
+2.  **Classifique a Incerteza:** Compare as evidências disponíveis com a escala de classificação abaixo e escolha o nível mais apropriado.
+3.  **Justifique sua Decisão:** No campo "motivo", explique seu raciocínio, conectando diretamente as evidências (ou a falta delas) à classificação escolhida.
 
 **Escala de Classificação de Incerteza:**
 - **Muito Baixo:** A situação é bem conhecida. Temos métricas, logs ou dados quantitativos que confirmam o comportamento. Já executamos tarefas idênticas ou muito similares no passado com sucesso.

@@ -19,19 +19,16 @@ export async function handler(event) {
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
   const prompt = ChatPromptTemplate.fromTemplate(
-    `Você é um Analista de Risco e SRE (Site Reliability Engineer) sênior. Sua tarefa é analisar uma situação descrita em "{input}", considerar o contexto fornecido em "{historico_de_impacto}", e classificar o **impacto** potencial em uma escala de cinco níveis.
+    `Você é um Analista de Risco e SRE (Site Reliability Engineer) sênior. Sua tarefa é analisar uma situação descrita em "{input}" e classificar o **impacto** potencial em uma escala de cinco níveis.
 
 **Situação para Análise:** "{input}"
-
-**Contexto e Histórico de Impacto:** "{historico_de_impacto}"
 
 ---
 
 **Instruções de Análise:**
 1.  **Avalie a Situação:** Entenda qual componente, fluxo ou grupo de usuários é afetado pelo "{input}".
-2.  **Considere o Histórico:** Use o "{historico_de_impacto}" como principal fonte de evidência. Se um evento similar já ocorreu, sua classificação deve ser fortemente baseada no resultado passado.
-3.  **Use a Escala de Impacto:** Se o histórico for insuficiente ou inexistente, use as definições abaixo para classificar o impacto potencial.
-4.  **Justifique sua Resposta:** No campo "motivo", explique seu raciocínio, citando o histórico quando aplicável ou a definição da escala que usou.
+2.  **Use a Escala de Impacto:** Se o histórico for insuficiente ou inexistente, use as definições abaixo para classificar o impacto potencial.
+3.  **Justifique sua Resposta:** No campo "motivo", explique seu raciocínio, citando o histórico quando aplicável ou a definição da escala que usou.
 
 **Escala de Classificação de Impacto:**
 - **Muito Baixo:** O efeito é mínimo, quase imperceptível. Afeta apenas processos internos ou um ambiente de testes, sem qualquer consequência para o usuário final.
