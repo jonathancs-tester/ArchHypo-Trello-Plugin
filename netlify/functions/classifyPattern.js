@@ -21,7 +21,6 @@ async function getPineconeClient() {
   return new Pinecone({ apiKey: PINECONE_API_KEY });
 }
 
-// --- Gera embeddings ---
 async function embedText(text) {
   try {
     const res = await fetch(
@@ -32,16 +31,29 @@ async function embedText(text) {
           "Content-Type": "application/json",
           "X-goog-api-key": API_KEY
         },
-        body: JSON.stringify({ content: { parts: [{ text }] } })
+        body: JSON.stringify({
+          model: "gemini-embedding-001",
+          content: {
+            parts: [{ text }]
+          }
+        })
       }
     );
+
     const data = await res.json();
-    return data.embedding?.values || [];
+
+    if (!data.embedding || !Array.isArray(data.embedding.values)) {
+      console.error("❌ Embedding não retornado corretamente:", data);
+      return [];
+    }
+
+    return data.embedding.values;
   } catch (error) {
     console.error("Erro ao gerar embedding:", error);
     return [];
   }
 }
+
 
 // --- Consulta Pinecone com filtro opcional ---
 async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
