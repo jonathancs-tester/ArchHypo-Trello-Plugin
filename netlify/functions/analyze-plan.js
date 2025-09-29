@@ -42,8 +42,10 @@ export async function handler(event) {
     "descricao": "O plano propõe uma estratégia de otimização em múltiplas frentes: aliviar a carga no banco de dados com cache, melhorar a eficiência das consultas mais lentas e desacoplar processos não essenciais, como notificações, para serem executados de forma assíncrona.",
     "tradeoff": "A introdução do Redis aumenta a complexidade da infraestrutura e exige uma estratégia de invalidação de cache. O processamento assíncrono de notificações pode gerar um leve atraso na comunicação com o usuário."
   }}
-- O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}
-`
+---
+
+**Regras de Saída:**
+- O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}`
   );
 
   const chain = prompt.pipe(model);
