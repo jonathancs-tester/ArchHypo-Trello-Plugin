@@ -359,19 +359,25 @@ async function analyzeUncertainty() {
 
     const allData = await res.json();
     state.incertezaTotal = allData?.length || 0;
-    const data = allData ? allData.slice(0, 10) : [];
 
-    const uncertaintyHistoricalStr = Array.isArray(data)
-      ? data.map(item => {
-          const { totalCards, ...rest } = item;
-          return JSON.stringify(rest);
-        }).join('; ')
-      : data;
+    let uncertaintyHistoricalStr = '';
+    let usarHistorico = false;
 
-    // Mostra os dados históricos ao usuário
-    const usarHistorico = showUncertaintyModal(data);
+    if (state.incertezaTotal !== 0) {
+      const data = allData.slice(0, 10);
 
-    var input = `
+      uncertaintyHistoricalStr = Array.isArray(data)
+        ? data.map(item => {
+            const { totalCards, ...rest } = item;
+            return JSON.stringify(rest);
+          }).join('; ')
+        : '';
+
+      // Aguarda a escolha do usuário via modal
+      usarHistorico = await showUncertaintyModal(data);
+    }
+
+    const input = `
       Context: ${state.contexto}; 
       Hypothesis: ${state.hipotese};
       Non Functional Requirement: ${state.dominio}; 
@@ -525,7 +531,7 @@ function showUncertaintyModal(data) {
 
   data.forEach(item => {
     const li = document.createElement('li');
-    li.textContent = `Hipotese: ${item.hipotese}, Nivel de Incerteza: ${item.incerteza}`;
+    li.innerHTML = `<strong>Hipótese:</strong> ${item.hipotese} &nbsp;|&nbsp; <strong>Nível de Incerteza:</strong> ${item.incerteza}`;
     list.appendChild(li);
   });
 
