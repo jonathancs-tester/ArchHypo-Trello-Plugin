@@ -107,6 +107,11 @@ const I18N = {
             uncertaintyChart: "Incerteza",
             nfrChart: "Requisitos Não Funcionais (NFR)",
             patternsChart: "Padrões ArchHypo",
+            precisionAt5: "Precision@5",
+            hitRate: "Hit Rate",
+            mrr: "MRR",
+            factualConsistency: "Consistência Factual",
+            relevanceScore: "Relevância da Resposta",
 
             // Placeholders
             contextPlaceholder: "Descreva a incerteza, situação ou contexto em detalhes...",
@@ -291,6 +296,11 @@ const I18N = {
             uncertaintyChart: "Uncertainty",
             nfrChart: "Non-Functional Requirements (NFR)",
             patternsChart: "ArchHypo Patterns",
+            precisionAt5: "Precision@5",
+            hitRate: "Hit Rate",
+            mrr: "MRR",
+            factualConsistency: "Factual Consistency",
+            relevanceScore: "Relevance Score",
 
             // Placeholders
             contextPlaceholder: "Describe the uncertainty, situation or context in detail...",

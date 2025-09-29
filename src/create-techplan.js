@@ -379,12 +379,12 @@ async function classifyPattern() {
               <span class="hover-info">
                 ℹ️
                 <div class="hover-box">
-                  <strong>Métricas:</strong><br>
-                  <b>Precision@5:</b> ${data.evaluation?.precisionAt5?.toFixed(2)}<br>
-                  <b>Hit Rate:</b> ${data.evaluation?.hitRate?.toFixed(2)}<br>
-                  <b>MRR:</b> ${data.evaluation?.mrr?.toFixed(2)}<br>
-                  <b>Consistência Factual:</b> ${data.evaluation?.factualConsistencyScore?.toFixed(5)}<br>
-                  <b>Relevância da Resposta:</b> ${data.evaluation?.relevanceScore?.toFixed(5)}
+                  <strong>${I18N.t('metricsTitle')}</strong><br>
+                  <b>${I18N.t('precisionAt5')}:</b> ${data.evaluation?.precisionAt5?.toFixed(2)}<br>
+                  <b>${I18N.t('hitRate')}:</b> ${data.evaluation?.hitRate?.toFixed(2)}<br>
+                  <b>${I18N.t('mrr')}:</b> ${data.evaluation?.mrr?.toFixed(2)}<br>
+                  <b>${I18N.t('factualConsistency')}:</b> ${data.evaluation?.factualConsistencyScore?.toFixed(5)}<br>
+                  <b>${I18N.t('relevanceScore')}:</b> ${data.evaluation?.relevanceScore?.toFixed(5)}
                 </div>
               </span>
               <p>${itemText}</p>
