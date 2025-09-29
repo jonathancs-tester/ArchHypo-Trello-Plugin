@@ -374,7 +374,7 @@ async function analyzeUncertainty() {
         : '';
 
       // Aguarda a escolha do usuário via modal
-      usarHistorico = await showUncertaintyModal(data);
+      usarHistorico = showUncertaintyModal(data);
     }
 
     const input = `
