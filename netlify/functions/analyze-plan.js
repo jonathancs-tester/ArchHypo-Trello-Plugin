@@ -35,13 +35,15 @@ export async function handler(event) {
 **Exemplo de Execução:**
 - **input:** "Nossa API de pagamentos está com picos de latência de até 2 segundos em horários de alta demanda, causando timeouts no frontend."
 - **Output Esperado (para idiomaTexto='Português'):**
-  {{
+\`\`\`json
+{
     "sugestao": "Implementar um cache de nível de aplicação (Redis) para dados de produtos frequentemente acessados\\nOtimizar a consulta principal ao banco de dados, adicionando um índice composto na tabela de transações\\nIntroduzir uma fila de processamento assíncrono (RabbitMQ) para as notificações de pagamento pós-compra",
     "motivo": "A latência da API de pagamentos está excedendo os SLAs (Service Level Agreements) durante os horários de pico, resultando em falhas de transação e impactando negativamente a experiência do usuário e a receita.",
     "justificativa": "O objetivo é reduzir a latência p99 da API para menos de 500ms, restaurando a confiabilidade do serviço e garantindo que o fluxo de checkout suporte o crescimento projetado da demanda.",
     "descricao": "O plano propõe uma estratégia de otimização em múltiplas frentes: aliviar a carga no banco de dados com cache, melhorar a eficiência das consultas mais lentas e desacoplar processos não essenciais, como notificações, para serem executados de forma assíncrona.",
     "tradeoff": "A introdução do Redis aumenta a complexidade da infraestrutura e exige uma estratégia de invalidação de cache. O processamento assíncrono de notificações pode gerar um leve atraso na comunicação com o usuário."
-  }}
+}
+\`\`\`
 
 ---
 
