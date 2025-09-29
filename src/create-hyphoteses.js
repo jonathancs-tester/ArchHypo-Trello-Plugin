@@ -636,7 +636,7 @@ function showImpactModal(data) {
       hipoteseCell.textContent = item.hipotese;
 
       const incertezaCell = document.createElement('td');
-      incertezaCell.textContent = item.impact;
+      incertezaCell.textContent = item.impacto;
 
       row.appendChild(hipoteseCell);
       row.appendChild(incertezaCell);
