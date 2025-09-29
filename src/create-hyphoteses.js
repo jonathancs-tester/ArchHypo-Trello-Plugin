@@ -534,9 +534,6 @@ function motivoHTML(motivo) {
 function showUncertaintyModal(data) {
   const historicalTitle = document.getElementById('historicalTitle');
   if (historicalTitle) historicalTitle.textContent = I18N.t('uncertaintyTitle');
-
-  const step5Title = document.getElementById('step5Title');
-  if (step5Title) step5Title.textContent = I18N.t('cardCreatedTitle');
   return new Promise(resolve => {
     const modal = document.getElementById('uncertaintyModal');
     const listContainer = document.getElementById('uncertaintyList');
