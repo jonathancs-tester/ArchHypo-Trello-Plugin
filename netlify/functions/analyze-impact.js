@@ -39,7 +39,6 @@ export async function handler(event) {
 
 **Exemplo de Execução:**
 - **input:** "Estamos planejando migrar o banco de dados de usuários para um novo cluster."
-- **historico_de_impacto:** "Na última migração de um serviço similar (o serviço de pagamentos), houve 2 horas de downtime e a equipe levou 6 horas para estabilizar o sistema."
 - **Output Esperado (para idiomaTexto='Português'):**
   {{"sugestao": "Muito Alto", "motivo": "A migração afeta um componente central (banco de dados de usuários) e o histórico de migrações similares na empresa resultou em downtime significativo. Portanto, o risco de um impacto severo na disponibilidade do serviço é a principal justificativa."}}
 
