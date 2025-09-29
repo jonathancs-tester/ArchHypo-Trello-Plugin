@@ -569,16 +569,16 @@ function showUncertaintyModal(data) {
     // Dentro da função showUncertaintyModal
     console.log('🔍 Modal exibido com dados:', data);
 
-    useBtn.onclick = () => {
-      console.log('✅ Usuário escolheu usar histórico');
+    useBtn.addEventListener('click', function handleUse() {
       modal.style.display = 'none';
       resolve(true);
-    };
+      useBtn.removeEventListener('click', handleUse); // evita múltiplos binds
+    });
 
-    skipBtn.onclick = () => {
-      console.log('❌ Usuário escolheu pular histórico');
+    skipBtn.addEventListener('click', function handleSkip() {
       modal.style.display = 'none';
       resolve(false);
-    };
+      skipBtn.removeEventListener('click', handleSkip);
+    });
   });
 }
