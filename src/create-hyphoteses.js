@@ -532,6 +532,9 @@ function motivoHTML(motivo) {
 }
 
 function showUncertaintyModal(data) {
+  const historicalTitle = document.getElementById('historicalTitle');
+  if (historicalTitle) historicalTitle.textContent = I18N.t('uncertaintyTitle');
+
   return new Promise(resolve => {
     const modal = document.getElementById('uncertaintyModal');
     const listContainer = document.getElementById('uncertaintyList');
