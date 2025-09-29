@@ -92,18 +92,13 @@ async function classifyPattern(hypothesis, patternCandidates = [], language = 'p
   // Usar idioma enviado pelo frontend em vez de detecção automática
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
-  const prompt = `You are a Senior Software Architect, specialized in methodologies for validating architectural hypotheses.
+    const prompt = `
+You are an expert in software architecture.
+Task:
+Given the hypothesis and the document content below, select up to one ArchHypo pattern that best match the hypothesis.
+Do NOT invent patterns.
 
-**Objective:**
-Your task is to analyze the **Hypothesis** and the **Document Content** provided. Based on this analysis, you must select the **single** "ArchHypo" pattern from that best applies to validate, investigate, or resolve the hypothesis.
-
-**Analysis Instructions:**
-1.  Carefully read the **Hypothesis**. This is your main focus.
-2.  Use the **Document Content** as supporting evidence to understand the hypothesis context.
-3.  Compare the hypothesis intent with the definitions of the 12 "ArchHypo" patterns listed above.
-4.  Select the **single pattern** that best represents the approach for the situation.
-5.  If **none** of the patterns clearly apply, the value of the "pattern" key should be "N/A".
-6.  Justify your choice in 2 sentences, connecting the hypothesis with the definition of the chosen pattern.
+If the selected pattern is "What You Need to Know", then substitute it with "Software Analytics" in the result.
 
 Respond in **${idiomaTexto}** with valid JSON:
 ${parser.getFormatInstructions()}
