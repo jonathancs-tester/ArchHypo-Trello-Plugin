@@ -359,25 +359,26 @@ async function analyzeUncertainty() {
 
     const allData = await res.json();
     state.incertezaTotal = allData?.length || 0;
-    const data = allData ? allData.slice(0, 10) : [];
+    if (state.incertezaTotal != 0) {
+      const data = allData ? allData.slice(0, 10) : [];
 
-    const uncertaintyHistoricalStr = Array.isArray(data)
-      ? data.map(item => {
-          const { totalCards, ...rest } = item;
-          return JSON.stringify(rest);
-        }).join('; ')
-      : data;
+      const uncertaintyHistoricalStr = Array.isArray(data)
+        ? data.map(item => {
+            const { totalCards, ...rest } = item;
+            return JSON.stringify(rest);
+          }).join('; ')
+        : data;
 
-    // Mostra os dados históricos ao usuário
-    const usarHistorico = confirm(`Deseja usar os dados históricos de incerteza na análise?\n\n${uncertaintyHistoricalStr}`);
-
-    const input = `
-      Context: ${state.contexto}; 
-      Hypothesis: ${state.hipotese};
-      Non Functional Requirement: ${state.dominio}; 
-      ${usarHistorico ? `Uncertainty Historical: ${uncertaintyHistoricalStr};` : ''}
-    `;
-
+      // Mostra os dados históricos ao usuário
+      const usarHistorico = showUncertaintyModal(data);
+    
+      var input = `
+        Context: ${state.contexto}; 
+        Hypothesis: ${state.hipotese};
+        Non Functional Requirement: ${state.dominio}; 
+        ${usarHistorico ? `Uncertainty Historical: ${uncertaintyHistoricalStr};` : ''}
+      `;
+    }
     const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
     sugestaoOriginal = sugestao;
@@ -516,4 +517,29 @@ function motivoHTML(motivo) {
         <p>${motivo}</p>
       </details>
     `;
+}
+
+function showUncertaintyModal(data) {
+  const modal = document.getElementById('uncertaintyModal');
+  const list = document.getElementById('uncertaintyList');
+  list.innerHTML = '';
+
+  data.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = `Domínio: ${item.dominio}, Motivo: ${item.motivo}`;
+    list.appendChild(li);
+  });
+
+  modal.style.display = 'block';
+
+  return new Promise(resolve => {
+    document.getElementById('useHistoryBtn').onclick = () => {
+      modal.style.display = 'none';
+      resolve(true);
+    };
+    document.getElementById('skipHistoryBtn').onclick = () => {
+      modal.style.display = 'none';
+      resolve(false);
+    };
+  });
 }
