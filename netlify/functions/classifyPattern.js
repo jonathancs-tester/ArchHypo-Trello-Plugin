@@ -80,21 +80,81 @@ async function classifyPattern(hypothesis, patternCandidates = [], language = 'p
   // Usar idioma enviado pelo frontend em vez de detecção automática
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
-  const prompt = `
-You are an expert in software architecture.
-Task:
-Given the hypothesis and the document content below, select up to one ArchHypo pattern that best match the hypothesis.
-Do NOT invent patterns.
+  const prompt = `Você é um Arquiteto de Software sênior, especialista em metodologias de validação de hipóteses arquiteturais.
 
-If the selected pattern is "What You Need to Know", then substitute it with "Software Analytics" in the result.
+**Objetivo:**
+Sua tarefa é analisar a **Hipótese** e o **Conteúdo do Documento** fornecidos. Com base nessa análise, você deve selecionar o **único** padrão "ArchHypo" da lista abaixo que melhor se aplica para validar, investigar ou resolver a hipótese.
 
-Respond in **${idiomaTexto}** with valid JSON:
+---
+
+**Padrões "ArchHypo" Disponíveis e Suas Definições:**
+
+1.  **Architectural Spike:**
+    - **Explicação:** Utilizado quando há incerteza técnica sobre uma solução arquitetural. Consiste em desenvolver uma implementação mínima e temporária para explorar a viabilidade de uma tecnologia ou abordagem.
+
+2.  **Architectural Trigger:**
+    - **Explicação:** Identifica eventos ou mudanças (requisitos, escala, regulamentação) que exigem uma reavaliação ou tomada de decisão arquitetural.
+
+3.  **Bring the Specialist:**
+    - **Explicação:** Recomenda envolver especialistas quando a equipe enfrenta uma decisão arquitetural complexa ou fora de sua expertise para garantir decisões bem fundamentadas.
+
+4.  **Continuous Inspection:**
+    - **Explicação:** Promove a revisão contínua da arquitetura ao longo do ciclo de vida do projeto para identificar desvios, riscos e oportunidades de melhoria.
+
+5.  **Learning from Experiments:**
+    - **Explicação:** Sugere que decisões arquiteturais sejam precedidas por experimentos controlados que gerem dados e aprendizados reais para reduzir riscos.
+
+6.  **Plan for Preparation:**
+    - **Explicação:** Incentiva preparar a arquitetura para decisões futuras, criando flexibilidade, modularidade e abstrações que permitam mudanças com baixo custo.
+
+7.  **Postpone Uncertain Decisions:**
+    - **Explicação:** Recomenda adiar uma decisão que envolve muitas variáveis desconhecidas ou riscos altos até que mais informações estejam disponíveis.
+
+8.  **Protective Guideline:**
+    - **Explicação:** Estabelece diretrizes arquiteturais que protegem o projeto contra decisões inconsistentes, técnicas inadequadas ou violações de padrões.
+
+9.  **Quality Checkpoint:**
+    - **Explicação:** Cria momentos específicos no ciclo de desenvolvimento para avaliar se a arquitetura está atendendo aos atributos de qualidade definidos (desempenho, segurança, etc.).
+
+10. **Software Analytics (What You Need to Know):**
+    - **Explicação:** Foca em identificar e preencher lacunas de conhecimento que impedem decisões arquiteturais, incentivando a busca ativa por informações através de pesquisa ou análise de dados.
+
+11. **Technical Debt Management:**
+    - **Explicação:** Trata da identificação, priorização e mitigação da dívida técnica acumulada para não comprometer a evolução da arquitetura.
+
+12. **Tracer Bullets:**
+    - **Explicação:** Implementações mínimas que percorrem o sistema de ponta a ponta para validar fluxos, integrações e a arquitetura geral rapidamente.
+
+---
+
+**Instruções de Análise:**
+1.  Leia atentamente a **Hipótese**. Este é o seu foco principal.
+2.  Use o **Conteúdo do Documento** como evidência de suporte para entender o contexto da hipótese.
+3.  Compare a intenção da hipótese com as definições dos 12 padrões "ArchHypo" listados acima.
+4.  Selecione o **único padrão** que representa a melhor abordagem para a situação.
+5.  Se **nenhum** padrão se aplicar de forma clara, o valor da chave "nome_do_padrao" deve ser "N/A".
+6.  Justifique sua escolha em 1-2 frases, conectando a hipótese com a definição do padrão escolhido.
+
+**Formato da Resposta:**
+Responda em **${idiomaTexto}** com um objeto JSON válido, seguindo estritamente este formato:
 ${parser.getFormatInstructions()}
+---
 
-Hypothesis:
+**Exemplo de Execução:**
+
+* **Hipótese:** "Acreditamos que o banco de dados do serviço de checkout é o principal gargalo de desempenho durante os picos de demanda da Black Friday, mas não temos dados concretos sobre quais queries são as mais lentas."
+* **Conteúdo do Documento:** "Relatórios de usuários indicam lentidão no checkout. A equipe de produto precisa de dados para decidir entre otimizar o banco de dados atual ou provisionar um novo."
+
+* **Saída Esperada (${idiomaTexto}):**
+${parser.getFormatInstructions()}
+---
+
+**Dados para Análise:**
+
+**Hipótese:**
 "${hypothesis}"
 
-Document content:
+**Conteúdo do Documento:**
 ${context}
 `;
 
