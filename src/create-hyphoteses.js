@@ -316,9 +316,9 @@ async function analyzeDomain() {
     state.hipoteseMotivo = document.getElementById('hipoteseResultado').value;
 
     const input = `
-  Context: ${state.contexto}; 
-  Hypothesis: ${state.hipotese};
-      `;
+      ${I18N.t('context')}: ${state.contexto};
+      ${I18N.t('hypothesesHistorical')}: ${state.hipotese};
+    `;
     const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
 
     sugestaoOriginal = sugestao;
@@ -383,10 +383,11 @@ async function analyzeUncertainty() {
     }
 
     const input = `
-      Context: ${state.contexto}; 
-      Hypothesis: ${state.hipotese};
-      Non Functional Requirement: ${state.dominio}; 
-      ${usarHistorico ? `Uncertainty Historical: ${uncertaintyHistoricalStr};` : ''}
+      ${I18N.t('context')}: ${state.contexto};
+      ${I18N.t('hypothesesHistorical')}: ${state.hipotese};
+      ${I18N.t('nfrChart')}: ${state.dominio};
+      ${I18N.t('uncertaintyChart')}: ${state.incerteza};
+      ${usarHistorico ? `${I18N.t('uncertaintyHistorical')}: ${uncertaintyHistoricalStr};` : ''}
     `;
 
     const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
@@ -454,11 +455,11 @@ async function analyzeImpact() {
     }
 
     const input = `
-      Context: ${state.contexto}; 
-      Hypothesis: ${state.hipotese};
-      Non Functional Requirement: ${state.dominio}; 
-      Uncertainty: ${state.incerteza};
-      ${usarHistorico ? `Impact Historical: ${impactHistoricalStr};` : ''}
+      ${I18N.t('context')}: ${state.contexto};
+      ${I18N.t('hypothesesHistorical')}: ${state.hipotese};
+      ${I18N.t('nfrChart')}: ${state.dominio};
+      ${I18N.t('uncertaintyChart')}: ${state.incerteza};
+      ${usarHistorico ? `${I18N.t('impactHistorical')}: ${impactHistoricalStr};` : ''}
     `;
 
     const { sugestao, motivo } = await callEndpoint('analyze-impact', input);

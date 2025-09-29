@@ -21,6 +21,7 @@ const I18N = {
             archHypoMetrics: "ArchHypo Métricas",
             newUncertainty: "Nova Incerteza",
             createBoardTemplate: "Criar Modelo de Quadro",
+            context: "Contexto",
 
             // Modals
             generateTechnicalPlan: "Gerar Plano Técnico",
@@ -203,6 +204,7 @@ const I18N = {
             archHypoMetrics: "ArchHypo Metrics",
             newUncertainty: "New Uncertainty",
             createBoardTemplate: "Create Board Template",
+            context: "Context",
 
             // Modals
             generateTechnicalPlan: "Generate Technical Plan",
