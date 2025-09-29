@@ -65,6 +65,9 @@ function updateTexts(language) {
   const step5Title = document.getElementById('step5Title');
   if (step5Title) step5Title.textContent = I18N.t('cardCreatedTitle');
 
+  const historicalTitle = document.getElementById('historicalTitle');
+  if (historicalTitle) historicalTitle.textContent = I18N.t('uncertaintyTitle');
+
   // Update buttons
   const step0NextBtn = document.getElementById('step0NextBtn');
   if (step0NextBtn) step0NextBtn.textContent = I18N.t('next');
@@ -532,8 +535,6 @@ function motivoHTML(motivo) {
 }
 
 function showUncertaintyModal(data) {
-  const historicalTitle = document.getElementById('historicalTitle');
-  if (historicalTitle) historicalTitle.textContent = I18N.t('uncertaintyTitle');
   return new Promise(resolve => {
     const modal = document.getElementById('uncertaintyModal');
     const listContainer = document.getElementById('uncertaintyList');
