@@ -93,6 +93,12 @@ function updateTexts(language) {
   const step4CreateBtn = document.getElementById('step4CreateBtn');
   if (step4CreateBtn) step4CreateBtn.textContent = I18N.t('create');
 
+  const useHistoryBtn = document.getElementById('useHistoryBtn');
+  if (useHistoryBtn) useHistoryBtn.textContent = I18N.t('useHistorical');
+
+  const skipHistoryBtn = document.getElementById('skipHistoryBtn');
+  if (skipHistoryBtn) skipHistoryBtn.textContent = I18N.t('ignoreHistorical');
+
   // Update placeholders
   const contextoTextarea = document.getElementById('contexto');
   if (contextoTextarea) {
@@ -526,6 +532,11 @@ function motivoHTML(motivo) {
 }
 
 function showUncertaintyModal(data) {
+  const historicalTitle = document.getElementById('historicalTitle');
+  if (historicalTitle) historicalTitle.textContent = I18N.t('uncertaintyTitle');
+
+  const step5Title = document.getElementById('step5Title');
+  if (step5Title) step5Title.textContent = I18N.t('cardCreatedTitle');
   return new Promise(resolve => {
     const modal = document.getElementById('uncertaintyModal');
     const listContainer = document.getElementById('uncertaintyList');
@@ -540,8 +551,8 @@ function showUncertaintyModal(data) {
     table.innerHTML = `
       <thead>
         <tr>
-          <th>Hipótese</th>
-          <th>Nível de Incerteza</th>
+          <th>${I18N.t('hypothesesHistorical')}</th>
+          <th>${I18N.t('uncertaintyHistorical')}</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -565,23 +576,16 @@ function showUncertaintyModal(data) {
 
     listContainer.appendChild(table);
     
-    // ✅ Habilita os botões
     useBtn.disabled = false;
     skipBtn.disabled = false;
-
     modal.style.display = 'block';
 
-    // Dentro da função showUncertaintyModal
-    console.log('🔍 Modal exibido com dados:', data);
-
     useBtn.onclick = () => {
-      console.log('✅ Usuário escolheu usar histórico');
       modal.style.display = 'none';
       resolve(true);
     };
 
     skipBtn.onclick = () => {
-      console.log('❌ Usuário escolheu pular histórico');
       modal.style.display = 'none';
       resolve(false);
     };

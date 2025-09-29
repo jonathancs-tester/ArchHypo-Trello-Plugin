@@ -38,6 +38,15 @@ const I18N = {
             // Success messages
             fieldsUpdatedSuccess: "Campos adicionados/atualizados com sucesso!",
 
+            // Historical
+            uncertaintyTitle: "Histórico de Incerteza",
+            impactTitle: "Histórico de Impacto",
+            hypothesesHistorical: "Hipóteses",
+            uncertaintyHistorical: "Avaliação de Incerteza",
+            impactHistorical: "Avaliação de Impacto",
+            useHistorical: "Usar Histórico",
+            ignoreHistorical: "Ignorar",
+
             // Badge labels
             uncertaintyBadge: "Incerteza",
             impactBadge: "Impacto",
@@ -82,8 +91,6 @@ const I18N = {
 
             // Placeholders
             contextPlaceholder: "Descreva a incerteza, situação ou contexto em detalhes...",
-
-
 
             // Technical Plan page
             technicalPlanTitle: "ArchHypo.AI - Plano Técnico",
@@ -212,6 +219,15 @@ const I18N = {
 
             // Success messages
             fieldsUpdatedSuccess: "Fields added/updated successfully!",
+            
+            // Historical
+            hypothesesHistorical: "Hypotheses",
+            uncertaintyHistorical: "Uncertainty Assessment",
+            impactHistorical: "Impact Assessment",
+            impactTitle: "Impact History",
+            uncertaintyTitle: "Uncertainty History",
+            useHistorical: "Use History",
+            ignoreHistorical: "Ignore",
 
             // Badge labels
             uncertaintyBadge: "Uncertainty",
@@ -258,8 +274,6 @@ const I18N = {
 
             // Placeholders
             contextPlaceholder: "Describe the uncertainty, situation or context in detail...",
-
-
 
             // Technical Plan page
             technicalPlanTitle: "ArchHypo.AI - Technical Plan",
