@@ -65,9 +65,6 @@ function updateTexts(language) {
   const step5Title = document.getElementById('step5Title');
   if (step5Title) step5Title.textContent = I18N.t('cardCreatedTitle');
 
-  const historicalTitle = document.getElementById('historicalTitle');
-  if (historicalTitle) historicalTitle.textContent = I18N.t('uncertaintyTitle');
-
   // Update buttons
   const step0NextBtn = document.getElementById('step0NextBtn');
   if (step0NextBtn) step0NextBtn.textContent = I18N.t('next');
