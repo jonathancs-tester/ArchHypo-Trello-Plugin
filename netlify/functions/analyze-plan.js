@@ -45,10 +45,9 @@ export async function handler(event) {
 
 ---
 
-**Regras de Formatação e Saída:**
-- O campo "sugestao" **não deve** conter números, marcadores (`- `, ` * `) ou qualquer prefixo no início de cada item.
-- Use **exclusivamente** a string '\\n' para separar os itens do campo "sugestao".
-- O idioma de toda a resposta (chaves e valores) deve ser: ${idiomaTexto}
+**Regras de Saída:**
+- A resposta **deve** ser um objeto JSON válido.
+- O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}
 `
   );
 
