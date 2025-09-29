@@ -379,9 +379,7 @@ async function analyzeUncertainty() {
           }).join('; ')
         : '';
 
-      // Aguarda a escolha do usuário via modal
       usarHistorico = await showUncertaintyModal(data);
-      console.log('🧠 Decisão do usuário sobre histórico:', usarHistorico);
     }
 
     const input = `
@@ -437,18 +435,32 @@ async function analyzeImpact() {
     });
 
     const allData = await res.json();
-    const data = allData ? allData.slice(0, 10) : [];
-    const impactHistoricalStr = Array.isArray(data)
-      ? data.map(item => JSON.stringify(item)).join('; ')
-      : data;
+    state.impactoTotal = allData?.length || 0;
+
+    let impactHistoricalStr = '';
+    let usarHistorico = false;
+
+    if (state.impactoTotal !== 0) {
+      const data = allData.slice(0, 10);
+
+      impactHistoricalStr = Array.isArray(data)
+        ? data.map(item => {
+            const { totalCards, ...rest } = item;
+            return JSON.stringify(rest);
+          }).join('; ')
+        : '';
+
+      usarHistorico = await showImpactModal(data);
+    }
 
     const input = `
-    Context: ${state.contexto}; 
-    Hypothesis: ${state.hipotese};
-    Non Functional Requirement: ${state.dominio}; 
-    Uncertainty: ${state.incerteza};
-    Impact Historical: ${impactHistoricalStr};
-      `;
+      Context: ${state.contexto}; 
+      Hypothesis: ${state.hipotese};
+      Non Functional Requirement: ${state.dominio}; 
+      Uncertainty: ${state.incerteza};
+      ${usarHistorico ? `Impact Historical: ${impactHistoricalStr};` : ''}
+    `;
+
     const { sugestao, motivo } = await callEndpoint('analyze-impact', input);
 
     sugestaoOriginal = sugestao;
@@ -566,6 +578,65 @@ function showUncertaintyModal(data) {
 
       const incertezaCell = document.createElement('td');
       incertezaCell.textContent = item.incerteza;
+
+      row.appendChild(hipoteseCell);
+      row.appendChild(incertezaCell);
+      tbody.appendChild(row);
+    });
+
+    listContainer.appendChild(table);
+    
+    useBtn.disabled = false;
+    skipBtn.disabled = false;
+    modal.style.display = 'block';
+
+    useBtn.onclick = () => {
+      modal.style.display = 'none';
+      resolve(true);
+    };
+
+    skipBtn.onclick = () => {
+      modal.style.display = 'none';
+      resolve(false);
+    };
+  });
+}
+
+function showImpactModal(data) {
+  const historicalTitle = document.getElementById('historicalTitle');
+  if (historicalTitle) historicalTitle.textContent = I18N.t('impactTitle');
+
+  return new Promise(resolve => {
+    const modal = document.getElementById('uncertaintyModal');
+    const listContainer = document.getElementById('uncertaintyList');
+    const useBtn = document.getElementById('useHistoryBtn');
+    const skipBtn = document.getElementById('skipHistoryBtn');
+
+    // Limpa conteúdo anterior
+    listContainer.innerHTML = '';
+
+    // Cria a tabela
+    const table = document.createElement('table');
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>${I18N.t('hypothesesHistorical')}</th>
+          <th>${I18N.t('impactHistorical')}</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `;
+
+    const tbody = table.querySelector('tbody');
+
+    data.forEach(item => {
+      const row = document.createElement('tr');
+
+      const hipoteseCell = document.createElement('td');
+      hipoteseCell.textContent = item.hipotese;
+
+      const incertezaCell = document.createElement('td');
+      incertezaCell.textContent = item.impact;
 
       row.appendChild(hipoteseCell);
       row.appendChild(incertezaCell);
