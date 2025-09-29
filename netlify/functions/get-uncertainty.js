@@ -82,10 +82,10 @@
 
                     return {
                         hipotese: hypoMatch ? clean(hypoMatch[1]) : null,
-                        impacto: uncertaintyMatch ? clean(uncertaintyMatch[1]) : null,
+                        incerteza: uncertaintyMatch ? clean(uncertaintyMatch[1]) : null,
                     };
                 })
-                .filter(item => item.hipotese !== null && item.impacto !== null)
+                .filter(item => item.hipotese !== null && item.incerteza !== null)
 
                 return {
                     statusCode: 200,
