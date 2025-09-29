@@ -32,13 +32,16 @@ export async function handler(event) {
 5.  **Resuma a Abordagem (descricao):** Faça um resumo em prosa da estratégia geral do plano de ação. Explique "como" as ações listadas na "sugestao" se conectam para resolver o problema.
 6.  **Analise os Riscos (tradeoff):** Liste as concessões, riscos ou pontos de observação relacionados à implementação do plano.
 
----
-
-**Regras de Formatação e Saída:**
-- A resposta **deve** ser um único objeto JSON válido.
-- O campo "sugestao" **não deve** conter números, marcadores (`- `, ` * `) ou qualquer prefixo no início de cada item.
-- Use **exclusivamente** a string '\\n' para separar os itens do campo "sugestao".
-- O idioma de toda a resposta (chaves e valores) deve ser: ${idiomaTexto}
+**Exemplo de Execução:**
+- **input:** "Nossa API de pagamentos está com picos de latência de até 2 segundos em horários de alta demanda, causando timeouts no frontend."
+- **Output Esperado (para idiomaTexto='Português'):**
+  {{
+    "sugestao": "Implementar um cache de nível de aplicação (Redis) para dados de produtos frequentemente acessados\\nOtimizar a consulta principal ao banco de dados, adicionando um índice composto na tabela de transações\\nIntroduzir uma fila de processamento assíncrono (RabbitMQ) para as notificações de pagamento pós-compra",
+    "motivo": "A latência da API de pagamentos está excedendo os SLAs (Service Level Agreements) durante os horários de pico, resultando em falhas de transação e impactando negativamente a experiência do usuário e a receita.",
+    "justificativa": "O objetivo é reduzir a latência p99 da API para menos de 500ms, restaurando a confiabilidade do serviço e garantindo que o fluxo de checkout suporte o crescimento projetado da demanda.",
+    "descricao": "O plano propõe uma estratégia de otimização em múltiplas frentes: aliviar a carga no banco de dados com cache, melhorar a eficiência das consultas mais lentas e desacoplar processos não essenciais, como notificações, para serem executados de forma assíncrona.",
+    "tradeoff": "A introdução do Redis aumenta a complexidade da infraestrutura e exige uma estratégia de invalidação de cache. O processamento assíncrono de notificações pode gerar um leve atraso na comunicação com o usuário."
+  }}
 `
   );
 
