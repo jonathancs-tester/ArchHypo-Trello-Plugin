@@ -132,20 +132,11 @@ Sua tarefa é analisar a **Hipótese** e o **Conteúdo do Documento** fornecidos
 2.  Use o **Conteúdo do Documento** como evidência de suporte para entender o contexto da hipótese.
 3.  Compare a intenção da hipótese com as definições dos 12 padrões "ArchHypo" listados acima.
 4.  Selecione o **único padrão** que representa a melhor abordagem para a situação.
-5.  Se **nenhum** padrão se aplicar de forma clara, o valor da chave "nome_do_padrao" deve ser "N/A".
+5.  Se **nenhum** padrão se aplicar de forma clara, o valor da chave "pattern" deve ser "N/A".
 6.  Justifique sua escolha em 1-2 frases, conectando a hipótese com a definição do padrão escolhido.
 
 **Formato da Resposta:**
 Responda em **${idiomaTexto}** com um objeto JSON válido, seguindo estritamente este formato:
-${parser.getFormatInstructions()}
----
-
-**Exemplo de Execução:**
-
-* **Hipótese:** "Acreditamos que o banco de dados do serviço de checkout é o principal gargalo de desempenho durante os picos de demanda da Black Friday, mas não temos dados concretos sobre quais queries são as mais lentas."
-* **Conteúdo do Documento:** "Relatórios de usuários indicam lentidão no checkout. A equipe de produto precisa de dados para decidir entre otimizar o banco de dados atual ou provisionar um novo."
-
-* **Saída Esperada (${idiomaTexto}):**
 ${parser.getFormatInstructions()}
 ---
 
