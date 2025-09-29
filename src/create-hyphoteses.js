@@ -525,24 +525,29 @@ function motivoHTML(motivo) {
 }
 
 function showUncertaintyModal(data) {
-  const modal = document.getElementById('uncertaintyModal');
-  const list = document.getElementById('uncertaintyList');
-  list.innerHTML = '';
-
-  data.forEach(item => {
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>Hipótese:</strong> ${item.hipotese} &nbsp;|&nbsp; <strong>Nível de Incerteza:</strong> ${item.incerteza}`;
-    list.appendChild(li);
-  });
-
-  modal.style.display = 'block';
-
   return new Promise(resolve => {
-    document.getElementById('useHistoryBtn').onclick = () => {
+    const modal = document.getElementById('uncertaintyModal');
+    const list = document.getElementById('uncertaintyList');
+    const useBtn = document.getElementById('useHistoryBtn');
+    const skipBtn = document.getElementById('skipHistoryBtn');
+
+    list.innerHTML = '';
+
+    data.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>Hipótese:</strong> ${item.hipotese} &nbsp;|&nbsp; <strong>Nível de Incerteza:</strong> ${item.incerteza}`;
+      list.appendChild(li);
+    });
+
+    modal.style.display = 'block';
+
+    // Garante que os eventos não sejam duplicados
+    useBtn.onclick = () => {
       modal.style.display = 'none';
       resolve(true);
     };
-    document.getElementById('skipHistoryBtn').onclick = () => {
+
+    skipBtn.onclick = () => {
       modal.style.display = 'none';
       resolve(false);
     };
