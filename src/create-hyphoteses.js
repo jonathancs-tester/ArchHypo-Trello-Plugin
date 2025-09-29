@@ -374,7 +374,8 @@ async function analyzeUncertainty() {
         : '';
 
       // Aguarda a escolha do usuário via modal
-      usarHistorico = showUncertaintyModal(data);
+      usarHistorico = await showUncertaintyModal(data);
+      console.log('🧠 Decisão do usuário sobre histórico:', usarHistorico);
     }
 
     const input = `
@@ -527,27 +528,55 @@ function motivoHTML(motivo) {
 function showUncertaintyModal(data) {
   return new Promise(resolve => {
     const modal = document.getElementById('uncertaintyModal');
-    const list = document.getElementById('uncertaintyList');
+    const listContainer = document.getElementById('uncertaintyList');
     const useBtn = document.getElementById('useHistoryBtn');
     const skipBtn = document.getElementById('skipHistoryBtn');
 
-    list.innerHTML = '';
+    // Limpa conteúdo anterior
+    listContainer.innerHTML = '';
+
+    // Cria a tabela
+    const table = document.createElement('table');
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>Hipótese</th>
+          <th>Nível de Incerteza</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `;
+
+    const tbody = table.querySelector('tbody');
 
     data.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = `<strong>Hipótese:</strong> ${item.hipotese} &nbsp;|&nbsp; <strong>Nível de Incerteza:</strong> ${item.incerteza}`;
-      list.appendChild(li);
+      const row = document.createElement('tr');
+
+      const hipoteseCell = document.createElement('td');
+      hipoteseCell.textContent = item.hipotese;
+
+      const incertezaCell = document.createElement('td');
+      incertezaCell.textContent = item.incerteza;
+
+      row.appendChild(hipoteseCell);
+      row.appendChild(incertezaCell);
+      tbody.appendChild(row);
     });
 
+    listContainer.appendChild(table);
     modal.style.display = 'block';
 
-    // Garante que os eventos não sejam duplicados
+    // Dentro da função showUncertaintyModal
+    console.log('🔍 Modal exibido com dados:', data);
+
     useBtn.onclick = () => {
+      console.log('✅ Usuário escolheu usar histórico');
       modal.style.display = 'none';
       resolve(true);
     };
 
     skipBtn.onclick = () => {
+      console.log('❌ Usuário escolheu pular histórico');
       modal.style.display = 'none';
       resolve(false);
     };
