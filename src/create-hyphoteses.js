@@ -564,21 +564,26 @@ function showUncertaintyModal(data) {
     });
 
     listContainer.appendChild(table);
+    
+    // ✅ Habilita os botões
+    useBtn.disabled = false;
+    skipBtn.disabled = false;
+
     modal.style.display = 'block';
 
     // Dentro da função showUncertaintyModal
     console.log('🔍 Modal exibido com dados:', data);
 
-    useBtn.addEventListener('click', function handleUse() {
+    useBtn.onclick = () => {
+      console.log('✅ Usuário escolheu usar histórico');
       modal.style.display = 'none';
       resolve(true);
-      useBtn.removeEventListener('click', handleUse); // evita múltiplos binds
-    });
+    };
 
-    skipBtn.addEventListener('click', function handleSkip() {
+    skipBtn.onclick = () => {
+      console.log('❌ Usuário escolheu pular histórico');
       modal.style.display = 'none';
       resolve(false);
-      skipBtn.removeEventListener('click', handleSkip);
-    });
+    };
   });
 }
