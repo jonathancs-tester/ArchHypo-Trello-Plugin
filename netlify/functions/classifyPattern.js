@@ -107,10 +107,9 @@ Your task is to analyze the **Hypothesis** and the **Document Content** provided
 **Analysis Instructions:**
 1.  Carefully read the **Hypothesis**. This is your main focus.
 2.  Use the **Document Content** as supporting evidence to understand the hypothesis context.
-3.  Compare the hypothesis intent with the definitions of the 12 "ArchHypo" patterns listed above.
-4.  Select the **single pattern** that best represents the approach for the situation.
-5.  If **none** of the patterns clearly apply, the value of the "pattern" key should be "N/A".
-6.  Justify your choice in 2 sentences, connecting the hypothesis with the definition of the chosen pattern.
+3.  Select the **single pattern** that best represents the approach for the situation.
+4.  **Do NOT invent patterns.**
+5.  Justify your choice in 2 sentences, connecting the hypothesis with the definition of the chosen pattern.
 
 Respond in **${idiomaTexto}** with valid JSON:
 ${parser.getFormatInstructions()}
