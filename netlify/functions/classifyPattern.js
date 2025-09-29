@@ -54,10 +54,15 @@ async function embedText(text) {
   }
 }
 
-
 // --- Consulta Pinecone com filtro opcional ---
 async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
   const vector = await embedText(hypothesis);
+  
+  if (!vector || !Array.isArray(vector) || vector.length === 0) {
+    console.warn("Embedding inválido ou vazio. Consulta ao Pinecone abortada.");
+    return [];
+  }
+
   const pinecone = await getPineconeClient();
   const index = pinecone.index(PINECONE_INDEX);
 
@@ -87,7 +92,9 @@ async function classifyPattern(hypothesis, patternCandidates = [], language = 'p
   });
 
   const relevantDocs = await queryPinecone(hypothesis, 20, patternCandidates);
-  const context = relevantDocs.join("\n\n---\n\n");
+  const context = relevantDocs.length > 0
+    ? relevantDocs.join("\n\n---\n\n")
+    : "Nenhum documento relevante encontrado.";
 
   // Usar idioma enviado pelo frontend em vez de detecção automática
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
