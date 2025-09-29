@@ -83,49 +83,7 @@ async function classifyPattern(hypothesis, patternCandidates = [], language = 'p
   const prompt = `You are a Senior Software Architect, specialized in methodologies for validating architectural hypotheses.
 
 **Objective:**
-Your task is to analyze the **Hypothesis** and the **Document Content** provided. Based on this analysis, you must select the **single** "ArchHypo" pattern from the list below that best applies to validate, investigate, or resolve the hypothesis.
-
----
-
-**Available "ArchHypo" Patterns and Their Definitions:**
-
-1.  **Architectural Spike:**
-    - **Explanation:** Used when there is technical uncertainty about an architectural solution. It involves developing a minimal and temporary implementation to explore the feasibility of a technology or approach.
-
-2.  **Architectural Trigger:**
-    - **Explanation:** Identifies events or changes (requirements, scale, regulation) that require architectural reassessment or decision-making.
-
-3.  **Bring the Specialist:**
-    - **Explanation:** Recommends involving specialists when the team faces a complex architectural decision or one outside their expertise to ensure well-founded decisions.
-
-4.  **Continuous Inspection:**
-    - **Explanation:** Promotes continuous architecture review throughout the project lifecycle to identify deviations, risks, and improvement opportunities.
-
-5.  **Learning from Experiments:**
-    - **Explanation:** Suggests that architectural decisions be preceded by controlled experiments that generate real data and insights to reduce risks.
-
-6.  **Plan for Preparation:**
-    - **Explanation:** Encourages preparing the architecture for future decisions by creating flexibility, modularity, and abstractions that allow low-cost changes.
-
-7.  **Postpone Uncertain Decisions:**
-    - **Explanation:** Recommends postponing a decision that involves many unknown variables or high risks until more information is available.
-
-8.  **Protective Guideline:**
-    - **Explanation:** Establishes architectural guidelines that protect the project from inconsistent decisions, inadequate techniques, or standard violations.
-
-9.  **Quality Checkpoint:**
-    - **Explanation:** Creates specific moments in the development cycle to assess whether the architecture is meeting defined quality attributes (performance, security, etc.).
-
-10. **Software Analytics (What You Need to Know):**
-    - **Explanation:** Focuses on identifying and filling knowledge gaps that hinder architectural decisions, encouraging active information seeking through research or data analysis.
-
-11. **Technical Debt Management:**
-    - **Explanation:** Deals with identifying, prioritizing, and mitigating accumulated technical debt to avoid compromising architectural evolution.
-
-12. **Tracer Bullets:**
-    - **Explanation:** Minimal implementations that traverse the system end-to-end to quickly validate flows, integrations, and overall architecture.
-
----
+Your task is to analyze the **Hypothesis** and the **Document Content** provided. Based on this analysis, you must select the **single** "ArchHypo" pattern from that best applies to validate, investigate, or resolve the hypothesis.
 
 **Analysis Instructions:**
 1.  Carefully read the **Hypothesis**. This is your main focus.
@@ -133,7 +91,7 @@ Your task is to analyze the **Hypothesis** and the **Document Content** provided
 3.  Compare the hypothesis intent with the definitions of the 12 "ArchHypo" patterns listed above.
 4.  Select the **single pattern** that best represents the approach for the situation.
 5.  If **none** of the patterns clearly apply, the value of the "pattern" key should be "N/A".
-6.  Justify your choice in 1–2 sentences, connecting the hypothesis with the definition of the chosen pattern.
+6.  Justify your choice in 2 sentences, connecting the hypothesis with the definition of the chosen pattern.
 
 Respond in **${idiomaTexto}** with valid JSON:
 ${parser.getFormatInstructions()}
