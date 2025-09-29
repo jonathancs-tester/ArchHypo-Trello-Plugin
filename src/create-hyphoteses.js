@@ -358,24 +358,26 @@ async function analyzeUncertainty() {
     });
 
     const allData = await res.json();
-    // Extrai o valor de totalCards e atribui ao estado
     state.incertezaTotal = allData?.length || 0;
     const data = allData ? allData.slice(0, 10) : [];
 
-    // Remove totalCards da string de histórico
     const uncertaintyHistoricalStr = Array.isArray(data)
       ? data.map(item => {
-        const { totalCards, ...rest } = item; // Remove totalCards
-        return JSON.stringify(rest);
-      }).join('; ')
+          const { totalCards, ...rest } = item;
+          return JSON.stringify(rest);
+        }).join('; ')
       : data;
 
+    // Mostra os dados históricos ao usuário
+    const usarHistorico = confirm(`Deseja usar os dados históricos de incerteza na análise?\n\n${uncertaintyHistoricalStr}`);
+
     const input = `
-    Context: ${state.contexto}; 
-    Hypothesis: ${state.hipotese};
-    Non Functional Requirement: ${state.dominio}; 
-    Uncertainty Historical: ${uncertaintyHistoricalStr};
-      `;
+      Context: ${state.contexto}; 
+      Hypothesis: ${state.hipotese};
+      Non Functional Requirement: ${state.dominio}; 
+      ${usarHistorico ? `Uncertainty Historical: ${uncertaintyHistoricalStr};` : ''}
+    `;
+
     const { sugestao, motivo } = await callEndpoint('analyze-uncertainty', input);
 
     sugestaoOriginal = sugestao;
@@ -397,6 +399,7 @@ async function analyzeUncertainty() {
         motivoField.value = '';
       }
     });
+
     showStep(3);
   } catch (error) {
     console.error('❌ Erro ao analisar incerteza:', error.message || error);
