@@ -80,72 +80,68 @@ async function classifyPattern(hypothesis, patternCandidates = [], language = 'p
   // Usar idioma enviado pelo frontend em vez de detecção automática
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
-  const prompt = `Você é um Arquiteto de Software sênior, especialista em metodologias de validação de hipóteses arquiteturais.
+  const prompt = `You are a Senior Software Architect, specialized in methodologies for validating architectural hypotheses.
 
-**Objetivo:**
-Sua tarefa é analisar a **Hipótese** e o **Conteúdo do Documento** fornecidos. Com base nessa análise, você deve selecionar o **único** padrão "ArchHypo" da lista abaixo que melhor se aplica para validar, investigar ou resolver a hipótese.
+**Objective:**
+Your task is to analyze the **Hypothesis** and the **Document Content** provided. Based on this analysis, you must select the **single** "ArchHypo" pattern from the list below that best applies to validate, investigate, or resolve the hypothesis.
 
 ---
 
-**Padrões "ArchHypo" Disponíveis e Suas Definições:**
+**Available "ArchHypo" Patterns and Their Definitions:**
 
 1.  **Architectural Spike:**
-    - **Explicação:** Utilizado quando há incerteza técnica sobre uma solução arquitetural. Consiste em desenvolver uma implementação mínima e temporária para explorar a viabilidade de uma tecnologia ou abordagem.
+    - **Explanation:** Used when there is technical uncertainty about an architectural solution. It involves developing a minimal and temporary implementation to explore the feasibility of a technology or approach.
 
 2.  **Architectural Trigger:**
-    - **Explicação:** Identifica eventos ou mudanças (requisitos, escala, regulamentação) que exigem uma reavaliação ou tomada de decisão arquitetural.
+    - **Explanation:** Identifies events or changes (requirements, scale, regulation) that require architectural reassessment or decision-making.
 
 3.  **Bring the Specialist:**
-    - **Explicação:** Recomenda envolver especialistas quando a equipe enfrenta uma decisão arquitetural complexa ou fora de sua expertise para garantir decisões bem fundamentadas.
+    - **Explanation:** Recommends involving specialists when the team faces a complex architectural decision or one outside their expertise to ensure well-founded decisions.
 
 4.  **Continuous Inspection:**
-    - **Explicação:** Promove a revisão contínua da arquitetura ao longo do ciclo de vida do projeto para identificar desvios, riscos e oportunidades de melhoria.
+    - **Explanation:** Promotes continuous architecture review throughout the project lifecycle to identify deviations, risks, and improvement opportunities.
 
 5.  **Learning from Experiments:**
-    - **Explicação:** Sugere que decisões arquiteturais sejam precedidas por experimentos controlados que gerem dados e aprendizados reais para reduzir riscos.
+    - **Explanation:** Suggests that architectural decisions be preceded by controlled experiments that generate real data and insights to reduce risks.
 
 6.  **Plan for Preparation:**
-    - **Explicação:** Incentiva preparar a arquitetura para decisões futuras, criando flexibilidade, modularidade e abstrações que permitam mudanças com baixo custo.
+    - **Explanation:** Encourages preparing the architecture for future decisions by creating flexibility, modularity, and abstractions that allow low-cost changes.
 
 7.  **Postpone Uncertain Decisions:**
-    - **Explicação:** Recomenda adiar uma decisão que envolve muitas variáveis desconhecidas ou riscos altos até que mais informações estejam disponíveis.
+    - **Explanation:** Recommends postponing a decision that involves many unknown variables or high risks until more information is available.
 
 8.  **Protective Guideline:**
-    - **Explicação:** Estabelece diretrizes arquiteturais que protegem o projeto contra decisões inconsistentes, técnicas inadequadas ou violações de padrões.
+    - **Explanation:** Establishes architectural guidelines that protect the project from inconsistent decisions, inadequate techniques, or standard violations.
 
 9.  **Quality Checkpoint:**
-    - **Explicação:** Cria momentos específicos no ciclo de desenvolvimento para avaliar se a arquitetura está atendendo aos atributos de qualidade definidos (desempenho, segurança, etc.).
+    - **Explanation:** Creates specific moments in the development cycle to assess whether the architecture is meeting defined quality attributes (performance, security, etc.).
 
 10. **Software Analytics (What You Need to Know):**
-    - **Explicação:** Foca em identificar e preencher lacunas de conhecimento que impedem decisões arquiteturais, incentivando a busca ativa por informações através de pesquisa ou análise de dados.
+    - **Explanation:** Focuses on identifying and filling knowledge gaps that hinder architectural decisions, encouraging active information seeking through research or data analysis.
 
 11. **Technical Debt Management:**
-    - **Explicação:** Trata da identificação, priorização e mitigação da dívida técnica acumulada para não comprometer a evolução da arquitetura.
+    - **Explanation:** Deals with identifying, prioritizing, and mitigating accumulated technical debt to avoid compromising architectural evolution.
 
 12. **Tracer Bullets:**
-    - **Explicação:** Implementações mínimas que percorrem o sistema de ponta a ponta para validar fluxos, integrações e a arquitetura geral rapidamente.
+    - **Explanation:** Minimal implementations that traverse the system end-to-end to quickly validate flows, integrations, and overall architecture.
 
 ---
 
-**Instruções de Análise:**
-1.  Leia atentamente a **Hipótese**. Este é o seu foco principal.
-2.  Use o **Conteúdo do Documento** como evidência de suporte para entender o contexto da hipótese.
-3.  Compare a intenção da hipótese com as definições dos 12 padrões "ArchHypo" listados acima.
-4.  Selecione o **único padrão** que representa a melhor abordagem para a situação.
-5.  Se **nenhum** padrão se aplicar de forma clara, o valor da chave "pattern" deve ser "N/A".
-6.  Justifique sua escolha em 1-2 frases, conectando a hipótese com a definição do padrão escolhido.
+**Analysis Instructions:**
+1.  Carefully read the **Hypothesis**. This is your main focus.
+2.  Use the **Document Content** as supporting evidence to understand the hypothesis context.
+3.  Compare the hypothesis intent with the definitions of the 12 "ArchHypo" patterns listed above.
+4.  Select the **single pattern** that best represents the approach for the situation.
+5.  If **none** of the patterns clearly apply, the value of the "pattern" key should be "N/A".
+6.  Justify your choice in 1–2 sentences, connecting the hypothesis with the definition of the chosen pattern.
 
-**Formato da Resposta:**
-Responda em **${idiomaTexto}** com um objeto JSON válido, seguindo estritamente este formato:
+Respond in **${idiomaTexto}** with valid JSON:
 ${parser.getFormatInstructions()}
----
 
-**Dados para Análise:**
-
-**Hipótese:**
+Hypothesis:
 "${hypothesis}"
 
-**Conteúdo do Documento:**
+Document content:
 ${context}
 `;
 
