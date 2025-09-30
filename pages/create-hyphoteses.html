@@ -67,9 +67,11 @@
       display: none;
       position: fixed;
       z-index: 1000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
     }
 
     .modal-content {
@@ -79,14 +81,14 @@
       width: 80%;
       border-radius: 8px;
     }
-    
+
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.6);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -96,18 +98,42 @@
     #uncertaintyList table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
     }
 
-    #uncertaintyList th, #uncertaintyList td {
-      border: 1px solid #ccc;
-      padding: 8px;
+    #uncertaintyList th,
+    #uncertaintyList td {
+      padding: 12px;
       text-align: left;
+      border: 1px solid #ddd;
+      vertical-align: top;
+      word-wrap: break-word;
     }
 
     #uncertaintyList th {
       background-color: #f2f2f2;
-      font-weight: bold;
+    }
+
+    #uncertaintyList tbody {
+      display: block;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    #uncertaintyList thead,
+    #uncertaintyList tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    #uncertaintyList th:first-child,
+    #uncertaintyList td:first-child {
+      width: 70%;
+    }
+
+    #uncertaintyList th:last-child,
+    #uncertaintyList td:last-child {
+      width: 30%;
     }
 
     textarea {
@@ -372,18 +398,18 @@
     <p id="cardLink"></p>
   </div>
 
-<div id="uncertaintyModal" class="modal">
-  <div class="modal-content">
-  <h2 id="historicalTitle"></h2>
-    <div class="scroll-container">
-      <ul id="uncertaintyList"></ul>
-    </div>
-    <div style="margin-top: 20px;">
-      <button id="useHistoryBtn"></button>
-      <button id="skipHistoryBtn"></button>
+  <div id="uncertaintyModal" class="modal">
+    <div class="modal-content">
+      <h2 id="historicalTitle"></h2>
+      <div class="scroll-container">
+        <ul id="uncertaintyList"></ul>
+      </div>
+      <div style="margin-top: 20px;">
+        <button id="useHistoryBtn"></button>
+        <button id="skipHistoryBtn"></button>
+      </div>
     </div>
   </div>
-</div>
 
   <script src="../src/i18n.js"></script>
   <script src="../src/create-hyphoteses.js"></script>
