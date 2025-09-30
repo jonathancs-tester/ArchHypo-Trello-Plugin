@@ -213,6 +213,7 @@ function relevanceScore(hypothesis, retrieved) {
 
 async function factualConsistencyScore(text, documents) {
   const textEmbedding = await embedText(text);
+  console.log("Embedding do texto:", textEmbedding);
 
   if (!Array.isArray(textEmbedding) || textEmbedding.length === 0) {
     console.warn("Embedding do texto está vazio ou inválido.");
@@ -224,6 +225,8 @@ async function factualConsistencyScore(text, documents) {
     if (!Array.isArray(emb) || emb.length === 0) {
       console.warn(`Embedding do documento ${i} está vazio ou inválido.`);
     }
+    console.log("Embedding do texto:", emb);
+
     return emb;
   }));
 
@@ -260,7 +263,7 @@ export async function handler(event) {
     const result = await classifyPattern(hypothesis, patternCandidates, language);
     const retrievedDocs = await queryPinecone(hypothesis, 20, patternCandidates);
     const relevantDocs = retrievedDocs;
-
+    console,log(relevantDocs)
     const evaluation = {
       precisionAt5: precisionAtK(retrievedDocs, relevantDocs, 5),
       hitRate: hitRate(retrievedDocs, relevantDocs),
