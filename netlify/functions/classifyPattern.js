@@ -76,6 +76,20 @@ async function embedTextWithRetry(text, retries = 3, delayMs = 1000) {
   return null;
 }
 
+async function embedTextQueue(texts, delayMs = 1500) {
+  const results = [];
+
+  for (let i = 0; i < texts.length; i++) {
+    const text = texts[i];
+    console.log(`🔄 Gerando embedding para documento ${i}...`);
+    const embedding = await embedTextWithRetry(text, 3, delayMs);
+    results.push(embedding);
+    await delay(delayMs); // espera entre requisições
+  }
+
+  return results;
+}
+
 // --- Consulta Pinecone com filtro opcional ---
 async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
   const vector = await embedText(hypothesis);
@@ -253,13 +267,7 @@ async function factualConsistencyScore(text, documents) {
     return null;
   }
 
-  const docEmbeddings = await Promise.all(documents.map(async (doc, i) => {
-    const emb = await embedTextWithRetry(doc);
-    if (!Array.isArray(emb) || emb.length === 0) {
-      console.warn(`Embedding do documento ${i} está vazio ou inválido.`);
-    }
-    return emb;
-  }));
+  const docEmbeddings = await embedTextQueue(documents, 1500); // fila com delay
 
   const validEmbeddings = docEmbeddings.filter(e => Array.isArray(e) && e.length > 0);
   if (validEmbeddings.length === 0) {
@@ -280,7 +288,6 @@ async function factualConsistencyScore(text, documents) {
 
   return avgScore;
 }
-
 // --- Netlify Function handler ---
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
