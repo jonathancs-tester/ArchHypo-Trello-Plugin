@@ -332,7 +332,7 @@ async function classifyPattern() {
 
   // Processa cada item
   for (let i = 0; i < itemTexts.length; i++) {
-    const itemText = itemTexts[i];
+    const itemText = itemTexts.split(":")[1]?.trim();
     loadingElement.textContent = `${textoInicial} ${I18N.t('estimatedWait')}`;
 
     try {
