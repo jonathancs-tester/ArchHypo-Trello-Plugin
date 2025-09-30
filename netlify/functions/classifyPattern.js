@@ -59,6 +59,23 @@ async function embedText(text) {
   }
 }
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function embedTextWithRetry(text, retries = 3, delayMs = 1000) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    const embedding = await embedText(text);
+    if (embedding && Array.isArray(embedding) && embedding.length > 0) {
+      return embedding;
+    }
+    console.warn(`Tentativa ${attempt + 1} falhou. Retentando em ${delayMs}ms...`);
+    await delay(delayMs * Math.pow(2, attempt)); // backoff exponencial
+  }
+  console.error("❌ Todas as tentativas de embedding falharam.");
+  return null;
+}
+
 // --- Consulta Pinecone com filtro opcional ---
 async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
   const vector = await embedText(hypothesis);
@@ -230,14 +247,14 @@ async function factualConsistencyScore(text, documents) {
     return null;
   }
 
-  const textEmbedding = await embedText(text);
+  const textEmbedding = await embedTextWithRetry(text);
   if (!Array.isArray(textEmbedding) || textEmbedding.length === 0) {
     console.warn("Embedding do texto está vazio ou inválido.");
     return null;
   }
 
   const docEmbeddings = await Promise.all(documents.map(async (doc, i) => {
-    const emb = await embedText(doc);
+    const emb = await embedTextWithRetry(doc);
     if (!Array.isArray(emb) || emb.length === 0) {
       console.warn(`Embedding do documento ${i} está vazio ou inválido.`);
     }
