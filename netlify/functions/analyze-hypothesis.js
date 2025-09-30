@@ -32,11 +32,6 @@ export async function handler(event) {
 4.  Defina o motivo principal pelo qual testar essa hipótese agrega valor (ex: mitigar um risco, validar uma oportunidade, evitar retrabalho).
 5.  Estruture a resposta final em JSON.
 
-**Exemplo de Execução:**
-- **Incerteza (Input):** "Nova API de autenticação em um sistema legado."
-- **Hipótese Gerada (sugestao):** "Acreditamos que integrar a nova API de autenticação ao sistema legado não causará efeitos colaterais negativos, como aumento de latência ou falhas de segurança."
-- **Motivo (motivo):** "A validação desta integração é crucial para garantir a estabilidade do sistema e evitar o bloqueio do deploy da próxima versão, o que impactaria diretamente o cronograma do produto."
-
 **Regras de Saída:**
 - A resposta **deve** ser um objeto JSON válido e nada mais.
 - O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}

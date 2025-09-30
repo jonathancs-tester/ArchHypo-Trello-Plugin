@@ -57,7 +57,7 @@ async function embedText(text) {
 // --- Consulta Pinecone com filtro opcional ---
 async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
   const vector = await embedText(hypothesis);
-  
+
   if (!vector || !Array.isArray(vector) || vector.length === 0) {
     console.warn("Embedding inválido ou vazio. Consulta ao Pinecone abortada.");
     return [];
@@ -102,7 +102,49 @@ async function classifyPattern(hypothesis, patternCandidates = [], language = 'p
   const prompt = `You are a Senior Software Architect, specialized in methodologies for validating architectural hypotheses.
 
 **Objective:**
-Your task is to analyze the **Hypothesis** and the **Document Content** provided. Based on this analysis, you must select the **single** "ArchHypo" pattern from that best applies to validate, investigate, or resolve the hypothesis.
+Your task is to analyze the provided **Hypothesis** and **Document Content**. Based on this analysis, you must select the **single** "ArchHypo" pattern from the list below that best applies to validate, investigate, or resolve the hypothesis.
+
+---
+
+**Available "ArchHypo" Patterns and Their Definitions:**
+
+1.**Architectural Spike:**
+  - **Explanation:** Used when there is technical uncertainty about an architectural solution. It consists of developing a minimal, temporary implementation to explore the feasibility of a technology or approach.
+
+2.**Architectural Trigger:**
+  - **Explanation:** Identifies events or changes (e.g., requirements, scale, regulations) that require an architectural re-evaluation or decision.
+
+3. **Bring the Specialist:**
+  - **Explanation:** Recommends involving specialists when the team faces a complex architectural decision or one that is outside their expertise to ensure well-founded decisions.
+
+4.**Continuous Inspection:**
+  - **Explanation:** Promotes the continuous review of the architecture throughout the project's lifecycle to identify deviations, risks, and opportunities for improvement.
+
+5.**Learning from Experiments:**
+  - **Explanation:** Suggests that architectural decisions should be preceded by controlled experiments that generate real data and learning to reduce risks.
+
+6.**Plan for Preparation:**
+  - **Explanation:** Encourages preparing the architecture for future decisions by creating flexibility, modularity, and abstractions that allow for low-cost changes.
+
+7.**Postpone Uncertain Decisions:**
+  - **Explanation:** Recommends postponing a decision that involves many unknown variables or high risks until more information is available.
+
+8.**Protective Guideline:**
+  - **Explanation:** Establishes architectural guidelines that protect the project from inconsistent decisions, inadequate techniques, or violations of standards.
+
+9.**Quality Checkpoint:**
+  - **Explanation:** Creates specific moments in the development cycle to assess whether the architecture is meeting the defined quality attributes (e.g., performance, security).
+
+10. **Software Analytics:**
+  - **Explanation:** Focuses on identifying and filling knowledge gaps that impede architectural decisions, encouraging the active search for information through research or data analysis.
+
+11.**Technical Debt Management:**
+  - **Explanation:** Addresses the identification, prioritization, and mitigation of accumulated technical debt to avoid compromising the evolution of the architecture.
+
+12.**Tracer Bullets:**
+  - **Explanation:** Minimal implementations that cut through the system from end to end to quickly validate flows, integrations, and the overall architecture.
+
+---
 
 **Analysis Instructions:**
 1.  Carefully read the **Hypothesis**. This is your main focus.
