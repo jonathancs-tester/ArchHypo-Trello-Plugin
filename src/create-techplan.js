@@ -333,6 +333,7 @@ async function classifyPattern() {
   // Processa cada item
   for (let i = 0; i < itemTexts.length; i++) {
     const itemText = itemTexts[i];
+    const hypothesisText = itemText.split(":")[1]?.trim() || "";
     loadingElement.textContent = `${textoInicial} ${I18N.t('estimatedWait')}`;
 
     try {
@@ -340,7 +341,7 @@ async function classifyPattern() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          hypothesis: itemText,
+          hypothesis: hypothesisText,
           language: state.language
         }),
       });
