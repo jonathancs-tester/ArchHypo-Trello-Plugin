@@ -76,23 +76,8 @@ async function embedTextWithRetry(text, retries = 3, delayMs = 1000) {
   return null;
 }
 
-async function embedTextQueue(texts, delayMs = 1500) {
-  const results = [];
-
-  for (let i = 0; i < texts.length; i++) {
-    const text = texts[i];
-    console.log(`🔄 Gerando embedding para documento ${i}...`);
-    const embedding = await embedTextWithRetry(text, 3, delayMs);
-    results.push(embedding);
-    await delay(delayMs); // espera entre requisições
-  }
-
-  return results;
-}
-
-// --- Consulta Pinecone com filtro opcional ---
 async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
-  const vector = await embedText(hypothesis);
+  const vector = await embedTextWithRetry(hypothesis, 3, 1000);
 
   if (!vector || !Array.isArray(vector) || vector.length === 0) {
     console.warn("Embedding inválido ou vazio. Consulta ao Pinecone abortada.");
@@ -105,7 +90,8 @@ async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
   const queryParams = {
     vector,
     topK,
-    includeMetadata: true
+    includeMetadata: true,
+    includeValues: true // necessário para calcular factualConsistencyScore
   };
 
   if (patternCandidates.length > 0) {
@@ -114,9 +100,23 @@ async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
     };
   }
 
-  const queryResponse = await index.query(queryParams);
-  const matches = queryResponse.matches || [];
-  return matches.map(m => m.metadata.text);
+  try {
+    const queryResponse = await index.query(queryParams);
+    const matches = queryResponse.matches || [];
+
+    console.log(`🔍 ${matches.length} documentos recuperados do Pinecone.`);
+
+    return {
+      embedding: vector,
+      matches
+    };
+  } catch (error) {
+    console.error("❌ Erro ao consultar Pinecone:", error);
+    return {
+      embedding: vector,
+      matches: []
+    };
+  }
 }
 
 // --- Classificação com LLM ---
@@ -127,7 +127,12 @@ async function classifyPattern(hypothesis, patternCandidates = [], language = 'p
     verbose: true
   });
 
-  const relevantDocs = await queryPinecone(hypothesis, 20, patternCandidates);
+  const { matches } = await queryPinecone(hypothesis, 20, patternCandidates);
+
+  const relevantDocs = matches
+    .map(m => m.metadata?.text)
+    .filter(text => typeof text === "string" && text.trim().length > 0);
+
   const context = relevantDocs.length > 0
     ? relevantDocs.join("\n\n---\n\n")
     : "Nenhum documento relevante encontrado.";
@@ -255,23 +260,9 @@ function relevanceScore(hypothesis, retrieved) {
   return validScores.length ? validScores.reduce((sum, val) => sum + val, 0) / validScores.length : 0;
 }
 
-async function factualConsistencyScore(text, documents) {
-  if (typeof text !== "string" || !Array.isArray(documents) || documents.length === 0) {
-    console.warn("Entrada inválida para avaliação de consistência factual.");
-    return null;
-  }
-
-  const textEmbedding = await embedTextWithRetry(text);
+async function factualConsistencyScoreFromPinecone(textEmbedding, pineconeMatches) {
   if (!Array.isArray(textEmbedding) || textEmbedding.length === 0) {
     console.warn("Embedding do texto está vazio ou inválido.");
-    return null;
-  }
-
-  const docEmbeddings = await embedTextQueue(documents, 1500); // fila com delay
-
-  const validEmbeddings = docEmbeddings.filter(e => Array.isArray(e) && e.length > 0);
-  if (validEmbeddings.length === 0) {
-    console.warn("Nenhum embedding válido nos documentos.");
     return null;
   }
 
@@ -282,7 +273,10 @@ async function factualConsistencyScore(text, documents) {
     return normA && normB ? dot / (normA * normB) : 0;
   };
 
-  const scores = validEmbeddings.map(docEmb => cosineSimilarity(textEmbedding, docEmb));
+  const scores = pineconeMatches
+    .filter(match => Array.isArray(match.values) && match.values.length === textEmbedding.length)
+    .map(match => cosineSimilarity(textEmbedding, match.values));
+
   const validScores = scores.filter(s => typeof s === "number" && isFinite(s));
   const avgScore = validScores.length ? validScores.reduce((sum, val) => sum + val, 0) / validScores.length : 0;
 
@@ -299,16 +293,27 @@ export async function handler(event) {
     if (!hypothesis) return { statusCode: 400, body: JSON.stringify({ error: 'Missing hypothesis.' }) };
 
     const result = await classifyPattern(hypothesis, patternCandidates, language);
-    const retrievedDocs = await queryPinecone(hypothesis, 20, patternCandidates);
-    const relevantDocs = retrievedDocs;
 
+    // Consulta ao Pinecone com embedding e matches
+    const { embedding, matches } = await queryPinecone(hypothesis, 20, patternCandidates);
+
+    // Cálculo da métrica factual
+    const score = await factualConsistencyScoreFromPinecone(embedding, matches);
+
+    // Extrai os textos dos documentos relevantes
+    const relevantDocs = matches
+      .map(m => m.metadata?.text)
+      .filter(text => typeof text === "string" && text.trim().length > 0);
+
+    // Avaliação das métricas
     const evaluation = {
-      precisionAt5: precisionAtK(retrievedDocs, relevantDocs, 5),
-      hitRate: hitRate(retrievedDocs, relevantDocs),
-      mrr: meanReciprocalRank(retrievedDocs, relevantDocs),
-      factualConsistencyScore: await factualConsistencyScore(result.pattern, retrievedDocs),
-      relevanceScore: relevanceScore(hypothesis, retrievedDocs)
+      precisionAt5: precisionAtK(relevantDocs, relevantDocs, 5),
+      hitRate: hitRate(relevantDocs, relevantDocs),
+      mrr: meanReciprocalRank(relevantDocs, relevantDocs),
+      factualConsistencyScore: score,
+      relevanceScore: relevanceScore(hypothesis, relevantDocs)
     };
+
 
     return {
       statusCode: 200,
