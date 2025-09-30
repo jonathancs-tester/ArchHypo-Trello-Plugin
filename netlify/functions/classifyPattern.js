@@ -40,17 +40,22 @@ async function embedText(text) {
       }
     );
 
+    if (!res.ok) {
+      console.error(`❌ Erro na requisição: ${res.status} - ${res.statusText}`);
+      return null;
+    }
+
     const data = await res.json();
 
     if (!data.embedding || !Array.isArray(data.embedding.values)) {
       console.error("❌ Embedding não retornado corretamente:", data);
-      return [];
+      return null;
     }
 
     return data.embedding.values;
   } catch (error) {
     console.error("Erro ao gerar embedding:", error);
-    return [];
+    return null;
   }
 }
 
@@ -179,6 +184,7 @@ ${context}
 
 // --- Métricas de avaliação ---
 function precisionAtK(retrieved, relevant, k) {
+  if (!Array.isArray(retrieved) || !Array.isArray(relevant) || k <= 0) return 0;
   const topK = retrieved.slice(0, k);
   const relevantSet = new Set(relevant);
   const hits = topK.filter(doc => relevantSet.has(doc));
@@ -186,12 +192,14 @@ function precisionAtK(retrieved, relevant, k) {
 }
 
 function hitRate(retrieved, relevant) {
+  if (!Array.isArray(retrieved) || !Array.isArray(relevant) || relevant.length === 0) return 0;
   const relevantSet = new Set(relevant);
   const hits = retrieved.filter(doc => relevantSet.has(doc));
   return hits.length / relevant.length;
 }
 
 function meanReciprocalRank(retrieved, relevant) {
+  if (!Array.isArray(retrieved) || !Array.isArray(relevant)) return 0;
   const relevantSet = new Set(relevant);
   for (let i = 0; i < retrieved.length; i++) {
     if (relevantSet.has(retrieved[i])) {
@@ -202,18 +210,27 @@ function meanReciprocalRank(retrieved, relevant) {
 }
 
 function relevanceScore(hypothesis, retrieved) {
+  if (typeof hypothesis !== "string" || !Array.isArray(retrieved) || retrieved.length === 0) return 0;
   const terms = hypothesis.toLowerCase().split(/\W+/).filter(t => t.length > 3);
+  if (terms.length === 0) return 0;
+
   const scores = retrieved.map(doc => {
     const docLower = doc.toLowerCase();
     const count = terms.filter(term => docLower.includes(term)).length;
     return count / terms.length;
   });
-  return scores.reduce((sum, val) => sum + val, 0) / scores.length;
+
+  const validScores = scores.filter(s => typeof s === "number" && isFinite(s));
+  return validScores.length ? validScores.reduce((sum, val) => sum + val, 0) / validScores.length : 0;
 }
 
 async function factualConsistencyScore(text, documents) {
-  const textEmbedding = await embedText(text);
+  if (typeof text !== "string" || !Array.isArray(documents) || documents.length === 0) {
+    console.warn("Entrada inválida para avaliação de consistência factual.");
+    return null;
+  }
 
+  const textEmbedding = await embedText(text);
   if (!Array.isArray(textEmbedding) || textEmbedding.length === 0) {
     console.warn("Embedding do texto está vazio ou inválido.");
     return null;
@@ -228,7 +245,6 @@ async function factualConsistencyScore(text, documents) {
   }));
 
   const validEmbeddings = docEmbeddings.filter(e => Array.isArray(e) && e.length > 0);
-
   if (validEmbeddings.length === 0) {
     console.warn("Nenhum embedding válido nos documentos.");
     return null;
@@ -242,9 +258,10 @@ async function factualConsistencyScore(text, documents) {
   };
 
   const scores = validEmbeddings.map(docEmb => cosineSimilarity(textEmbedding, docEmb));
-  const avgScore = scores.reduce((sum, val) => sum + val, 0) / scores.length;
+  const validScores = scores.filter(s => typeof s === "number" && isFinite(s));
+  const avgScore = validScores.length ? validScores.reduce((sum, val) => sum + val, 0) / validScores.length : 0;
 
-  return isFinite(avgScore) ? avgScore : null;
+  return avgScore;
 }
 
 // --- Netlify Function handler ---
