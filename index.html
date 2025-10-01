@@ -59,7 +59,13 @@
                     return t.modal({
                       title: I18N.t('reclassifyTitle'),
                       url: `./pages/reclassify.html?cardId=${card.id}&lang=${I18N.getCurrentLanguage()}`,
-                      height: 400
+                      height: 400,
+                      callback: function() {
+                        // Força atualização das métricas imediatamente após fechar o modal
+                        if (typeof window.atualizarMetricas === 'function') {
+                          window.atualizarMetricas();
+                        }
+                      }
                     });
                   }
                 });
@@ -220,6 +226,8 @@
                   const ativo = current === true;
 
                   function atualizarMetricas() {
+                  // Torna a função global para ser chamada pelo callback do modal
+                  window.atualizarMetricas = atualizarMetricas;
                     return t.cards('all').then(cards => {
                       if (!cards || cards.length === 0) return;
 
