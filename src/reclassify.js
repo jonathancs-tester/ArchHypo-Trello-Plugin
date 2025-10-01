@@ -12,6 +12,10 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
   const impacto = document.getElementById('impacto').value;
   const justificativa = document.getElementById('justificativa').value;
 
+  // Pega os labels do i18n para passar ao backend
+  const uncertaintyLabel = I18N.t('uncertaintyLevelLabel') || '**Nível de Incerteza:** ';
+  const impactLabel = I18N.t('impactLevelLabel') || '**Nível de Impacto:** ';
+
   if (window.TrelloPowerUp) {
     const t = window.TrelloPowerUp.iframe();
     await t.set('card', 'shared', {
@@ -32,12 +36,12 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
     }
 
     if (hypothesisCardUrl) {
-      // Chama a função serverless para atualizar a descrição do card de hipótese
+      // Chama a função serverless para atualizar a descrição do card de hipótese, passando os labels
       try {
         await fetch('/.netlify/functions/update-hypothesis-card', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hypothesisCardUrl, incerteza, impacto })
+          body: JSON.stringify({ hypothesisCardUrl, incerteza, impacto, uncertaintyLabel, impactLabel })
         });
       } catch (err) {
         alert('Erro ao atualizar card de hipótese: ' + err.message);

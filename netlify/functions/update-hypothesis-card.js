@@ -26,7 +26,7 @@ export async function handler(event) {
   }
 
   try {
-    const { hypothesisCardUrl, incerteza, impacto } = JSON.parse(event.body);
+    const { hypothesisCardUrl, incerteza, impacto, uncertaintyLabel, impactLabel } = JSON.parse(event.body);
     if (!hypothesisCardUrl || !incerteza || !impacto) {
       return {
         statusCode: 400,
@@ -34,6 +34,10 @@ export async function handler(event) {
         body: JSON.stringify({ erro: "Missing required fields." }),
       };
     }
+
+    // Usa os labels recebidos ou defaults
+    const uncLabel = (uncertaintyLabel || '**Nível de Incerteza:** ').replace(/\s*$/, '');
+    const impLabel = (impactLabel || '**Nível de Impacto:** ').replace(/\s*$/, '');
 
     // Extrai o cardId do link (https://trello.com/c/{cardId})
     const match = hypothesisCardUrl.match(/trello.com\/c\/([a-zA-Z0-9]+)/);
@@ -54,9 +58,11 @@ export async function handler(event) {
     const card = await cardRes.json();
     let desc = card.desc || "";
 
-    // Atualiza os campos na descrição
-    desc = desc.replace(/(\*\*Nível de Incerteza:\*\*).*/i, `**Nível de Incerteza:** ${incerteza}`);
-    desc = desc.replace(/(\*\*Nível de Impacto:\*\*).*/i, `**Nível de Impacto:** ${impacto}`);
+  // Atualiza os campos na descrição usando os labels recebidos
+  // Incerteza
+  desc = desc.replace(/(\*\*Nível de Incerteza:\*\*|\*\*Uncertainty Level:\*\*).*/i, `${uncLabel} ${incerteza}`);
+  // Impacto
+  desc = desc.replace(/(\*\*Nível de Impacto:\*\*|\*\*Impact Level:\*\*).*/i, `${impLabel} ${impacto}`);
 
     // Salva a nova descrição
     const updateRes = await fetch(`${TRELLO_API_URL}/cards/${cardId}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
