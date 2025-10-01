@@ -12,7 +12,6 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
   const impacto = document.getElementById('impacto').value;
   const justificativa = document.getElementById('justificativa').value;
 
-  // Parâmetros do Trello Power-Up
   if (window.TrelloPowerUp) {
     const t = window.TrelloPowerUp.iframe();
     await t.set('card', 'shared', {
@@ -20,6 +19,31 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
       impacto,
       justificativa_reclassificacao: justificativa
     });
+
+    // Buscar o attachment do card de hipótese
+    const card = await t.card('attachments');
+    let hypothesisCardUrl = null;
+    if (card && card.attachments && card.attachments.length > 0) {
+      // Pega o primeiro attachment que seja um link de card do Trello
+      const hypoAtt = card.attachments.find(att => att.url && att.url.includes('trello.com/c/'));
+      if (hypoAtt) {
+        hypothesisCardUrl = hypoAtt.url;
+      }
+    }
+
+    if (hypothesisCardUrl) {
+      // Chama a função serverless para atualizar a descrição do card de hipótese
+      try {
+        await fetch('/.netlify/functions/update-hypothesis-card', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ hypothesisCardUrl, incerteza, impacto })
+        });
+      } catch (err) {
+        alert('Erro ao atualizar card de hipótese: ' + err.message);
+      }
+    }
+
     t.closeModal();
   } else {
     alert('Erro: Power-Up não detectado.');
