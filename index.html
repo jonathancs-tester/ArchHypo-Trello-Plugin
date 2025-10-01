@@ -25,9 +25,10 @@
   <script>
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
-        return t.card('id', 'name').then(function (card) {
+        return t.card('id', 'name', 'idList', 'attachments').then(function (card) {
           const buttons = [];
 
+          // Botão padrão para cards não-TPI
           if (card.name && !card.name.includes("TPI")) {
             buttons.push({
               icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
@@ -41,6 +42,30 @@
                   });
                 });
               }
+            });
+          }
+
+          // Botão de reclassificação para TPI em DONE com attachment de hipótese
+          if (card.name && card.name.includes("TPI")) {
+            // Buscar nome da lista DONE (pode ser customizado, então idealmente buscar pelo idList)
+            // Para simplificação, vamos assumir que a lista DONE tem o nome 'DONE' (pode ser melhorado)
+            return t.list('name').then(function(list) {
+              const isDone = list && list.name && list.name.toUpperCase() === 'DONE';
+              const hasHipoteseAttachment = (card.attachments || []).some(att => att.name && att.name.toLowerCase().includes('hipotese'));
+              if (isDone && hasHipoteseAttachment) {
+                buttons.push({
+                  icon: "https://img.icons8.com/ios-filled/50/000000/edit-property.png",
+                  text: "Reclassificar Incerteza/Impacto",
+                  callback: function (t) {
+                    return t.modal({
+                      title: 'Reclassificar Incerteza e Impacto',
+                      url: `./pages/reclassify.html?cardId=${card.id}`,
+                      height: 400
+                    });
+                  }
+                });
+              }
+              return buttons;
             });
           }
 
