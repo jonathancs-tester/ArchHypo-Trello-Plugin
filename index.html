@@ -17,7 +17,6 @@
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
   <script src="./src/i18n.js"></script>
   <script src="./src/create-board-template.js"></script>
-  <script src="./src/trello-tpi-done-listener.js"></script>
   <script>
     // Update title based on current language
     document.getElementById('pageTitle').textContent = I18N.t('pluginTitle');
@@ -50,9 +49,9 @@
             // Buscar nome da lista DONE (pode ser customizado, então idealmente buscar pelo idList)
             // Para simplificação, vamos assumir que a lista DONE tem o nome 'DONE' (pode ser melhorado)
             return t.list('name').then(function(list) {
-              const isDone = list && list.name && list.name.toUpperCase() === 'DONE';
+              const isDoneOrConcluido = list && list.name && ['DONE', 'CONCLUIDO'].includes(list.name.toUpperCase());
               const hasHipoteseAttachment = (card.attachments || []).some(att => att.name && att.name.toLowerCase().includes('hipotese'));
-              if (isDone && hasHipoteseAttachment) {
+              if (isDoneOrConcluido && hasHipoteseAttachment) {
                 buttons.push({
                   icon: "https://img.icons8.com/ios-filled/50/000000/edit-property.png",
                   text: "Reclassificar Incerteza/Impacto",
