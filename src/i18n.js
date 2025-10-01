@@ -186,7 +186,13 @@ const I18N = {
             impactTooltipLow: "🔸 <strong>Baixo:</strong> Há pouca incerteza. O problema é conhecido e existem soluções testadas ou documentadas.",
             impactTooltipMedium: "🔸 <strong>Médio:</strong> A situação é moderadamente complexa. Dados úteis existem para análise, mas alguns pontos ainda requerem validação.",
             impactTooltipHigh: "🔸 <strong>Alto:</strong> O problema é significativo e afeta áreas críticas. Poucas evidências concretas existem, e uma solução pode requerer investigação ou testes.",
-            impactTooltipVeryHigh: "🔸 <strong>Muito Alto:</strong> A situação é altamente incerta. Nenhum dado disponível, e o impacto pode ser imprevisível. Requer análise aprofundada e cautela."
+            impactTooltipVeryHigh: "🔸 <strong>Muito Alto:</strong> A situação é altamente incerta. Nenhum dado disponível, e o impacto pode ser imprevisível. Requer análise aprofundada e cautela.",
+
+            // Reclassify
+            reclassifyTitle: "Reclassifique a Incerteza e o Impacto",
+            reclassifyJustification: "Justificativa da reclassificação",
+            selectOption: "Selecione...",
+            save: "Salvar",
         },
 
         en: {
@@ -375,7 +381,13 @@ const I18N = {
             impactTooltipLow: "🔸 <strong>Low:</strong> There is little uncertainty. The problem is known and tested or documented solutions exist.",
             impactTooltipMedium: "🔸 <strong>Medium:</strong> The situation is moderately complex. Useful data exists for analysis, but some points still require validation.",
             impactTooltipHigh: "🔸 <strong>High:</strong> The problem is significant and affects critical areas. Few concrete evidence exists, and a solution may require investigation or testing.",
-            impactTooltipVeryHigh: "🔸 <strong>Very High:</strong> The situation is highly uncertain. No data available, and impact may be unpredictable. Requires in-depth analysis and caution."
+            impactTooltipVeryHigh: "🔸 <strong>Very High:</strong> The situation is highly uncertain. No data available, and impact may be unpredictable. Requires in-depth analysis and caution.",
+
+            // Reclassify
+            reclassifyTitle: "Reclassifique a Incerteza e o Impacto",
+            reclassifyJustification: "Justificativa da reclassificação",
+            selectOption: "Selecione...",
+            save: "Salvar",
         }
     },
 
