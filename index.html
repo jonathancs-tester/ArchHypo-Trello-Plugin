@@ -223,21 +223,41 @@
                     return t.cards('all').then(cards => {
                       if (!cards || cards.length === 0) return;
 
+
+                      // Usa os labels do i18n.js para ambos idiomas
+                      const getAllLabels = key => [
+                        I18N.translations['pt'][key],
+                        I18N.translations['en'][key]
+                      ].filter(Boolean);
+
+                      const labelVariants = {
+                        dominio: getAllLabels('nfrLevelLabel'),
+                        incerteza: getAllLabels('uncertaintyLevelLabel'),
+                        impacto: getAllLabels('impactLevelLabel'),
+                        pattern: getAllLabels('patternLevelLabel'),
+                        plano: getAllLabels('planLevelLabel')
+                      };
+
+                      // Extrai valor para qualquer label possível
+                      const extrair = (descricao, variants) => {
+                        for (const chave of variants) {
+                          const regex = new RegExp(`\\*\\*${chave.replace('**', '').replace(': ', ':').replace(/\s+$/, '')}\\s*(.*)`, 'i');
+                          const match = descricao.match(regex);
+                          if (match) return match[1].trim();
+                        }
+                        return '';
+                      };
+
                       const promises = cards.map(card => {
                         try {
                           const titulo = card.name?.trim();
                           const descricao = card.desc?.trim() || "";
 
-                          const extrair = chave => {
-                            const match = descricao.match(new RegExp(`\\*\\*${chave}:\\s*\\*\\*\\s*(.*)`, 'i'));
-                            return match ? match[1].trim() : '';
-                          };
-
-                          const dominio = extrair(I18N.t('nfrLevelLabel').replace('**', '').replace(':** ', ''));
-                          const incerteza = extrair(I18N.t('uncertaintyLevelLabel').replace('**', '').replace(':** ', ''));
-                          const impacto = extrair(I18N.t('impactLevelLabel').replace('**', '').replace(':** ', ''));
-                          const pattern = extrair(I18N.t('patternLevelLabel').replace('**', '').replace(':** ', ''));
-                          const plano = extrair(I18N.t('planLevelLabel').replace('**', '').replace(':** ', ''));
+                          const dominio = extrair(descricao, labelVariants.dominio);
+                          const incerteza = extrair(descricao, labelVariants.incerteza);
+                          const impacto = extrair(descricao, labelVariants.impacto);
+                          const pattern = extrair(descricao, labelVariants.pattern);
+                          const plano = extrair(descricao, labelVariants.plano);
 
                           return t.set(card.id, 'shared', { dominio, incerteza, impacto, pattern, plano });
 
