@@ -384,10 +384,10 @@ const I18N = {
             impactTooltipVeryHigh: "🔸 <strong>Very High:</strong> The situation is highly uncertain. No data available, and impact may be unpredictable. Requires in-depth analysis and caution.",
 
             // Reclassify
-            reclassifyTitle: "Reclassifique a Incerteza e o Impacto",
-            reclassifyJustification: "Justificativa da reclassificação",
-            selectOption: "Selecione...",
-            save: "Salvar",
+            reclassifyTitle: "Reclassify Uncertainty and Impact",
+            reclassifyJustification: "Justification for reclassification",
+            selectOption: "Select...",
+            save: "Save",
         }
     },
 
