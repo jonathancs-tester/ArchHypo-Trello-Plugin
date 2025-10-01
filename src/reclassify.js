@@ -31,16 +31,13 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
       }
     }
 
-
     if (hypothesisCardUrl) {
       // Chama a função serverless para atualizar a descrição do card de hipótese
       try {
-        const uncertaintyLabel = window.I18N ? window.I18N.t('uncertaintyLevelLabel').trim() : '**Nível de Incerteza:**';
-        const impactLabel = window.I18N ? window.I18N.t('impactLevelLabel').trim() : '**Nível de Impacto:**';
         await fetch('/.netlify/functions/update-hypothesis-card', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hypothesisCardUrl, incerteza, impacto, uncertaintyLabel, impactLabel })
+          body: JSON.stringify({ hypothesisCardUrl, incerteza, impacto })
         });
       } catch (err) {
         alert('Erro ao atualizar card de hipótese: ' + err.message);
