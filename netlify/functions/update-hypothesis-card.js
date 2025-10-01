@@ -26,8 +26,9 @@ export async function handler(event) {
   }
 
   try {
-    const { hypothesisCardUrl, incerteza, impacto } = JSON.parse(event.body);
-    if (!hypothesisCardUrl || !incerteza || !impacto) {
+
+    const { hypothesisCardUrl, incerteza, impacto, uncertaintyLabel, impactLabel } = JSON.parse(event.body);
+    if (!hypothesisCardUrl || !incerteza || !impacto || !uncertaintyLabel || !impactLabel) {
       return {
         statusCode: 400,
         headers: { "Access-Control-Allow-Origin": "*" },
@@ -54,9 +55,9 @@ export async function handler(event) {
     const card = await cardRes.json();
     let desc = card.desc || "";
 
-    // Atualiza os campos na descrição
-    desc = desc.replace(/(\*\*Nível de Incerteza:\*\*).*/i, `**Nível de Incerteza:** ${incerteza}`);
-    desc = desc.replace(/(\*\*Nível de Impacto:\*\*).*/i, `**Nível de Impacto:** ${impacto}`);
+    // Atualiza os campos na descrição usando as labels corretas
+    desc = desc.replace(/(\*\*Nível de Incerteza:\*\*|\*\*Uncertainty Level:\*\*).*/i, `${labelUncertainty} ${incerteza}`);
+    desc = desc.replace(/(\*\*Nível de Impacto:\*\*|\*\*Impact Level:\*\*).*/i, `${labelImpact} ${impacto}`);
 
     // Salva a nova descrição
     const updateRes = await fetch(`${TRELLO_API_URL}/cards/${cardId}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`, {
