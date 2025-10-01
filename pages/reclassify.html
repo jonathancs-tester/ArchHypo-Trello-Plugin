@@ -3,11 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <title>Reclassificar Incerteza e Impacto</title>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 30px; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #172b4d;
+      margin: 40px;
+      color: #172b4d;
+    }
+    h2 {
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #172b4d;
+      text-align: center;
+      user-select: none;
+    }
+    form {
+      background: white;
+      max-width: 480px;
+      margin: 0 auto 2rem auto;
+      padding: 1.8rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(9, 30, 66, .25);
+      transition: all 0.3s ease;
+    }
     label { display: block; margin-top: 20px; }
-    select, textarea { width: 100%; margin-top: 5px; }
-    button { margin-top: 30px; padding: 10px 20px; }
+    select, textarea {
+      width: 100%;
+      margin-top: 5px;
+      font-size: 1.1rem;
+      border: 1px solid #dfe1e6;
+      border-radius: 6px;
+      padding: 0.6rem 1rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    select:focus, textarea:focus {
+      border-color: #0079bf;
+      outline: none;
+      box-shadow: 0 0 4px #0079bf;
+    }
+    textarea {
+      height: 120px;
+      resize: none;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    button {
+      background-color: #5aac44;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.8rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #519839;
+    }
   </style>
 </head>
 <body>
