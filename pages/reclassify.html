@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Reclassificar Incerteza e Impacto</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    label { display: block; margin-top: 20px; }
+    select, textarea { width: 100%; margin-top: 5px; }
+    button { margin-top: 30px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h2>Reclassifique a Incerteza e o Impacto</h2>
+  <form id="reclassifyForm">
+    <label for="incerteza">Nível de Incerteza</label>
+    <select id="incerteza" required>
+      <option value="">Selecione...</option>
+      <option value="Baixo">Baixo</option>
+      <option value="Médio">Médio</option>
+      <option value="Alto">Alto</option>
+      <option value="Muito Alto">Muito Alto</option>
+    </select>
+    <label for="impacto">Nível de Impacto</label>
+    <select id="impacto" required>
+      <option value="">Selecione...</option>
+      <option value="Baixo">Baixo</option>
+      <option value="Médio">Médio</option>
+      <option value="Alto">Alto</option>
+      <option value="Muito Alto">Muito Alto</option>
+    </select>
+    <label for="justificativa">Justificativa da reclassificação</label>
+    <textarea id="justificativa" maxlength="300" rows="4" required></textarea>
+    <button type="submit">Salvar</button>
+  </form>
+  <script src="../src/reclassify.js"></script>
+</body>
+</html>
