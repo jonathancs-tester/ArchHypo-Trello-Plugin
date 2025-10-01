@@ -54,11 +54,11 @@
               if (isDoneOrConcluido && hasAnyAttachment) {
                 buttons.push({
                   icon: "https://img.icons8.com/ios-filled/50/000000/edit-property.png",
-                  text: "Reclassificar Incerteza/Impacto",
+                  text: I18N.t('reclassifyTitle'),
                   callback: function (t) {
                     return t.modal({
-                      title: 'Reclassificar Incerteza e Impacto',
-                      url: `./pages/reclassify.html?cardId=${card.id}`,
+                      title: I18N.t('reclassifyTitle'),
+                      url: `./pages/reclassify.html?cardId=${card.id}&lang=${I18N.getCurrentLanguage()}`,
                       height: 400
                     });
                   }
