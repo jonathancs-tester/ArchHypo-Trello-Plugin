@@ -310,92 +310,96 @@
 
 <body>
 
-  <!-- Step 0 -->
-  <div id="step0" class="step active">
-
-    <h2 id="step0Title"></h2>
-    <textarea maxlength="300" id="contexto" placeholder=""></textarea>
-    <button onclick="analyzeHypothesis()" id="step0NextBtn"></button>
-    <div id="loading0" class="loading-indicator"></div>
-  </div>
-
-  <!-- Step 1 -->
-  <div id="step1" class="step">
-    <h2 id="step1Title"></h2>
-    <textarea maxlength="300" id="hipotese"></textarea>
-    <textarea maxlength="300" id="hipoteseMotivo" style="display: none;"></textarea>
-    <p id="hipoteseResultado"></p>
-    <button onclick="previousStep()" id="step1PrevBtn"></button>
-    <button onclick="analyzeDomain()" id="step1NextBtn"></button>
-    <div id="loading1" class="loading-indicator"></div>
-  </div>
-
-  <!-- Step 2 -->
-  <div id="step2" class="step">
-    <h2 id="step2Title"></h2>
-    <select id="dominio">
-      <option value="Flexibilidade" id="nfrFlexibility"></option>
-      <option value="Desempenho" id="nfrPerformance"></option>
-      <option value="Productividade" id="nfrProductivity"></option>
-      <option value="Confiabilidade" id="nfrReliability"></option>
-      <option value="Segurança" id="nfrSecurity"></option>
-      <option value="Usabilidade" id="nfrUsability"></option>
-    </select>
-    <textarea maxlength="300" id="dominioMotivo" style="display: none;"></textarea>
-    <p id="dominioResultado"></p>
-    <button onclick="previousStep()" id="step2PrevBtn"></button>
-    <button onclick="analyzeUncertainty()" id="step2NextBtn"></button>
-    <div id="loading2" class="loading-indicator"></div>
-  </div>
-
-  <!-- Step 3 -->
-  <div id="step3" class="step">
-    <h2 id="step3Title">
-      <span class="help-icon" tabindex="0" aria-label="Help">
-        ❔
-        <span class="tooltip" id="uncertaintyTooltip"></span>
-      </span>
-    </h2>
-    <select id="incerteza">
-      <option value="Muito Baixo" id="levelVeryLow1"></option>
-      <option value="Baixo" id="levelLow1"></option>
-      <option value="Médio" id="levelMedium1"></option>
-      <option value="Alto" id="levelHigh1"></option>
-      <option value="Muito Alto" id="levelVeryHigh1"></option>
-    </select>
-    <textarea maxlength="300" id="incertezaMotivo" style="display: none;"></textarea>
-    <p id="incertezaResultado"></p>
-    <button onclick="previousStep()" id="step3PrevBtn"></button>
-    <button onclick="analyzeImpact()" id="step3NextBtn"></button>
-    <div id="loading3" class="loading-indicator"></div>
-  </div>
-
-  <!-- Step 4 -->
-  <div id="step4" class="step">
-    <h2 id="step4Title">
-      <span class="help-icon" tabindex="0" aria-label="Help">
-        ❔
-        <span class="tooltip" id="impactTooltip"></span>
-      </span>
-    </h2>
-    <select id="impacto">
-      <option value="Muito Baixo" id="levelVeryLow2"></option>
-      <option value="Baixo" id="levelLow2"></option>
-      <option value="Médio" id="levelMedium2"></option>
-      <option value="Alto" id="levelHigh2"></option>
-      <option value="Muito Alto" id="levelVeryHigh2"></option>
-    </select>
-    <textarea maxlength="300" id="impactoMotivo" style="display: none;"></textarea>
-    <p id="impactoResultado"></p>
-    <button onclick="previousStep()" id="step4PrevBtn"></button>
-    <button onclick="createCard()" id="step4CreateBtn"></button>
-    <div id="loading4" class="loading-indicator"></div>
-  </div>
-
-  <!-- Step 5 -->
-  <div id="step5" class="step">
-    <h2 id="step5Title"></h2>
-    <p id="cardLink"></p>
+  <div style="display: flex; gap: 32px; align-items: flex-start;">
+    <div style="flex: 1; min-width: 320px;">
+      <!-- Step 0 -->
+      <div id="step0" class="step active">
+        <h2 id="step0Title"></h2>
+        <textarea maxlength="300" id="contexto" placeholder=""></textarea>
+        <button onclick="analyzeHypothesis()" id="step0NextBtn"></button>
+        <div id="loading0" class="loading-indicator"></div>
+      </div>
+      <!-- Step 1 -->
+      <div id="step1" class="step">
+        <h2 id="step1Title"></h2>
+        <textarea maxlength="300" id="hipotese"></textarea>
+        <textarea maxlength="300" id="hipoteseMotivo" style="display: none;"></textarea>
+        <p id="hipoteseResultado"></p>
+        <button onclick="previousStep()" id="step1PrevBtn"></button>
+        <button onclick="analyzeDomain()" id="step1NextBtn"></button>
+        <div id="loading1" class="loading-indicator"></div>
+      </div>
+      <!-- Step 2 -->
+      <div id="step2" class="step">
+        <h2 id="step2Title"></h2>
+        <select id="dominio">
+          <option value="Flexibilidade" id="nfrFlexibility"></option>
+          <option value="Desempenho" id="nfrPerformance"></option>
+          <option value="Productividade" id="nfrProductivity"></option>
+          <option value="Confiabilidade" id="nfrReliability"></option>
+          <option value="Segurança" id="nfrSecurity"></option>
+          <option value="Usabilidade" id="nfrUsability"></option>
+        </select>
+        <textarea maxlength="300" id="dominioMotivo" style="display: none;"></textarea>
+        <p id="dominioResultado"></p>
+        <button onclick="previousStep()" id="step2PrevBtn"></button>
+        <button onclick="analyzeUncertainty()" id="step2NextBtn"></button>
+        <div id="loading2" class="loading-indicator"></div>
+      </div>
+      <!-- Step 3 -->
+      <div id="step3" class="step">
+        <h2 id="step3Title">
+          <span class="help-icon" tabindex="0" aria-label="Help">
+            ❔
+            <span class="tooltip" id="uncertaintyTooltip"></span>
+          </span>
+        </h2>
+        <select id="incerteza">
+          <option value="Muito Baixo" id="levelVeryLow1"></option>
+          <option value="Baixo" id="levelLow1"></option>
+          <option value="Médio" id="levelMedium1"></option>
+          <option value="Alto" id="levelHigh1"></option>
+          <option value="Muito Alto" id="levelVeryHigh1"></option>
+        </select>
+        <textarea maxlength="300" id="incertezaMotivo" style="display: none;"></textarea>
+        <p id="incertezaResultado"></p>
+        <button onclick="previousStep()" id="step3PrevBtn"></button>
+        <button onclick="analyzeImpact()" id="step3NextBtn"></button>
+        <div id="loading3" class="loading-indicator"></div>
+      </div>
+      <!-- Step 4 -->
+      <div id="step4" class="step">
+        <h2 id="step4Title">
+          <span class="help-icon" tabindex="0" aria-label="Help">
+            ❔
+            <span class="tooltip" id="impactTooltip"></span>
+          </span>
+        </h2>
+        <select id="impacto">
+          <option value="Muito Baixo" id="levelVeryLow2"></option>
+          <option value="Baixo" id="levelLow2"></option>
+          <option value="Médio" id="levelMedium2"></option>
+          <option value="Alto" id="levelHigh2"></option>
+          <option value="Muito Alto" id="levelVeryHigh2"></option>
+        </select>
+        <textarea maxlength="300" id="impactoMotivo" style="display: none;"></textarea>
+        <p id="impactoResultado"></p>
+        <button onclick="previousStep()" id="step4PrevBtn"></button>
+        <button onclick="createCard()" id="step4CreateBtn"></button>
+        <div id="loading4" class="loading-indicator"></div>
+      </div>
+      <!-- Step 5 -->
+      <div id="step5" class="step">
+        <h2 id="step5Title"></h2>
+        <p id="cardLink"></p>
+      </div>
+    </div>
+    <div id="preview-panel" style="flex: 1; min-width: 320px; max-width: 400px; background: #f4f5f7; border-radius: 10px; box-shadow: 0 1px 6px rgba(9,30,66,.10); padding: 24px; margin-top: 0;">
+      <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">Pré-visualização</h2>
+      <div id="preview-content">
+        <!-- Conteúdo dinâmico do preview -->
+      </div>
+    </div>
   </div>
 
   <div id="uncertaintyModal" class="modal">

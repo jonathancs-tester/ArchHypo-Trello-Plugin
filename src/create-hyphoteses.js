@@ -661,3 +661,40 @@ function showImpactModal(data) {
     };
   });
 }
+
+// Atualiza o painel de preview dinâmico
+function updatePreviewPanel() {
+  const preview = document.getElementById('preview-content');
+  if (!preview) return;
+  // Simula o número do card (exibe 1, ou pode ser vazio se não souber)
+  const cardNumber = 1;
+  const hipotese = document.getElementById('hipotese')?.value || '';
+  const dominio = document.getElementById('dominio')?.options[document.getElementById('dominio')?.selectedIndex]?.text || '';
+  const contexto = document.getElementById('contexto')?.value || '';
+  const incerteza = document.getElementById('incerteza')?.options[document.getElementById('incerteza')?.selectedIndex]?.text || '';
+  const impacto = document.getElementById('impacto')?.options[document.getElementById('impacto')?.selectedIndex]?.text || '';
+
+  preview.innerHTML = `
+    <div style="margin-bottom: 1.2rem;">
+      <strong style="color:#026aa7;">${'H' + cardNumber + ': ' + (hipotese || '<em>(Hipótese)</em>')}</strong>
+    </div>
+    <pre style="background:#fff;border-radius:6px;padding:12px 16px;font-size:1rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;">
+${I18N.t('nfrLevelLabel')}${dominio}
+${I18N.t('uncertainty')} ${contexto}
+${I18N.t('uncertaintyLevelLabel')}${incerteza}
+${I18N.t('impactLevelLabel')}${impacto}
+    </pre>
+  `;
+}
+
+// Adiciona listeners para atualizar o preview em tempo real
+window.addEventListener('DOMContentLoaded', function() {
+  ['contexto','hipotese','dominio','incerteza','impacto'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', updatePreviewPanel);
+      el.addEventListener('change', updatePreviewPanel);
+    }
+  });
+  updatePreviewPanel();
+});
