@@ -315,6 +315,9 @@
                   const updatedBoard = await t.board('all'); // pega dados atualizados
                   console.log("✅ Board atualizado:", updatedBoard);
 
+                  // Atualiza a interface do Trello explicitamente
+                  await t.sync();
+                  alert(I18N.t('successCreateBoardTemplate'));
                 } catch (error) {
                   console.error("❌ " + I18N.t('errorCreateBoardTemplate'), error);
                   alert(I18N.t('errorCreateBoardTemplate'));
