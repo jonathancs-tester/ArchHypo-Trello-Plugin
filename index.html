@@ -315,6 +315,10 @@
                   const updatedBoard = await t.board('all'); // pega dados atualizados
                   console.log("✅ Board atualizado:", updatedBoard);
 
+                  alert(I18N.t('successCreateBoardTemplate'));
+
+                  // Força um refresh no quadro
+                  t.closePopup();
                 } catch (error) {
                   console.error("❌ " + I18N.t('errorCreateBoardTemplate'), error);
                   alert(I18N.t('errorCreateBoardTemplate'));
