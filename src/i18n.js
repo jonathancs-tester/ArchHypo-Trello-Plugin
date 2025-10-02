@@ -38,6 +38,10 @@ const I18N = {
 
             // Success messages
             fieldsUpdatedSuccess: "Campos adicionados/atualizados com sucesso!",
+            successCreateBoardTemplate: "Modelo de quadro criado com sucesso!",
+
+            // Board template refresh
+            refreshBoardToSeeButtons: "Atualize a página do Trello para ver os botões do quadro atualizados.",
 
             // Historical
             uncertaintyTitle: "Histórico de Incerteza",
@@ -232,6 +236,10 @@ const I18N = {
 
             // Success messages
             fieldsUpdatedSuccess: "Fields added/updated successfully!",
+            successCreateBoardTemplate: "Board template created successfully!",
+
+            // Board template refresh
+            refreshBoardToSeeButtons: "Refresh the Trello page to see the updated board buttons.",
             
             // Historical
             hypothesesHistorical: "Hypotheses",
