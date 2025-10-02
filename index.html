@@ -178,7 +178,7 @@
             },
             {
               icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
-              text: I18N.t('newUncertainty',
+              text: I18N.t('newUncertainty'),
               callback: function (t) {
                 t.board('id').then(function (boardId) {
                   return t.modal({
@@ -316,12 +316,6 @@
                   console.log("✅ Board atualizado:", updatedBoard);
 
                   alert(I18N.t('successCreateBoardTemplate') + '\n' + I18N.t('refreshBoardToSeeButtons'));
-
-                  // Força refresh dos board buttons renomeando a primeira lista para o próprio nome
-                  const lists = await t.lists('id', 'name');
-                  if (lists && lists.length > 0) {
-                    await t.renameList(lists[0].id, lists[0].name);
-                  }
 
                   // Atualiza métricas para forçar refresh dos board buttons
                   if (typeof window.atualizarMetricas === 'function') {
