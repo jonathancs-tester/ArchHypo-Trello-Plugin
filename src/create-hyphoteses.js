@@ -673,6 +673,7 @@ function updatePreviewPanel() {
   const impacto = document.getElementById('impacto')?.value || '';
 
   preview.innerHTML = `
+    <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">${I18N.t('previewTitle')}</h2>
     <div style="margin-bottom: 1.2rem;">
       <strong style="color:#026aa7;">${'H' + (state.incertezaTotal + 1 || '') + ': ' + (hipotese)}</strong>
     </div>
