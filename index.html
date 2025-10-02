@@ -317,10 +317,6 @@
 
                   alert(I18N.t('successCreateBoardTemplate') + '\n' + I18N.t('refreshBoardToSeeButtons'));
 
-                  // Atualiza métricas para forçar refresh dos board buttons
-                  if (typeof window.atualizarMetricas === 'function') {
-                    window.atualizarMetricas();
-                  }
                 } catch (error) {
                   console.error("❌ " + I18N.t('errorCreateBoardTemplate'), error);
                   alert(I18N.t('errorCreateBoardTemplate'));
