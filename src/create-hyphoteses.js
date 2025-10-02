@@ -34,7 +34,6 @@ function initializeLanguage() {
   }
 
   updateTexts(state.language);
-  updatePreview(); // Atualiza preview ao trocar idioma
 }
 
 // Função para atualizar textos usando I18N
@@ -46,7 +45,6 @@ function updateTexts(language) {
   if (pageTitle) {
     pageTitle.textContent = I18N.t('createHypothesesPageTitle');
   }
-  updatePreview(); // Atualiza preview ao trocar idioma
 
   // Update step titles if elements exist
   const step0Title = document.getElementById('step0Title');
@@ -215,33 +213,6 @@ function updateLanguage(newLanguage) {
 // Inicializar textos no carregamento
 document.addEventListener('DOMContentLoaded', () => {
   initializeLanguage();
-  // Adiciona listeners para atualizar o preview em tempo real
-  const contexto = document.getElementById('contexto');
-  if (contexto) contexto.addEventListener('input', e => {
-    state.contexto = e.target.value;
-    updatePreview();
-  });
-  const hipotese = document.getElementById('hipotese');
-  if (hipotese) hipotese.addEventListener('input', e => {
-    state.hipotese = e.target.value;
-    updatePreview();
-  });
-  const dominio = document.getElementById('dominio');
-  if (dominio) dominio.addEventListener('change', e => {
-    state.dominio = e.target.value;
-    updatePreview();
-  });
-  const incerteza = document.getElementById('incerteza');
-  if (incerteza) incerteza.addEventListener('change', e => {
-    state.incerteza = e.target.value;
-    updatePreview();
-  });
-  const impacto = document.getElementById('impacto');
-  if (impacto) impacto.addEventListener('change', e => {
-    state.impacto = e.target.value;
-    updatePreview();
-  });
-  updatePreview();
 });
 
 function getBoardIdFromUrl() {
@@ -330,7 +301,6 @@ async function analyzeHypothesis() {
     });
 
     showStep(1);
-    updatePreview();
   } catch (error) {
     console.error('❌ Erro ao analisar hipótese:', error.message || error);
     alert(`${I18N.t('createCardError')} ${error.message || I18N.t('checkConsole')}`);
@@ -372,7 +342,6 @@ async function analyzeDomain() {
     });
 
     showStep(2);
-    updatePreview();
   } catch (error) {
     console.error('❌ Erro ao analisar domínio:', error.message || error);
     alert(`${I18N.t('createCardError')} ${error.message || I18N.t('checkConsole')}`);
@@ -444,7 +413,6 @@ async function analyzeUncertainty() {
     });
 
     showStep(3);
-    updatePreview();
   } catch (error) {
     console.error('❌ Erro ao analisar incerteza:', error.message || error);
     alert(`${I18N.t('createCardError')} ${error.message || I18N.t('checkConsole')}`);
@@ -517,7 +485,6 @@ async function analyzeImpact() {
     });
 
     showStep(4);
-    updatePreview();
   } catch (error) {
     console.error('❌ Erro ao analisar impacto:', error.message || error);
     alert(`${I18N.t('createCardError')} ${error.message || I18N.t('checkConsole')}`);
@@ -529,29 +496,18 @@ async function analyzeImpact() {
 async function createCard() {
   try {
     showLoading(4);
-
     state.impacto = document.getElementById('impacto').value;
     state.impactoMotivo = document.getElementById('impactoResultado').value;
 
-    // Os valores dos selects são as chaves do i18n.js
-    const incertezaValue = I18N.t(state.incerteza);
-    const impactoValue = I18N.t(state.impacto);
-    const dominioValue = I18N.t(state.dominio);
-
     const urlParams = new URLSearchParams(window.location.search);
     const boardId = urlParams.get('boardId');
-    // Garante que os labels estejam no idioma atual
-    const nfrLabel = I18N.t('nfrLevelLabel') || '**Non-Functional Requirements:** ';
-    const uncertaintyLabel = I18N.t('uncertaintyLevelLabel') || '**Uncertainty Level:** ';
-    const impactLabel = I18N.t('impactLevelLabel') || '**Impact Level:** ';
-    const contextLabel = I18N.t('uncertainty') || '**Uncertainty:**';
     const data = {
       name: "H" + (state.incertezaTotal + 1) + ": " + state.hipotese,
       detalhes:
-        nfrLabel + dominioValue + "\n" +
-        contextLabel + " " + state.contexto + "\n" +
-        uncertaintyLabel + incertezaValue + "\n" +
-        impactLabel + impactoValue
+        I18N.t('nfrLevelLabel') + state.dominio + "\n" +
+        I18N.t('uncertainty') + " " + state.contexto + "\n" +
+        I18N.t('uncertaintyLevelLabel') + state.incerteza + "\n" +
+        I18N.t('impactLevelLabel') + state.impacto
     };
 
     const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=INCERTEZA`, {
@@ -571,7 +527,6 @@ async function createCard() {
 
     document.getElementById('cardLink').innerHTML = `<a href="${cardUrl}" target="_blank">${data.name}</a>`;
     showStep(5);
-    updatePreview();
   } catch (error) {
     console.error('❌ Erro ao criar o card:', error.message || error);
     alert(`${I18N.t('createCardError')} ${error.message || I18N.t('checkConsole')}`);
