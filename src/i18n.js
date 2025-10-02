@@ -38,7 +38,6 @@ const I18N = {
 
             // Success messages
             fieldsUpdatedSuccess: "Campos adicionados/atualizados com sucesso!",
-            successCreateBoardTemplate: "Modelo de quadro criado com sucesso!",
 
             // Historical
             uncertaintyTitle: "Histórico de Incerteza",
@@ -233,8 +232,7 @@ const I18N = {
 
             // Success messages
             fieldsUpdatedSuccess: "Fields added/updated successfully!",
-            successCreateBoardTemplate: "Board template created successfully!",
-
+            
             // Historical
             hypothesesHistorical: "Hypotheses",
             uncertaintyHistorical: "Uncertainty Assessment",
