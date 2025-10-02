@@ -666,21 +666,16 @@ function showImpactModal(data) {
 function updatePreviewPanel() {
   const preview = document.getElementById('preview-content');
   if (!preview) return;
-  // Simula o número do card (exibe 1, ou pode ser vazio se não souber)
-  const cardNumber = 1;
-  const hipotese = document.getElementById('hipotese')?.value || `: <em>${previewCardTitle}</em>`;
-  const dominio = document.getElementById('dominio')?.options[document.getElementById('dominio')?.selectedIndex]?.text || '';
+  const hipotese = document.getElementById('hipotese')?.value || '';
+  const dominio = document.getElementById('dominio')?.value || '';
   const contexto = document.getElementById('contexto')?.value || '';
-  const incerteza = document.getElementById('incerteza')?.options[document.getElementById('incerteza')?.selectedIndex]?.text || '';
-  const impacto = document.getElementById('impacto')?.options[document.getElementById('impacto')?.selectedIndex]?.text || '';
-
-  // Usa as chaves do i18n.js
-  const previewTitle = I18N.t('previewTitle');
-  const previewCardTitle = I18N.t('previewCardTitle').replace('{n}', cardNumber) + `: <em>${hipotese}</em>`;
+  const incerteza = document.getElementById('incerteza')?.value || '';
+  const impacto = document.getElementById('impacto')?.value || '';
 
   preview.innerHTML = `
-    <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">${previewTitle}</h2>
-    <div style="margin-bottom: 1.2rem; font-weight: bold;">${previewCardTitle}</div>
+    <div style="margin-bottom: 1.2rem;">
+      <strong style="color:#026aa7;">${'H' + (state.incertezaTotal + 1 || '') + ': ' + (hipotese)}</strong>
+    </div>
     <pre style="background:#fff;border-radius:6px;padding:12px 16px;font-size:1rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;">
 ${I18N.t('nfrLevelLabel')}${dominio}
 ${I18N.t('uncertainty')} ${contexto}
