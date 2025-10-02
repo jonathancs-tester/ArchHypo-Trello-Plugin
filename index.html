@@ -178,7 +178,7 @@
             },
             {
               icon: "https://img.icons8.com/ios-filled/50/000000/plus.png",
-              text: I18N.t('newUncertainty',
+              text: I18N.t('newUncertainty'),
               callback: function (t) {
                 t.board('id').then(function (boardId) {
                   return t.modal({
@@ -316,11 +316,7 @@
                   console.log("✅ Board atualizado:", updatedBoard);
 
                   alert(I18N.t('successCreateBoardTemplate') + '\n' + I18N.t('refreshBoardToSeeButtons'));
-                  // Não há como atualizar os board buttons via Power-Up, então orienta o usuário
-                  // a atualizar a página manualmente.
 
-                  // Força um refresh no quadro
-                  t.closePopup();
                 } catch (error) {
                   console.error("❌ " + I18N.t('errorCreateBoardTemplate'), error);
                   alert(I18N.t('errorCreateBoardTemplate'));
