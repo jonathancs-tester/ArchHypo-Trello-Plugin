@@ -6,65 +6,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title id="pageTitle"></title>
   <style>
-    /* Reset básico */
     * {
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #172b4d;
-      margin: 40px;
+      background: linear-gradient(120deg, #172b4d 60%, #205081 100%);
+      margin: 0;
       color: #172b4d;
-      min-width: 900px;
-      min-height: 600px;
+      min-width: 100vw;
+      min-height: 100vh;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    h1 {
-      font-weight: 700;
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
-      color: #026aa7;
-      text-align: center;
-      user-select: none;
+    .main-container {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100vw;
+      max-width: 1400px;
+      padding: 32px 0;
     }
-
-    h2 {
-      font-weight: 600;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: #172b4d;
+    .form-panel {
+      flex: 1;
+      min-width: 350px;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-
     .step {
       display: none;
-      background: white;
+      background: #fff;
+      width: 100%;
       max-width: 480px;
       margin: 0 auto 2rem auto;
-      padding: 1.8rem 2rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 6px rgba(9, 30, 66, .25);
+      padding: 2.2rem 2.2rem 2rem 2.2rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 24px rgba(9, 30, 66, .18);
       transition: all 0.3s ease;
     }
-
     .step.active {
       display: block;
     }
-
-    #loading {
-      display: none;
-      font-weight: bold;
-      color: #333;
-      margin: 20px 0;
+    h2 {
+      font-weight: 700;
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+      color: #205081;
+      letter-spacing: 0.01em;
     }
-
-    .loading-indicator {
-      display: none;
-      font-weight: bold;
-      color: #333;
+    textarea {
+      width: 100%;
+      height: 180px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      border: 1px solid #dfe1e6;
+      border-radius: 8px;
+      background: #f8fafc;
+      margin-bottom: 1.2rem;
+      resize: none;
+      white-space: pre-wrap;
+      word-break: break-word;
+      box-shadow: 0 1px 2px rgba(9,30,66,.04);
+      transition: border-color 0.2s;
+    }
+    textarea:focus {
+      border-color: #0079bf;
+      outline: none;
+      background: #fff;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1.1rem;
+      font-size: 1rem;
+      border: 1px solid #dfe1e6;
+      border-radius: 6px;
+      background: #f8fafc;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: #0079bf;
+      outline: none;
+      background: #fff;
+    }
+    button {
+      background-color: #5aac44;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.7rem 2.2rem;
+      font-size: 1.1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      user-select: none;
       margin-top: 10px;
+      box-shadow: 0 2px 8px rgba(90,172,68,0.08);
     }
-
+    button:hover {
+      background-color: #519839;
+      box-shadow: 0 4px 16px rgba(90,172,68,0.13);
+    }
+    #preview-panel {
+      flex: 1;
+      min-width: 340px;
+      max-width: 500px;
+      background: #f4f5f7;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(9,30,66,.10);
+      padding: 32px 28px 28px 28px;
+      margin-top: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      min-height: 420px;
+    }
+    #preview-panel h2 {
+      color: #026aa7;
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+      font-weight: 700;
+    }
+    #preview-content {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    #preview-content pre {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      box-shadow: 0 1px 4px rgba(9,30,66,.06);
+      color: #222;
+      margin: 0;
+    }
+    /* Modal, tooltip, etc. mantêm estilos anteriores */
     .modal {
       display: none;
       position: fixed;
@@ -75,7 +163,6 @@
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
     }
-
     .modal-content {
       background-color: #fff;
       margin: 5% auto;
@@ -84,7 +171,6 @@
       max-width: 1100px;
       border-radius: 8px;
     }
-
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -97,103 +183,7 @@
       align-items: center;
       z-index: 9999;
     }
-
-    #uncertaintyList table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    #uncertaintyList th,
-    #uncertaintyList td {
-      padding: 12px;
-      text-align: left;
-      border: 1px solid #ddd;
-      vertical-align: top;
-      word-wrap: break-word;
-    }
-
-    #uncertaintyList th {
-      background-color: #f2f2f2;
-    }
-
-    #uncertaintyList tbody {
-      display: block;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    #uncertaintyList thead,
-    #uncertaintyList tbody tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-    }
-
-    #uncertaintyList th:first-child,
-    #uncertaintyList td:first-child {
-      width: 70%;
-    }
-
-    #uncertaintyList th:last-child,
-    #uncertaintyList td:last-child {
-      width: 30%;
-    }
-
-    textarea {
-      width: 100%;
-      height: 250px;
-      padding: 1rem;
-      font-size: 1.1rem;
-      border: 1px solid #dfe1e6;
-      border-radius: 6px;
-      overflow: auto;
-      /* ativa scroll se ultrapassar */
-      resize: none;
-      /* opcional, bloqueia redimensionamento */
-      white-space: pre-wrap;
-      /* quebra de linha automática */
-      word-wrap: break-word;
-      /* força quebra de palavra */
-    }
-
-    input[type="text"],
-    select {
-      width: 100%;
-      padding: 0.6rem 1rem;
-      margin-top: 0.3rem;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-      border: 1px solid #dfe1e6;
-      border-radius: 4px;
-      transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    select:focus {
-      border-color: #0079bf;
-      outline: none;
-      box-shadow: 0 0 4px #0079bf;
-    }
-
-    button {
-      background-color: #5aac44;
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 0.6rem 1.8rem;
-      font-size: 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      user-select: none;
-      display: inline-block;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #519839;
-    }
-
+    /* ...demais estilos existentes para tooltip, help-icon, details, etc... */
     .help-icon {
       position: relative;
       display: inline-block;
@@ -209,12 +199,10 @@
       margin-left: 8px;
       user-select: none;
     }
-
     .help-icon:focus,
     .help-icon:hover {
       background-color: #0056b3;
     }
-
     .tooltip {
       visibility: hidden;
       width: 280px;
@@ -232,7 +220,6 @@
       font-size: 14px;
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
     }
-
     .tooltip::before {
       content: "";
       position: absolute;
@@ -242,25 +229,20 @@
       border-style: solid;
       border-color: transparent transparent #333 transparent;
     }
-
     .help-icon:hover .tooltip,
     .help-icon:focus .tooltip {
       visibility: visible;
       opacity: 1;
     }
-
-    /* Estilo do <details> para motivo */
     details summary {
       cursor: pointer;
       font-style: italic;
       color: #444;
       user-select: none;
     }
-
     details summary:hover {
       color: #0079bf;
     }
-
     details p {
       margin: 10px 0 0 0;
       padding-left: 12px;
@@ -268,13 +250,10 @@
       font-size: 0.95rem;
       line-height: 1.4;
     }
-
-    /* Estilo do seletor de idioma */
     .language-selector {
       display: flex;
       justify-content: flex-end;
     }
-
     .language-select {
       background: white;
       border: 2px solid #dfe1e6;
@@ -292,36 +271,34 @@
       padding-right: 32px;
       margin-bottom: 0 !important;
     }
-
     .language-select:hover {
       border-color: #0079bf;
       box-shadow: 0 2px 4px rgba(0, 121, 191, 0.2);
     }
-
     .language-select:focus {
       border-color: #0079bf;
       outline: none;
       box-shadow: 0 2px 4px rgba(0, 121, 191, 0.3);
     }
-
     .language-select option {
       padding: 8px;
       background: white;
     }
-
     .trello-power-up-root,
-    body,
     html {
-      min-width: 900px !important;
-      min-height: 600px !important;
+      min-width: 100vw !important;
+      min-height: 100vh !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      overflow: hidden !important;
     }
   </style>
 </head>
 
 <body>
 
-  <div style="display: flex; gap: 32px; align-items: flex-start;">
-    <div style="flex: 1; min-width: 320px;">
+  <div class="main-container">
+    <div class="form-panel">
       <!-- Step 0 -->
       <div id="step0" class="step active">
         <h2 id="step0Title"></h2>
@@ -404,7 +381,8 @@
         <p id="cardLink"></p>
       </div>
     </div>
-    <div id="preview-panel" style="flex: 1; min-width: 320px; max-width: 400px; background: #f4f5f7; border-radius: 10px; box-shadow: 0 1px 6px rgba(9,30,66,.10); padding: 24px; margin-top: 0;">
+    <div id="preview-panel">
+      <h2 id="preview-title"></h2>
       <div id="preview-content">
         <!-- Conteúdo dinâmico do preview -->
       </div>
