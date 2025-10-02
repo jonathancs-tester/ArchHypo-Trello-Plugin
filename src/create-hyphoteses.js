@@ -57,10 +57,16 @@ function updateTexts(language) {
   if (step2Title) step2Title.textContent = I18N.t('nfrStepTitle');
 
   const step3Title = document.getElementById('step3Title');
-  if (step3Title) step3Title.textContent = I18N.t('uncertaintyAssessmentTitle');
+  if (step3Title) step3Title.innerHTML = `
+    ${I18N.t('uncertaintyAssessmentTitle')}
+    <span class="help-icon" tabindex="0" aria-label="Help">❔<span class="tooltip" id="uncertaintyTooltip"></span></span>
+  `;
 
   const step4Title = document.getElementById('step4Title');
-  if (step4Title) step4Title.textContent = I18N.t('impactAssessmentTitle');
+  if (step4Title) step4Title.innerHTML = `
+    ${I18N.t('impactAssessmentTitle')}
+    <span class="help-icon" tabindex="0" aria-label="Help">❔<span class="tooltip" id="impactTooltip"></span></span>
+  `;
 
   const step5Title = document.getElementById('step5Title');
   if (step5Title) step5Title.textContent = I18N.t('cardCreatedTitle');
