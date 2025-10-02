@@ -666,22 +666,16 @@ function showImpactModal(data) {
 function updatePreviewPanel() {
   const preview = document.getElementById('preview-content');
   if (!preview) return;
-  const hipotese = document.getElementById('hipotese')?.value || '';
-  const dominio = document.getElementById('dominio')?.value || '';
-  const contexto = document.getElementById('contexto')?.value || '';
-  const incerteza = document.getElementById('incerteza')?.value || '';
-  const impacto = document.getElementById('impacto')?.value || '';
-
   preview.innerHTML = `
     <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">${I18N.t('previewTitle')}</h2>
     <div style="margin-bottom: 1.2rem;">
-      <strong style="color:#026aa7;">${'H' + (state.incertezaTotal + 1 || '') + ': ' + (hipotese)}</strong>
+      <strong style="color:#026aa7;">${'H' + (state.incertezaTotal + 1 || '') + ': ' + (state.hipotese)}</strong>
     </div>
     <pre style="background:#fff;border-radius:6px;padding:12px 16px;font-size:1rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;">
-${I18N.t('nfrLevelLabel')}${dominio}
-${I18N.t('uncertainty')} ${contexto}
-${I18N.t('uncertaintyLevelLabel')}${incerteza}
-${I18N.t('impactLevelLabel')}${impacto}
+${I18N.t('nfrLevelLabel')}${state.dominio}
+${I18N.t('uncertainty')} ${state.contexto}
+${I18N.t('uncertaintyLevelLabel')}${state.incerteza}
+${I18N.t('impactLevelLabel')}${state.impacto}
     </pre>
   `;
 }
