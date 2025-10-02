@@ -2,6 +2,8 @@
 const I18N = {
     translations: {
         pt: {
+            previewTitle: "Pré-visualização",
+            previewCardTitle: "H{n}: (Hipótese)",
             // Main plugin
             pluginTitle: "ArchHypo.AI - Trello Power App",
             selectLanguage: "Selecionar Idioma",
@@ -200,6 +202,8 @@ const I18N = {
         },
 
         en: {
+            previewTitle: "Preview",
+            previewCardTitle: "H{n}: (Hypothesis)",
             // Main plugin
             pluginTitle: "ArchHypo.AI - Trello Power App",
             selectLanguage: "Select Language",
