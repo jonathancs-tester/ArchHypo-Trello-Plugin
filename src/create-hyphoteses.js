@@ -506,7 +506,14 @@ async function analyzeImpact() {
 async function createCard() {
   try {
     showLoading(4);
-    state.impacto = document.getElementById('impacto').value;
+    // Traduza os valores do state para o idioma selecionado, se necessário
+    const levelMap = I18N.getLevelMapping();
+    const nfrMap = I18N.getNFRMapping ? I18N.getNFRMapping() : {};
+    // Se não houver mapeamento, mantém o valor original
+    const dominioText = nfrMap[state.dominio] || state.dominio;
+    const incertezaText = levelMap[state.incerteza] || state.incerteza;
+    const impactoText = levelMap[state.impacto] || state.impacto;
+
     state.impactoMotivo = document.getElementById('impactoResultado').value;
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -514,10 +521,10 @@ async function createCard() {
     const data = {
       name: "H" + (state.incertezaTotal + 1) + ": " + state.hipotese,
       detalhes:
-        I18N.t('nfrLevelLabel') + state.dominio + "\n" +
+        I18N.t('nfrLevelLabel') + dominioText + "\n" +
         I18N.t('uncertainty') + " " + state.contexto + "\n" +
-        I18N.t('uncertaintyLevelLabel') + state.incerteza + "\n" +
-        I18N.t('impactLevelLabel') + state.impacto
+        I18N.t('uncertaintyLevelLabel') + incertezaText + "\n" +
+        I18N.t('impactLevelLabel') + impactoText
     };
 
     const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=INCERTEZA`, {
