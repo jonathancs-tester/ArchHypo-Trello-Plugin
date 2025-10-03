@@ -506,6 +506,7 @@ async function analyzeImpact() {
 async function createCard() {
   try {
     showLoading(4);
+    state.dominio = document.getElementById('dominio').value;
     // Traduza os valores do state para o idioma selecionado, se necessário
     const levelMap = I18N.getLevelMapping();
     const nfrMap = I18N.getNFRMapping ? I18N.getNFRMapping() : {};
@@ -684,10 +685,13 @@ function updatePreviewPanel() {
   const preview = document.getElementById('preview-content');
   if (!preview) return;
   const hipotese = document.getElementById('hipotese')?.value || '';
-  const dominio = document.getElementById('dominio')?.value || '';
   const contexto = document.getElementById('contexto')?.value || '';
-  const incerteza = document.getElementById('incerteza')?.value || '';
-  const impacto = document.getElementById('impacto')?.value || '';
+  // Use o state para manter compatibilidade com o createCard
+  const levelMap = I18N.getLevelMapping();
+  const nfrMap = I18N.getNFRMapping ? I18N.getNFRMapping() : {};
+  const dominioText = nfrMap[state.dominio] || state.dominio;
+  const incertezaText = levelMap[state.incerteza] || state.incerteza;
+  const impactoText = levelMap[state.impacto] || state.impacto;
 
   preview.innerHTML = `
     <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">${I18N.t('previewTitle')}</h2>
@@ -695,10 +699,10 @@ function updatePreviewPanel() {
       <strong style="color:#026aa7;">${'H' + (state.incertezaTotal + 1 || '') + ': ' + (hipotese)}</strong>
     </div>
     <pre style="background:#fff;border-radius:6px;padding:12px 16px;font-size:1rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;">
-${I18N.t('nfrLevelLabel')}${dominio}
+${I18N.t('nfrLevelLabel')}${dominioText}
 ${I18N.t('uncertainty')} ${contexto}
-${I18N.t('uncertaintyLevelLabel')}${incerteza}
-${I18N.t('impactLevelLabel')}${impacto}
+${I18N.t('uncertaintyLevelLabel')}${incertezaText}
+${I18N.t('impactLevelLabel')}${impactoText}
     </pre>
   `;
 }
