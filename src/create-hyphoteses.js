@@ -698,7 +698,7 @@ function updatePreviewPanel() {
   preview.innerHTML = `
     <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">${I18N.t('previewTitle')}</h2>
     <div style="margin-bottom: 1.2rem;">
-      <strong style="color:#026aa7;">${'Title:' + ': ' + (hipotese)}</strong>
+      <strong style="color:#026aa7;">${(hipotese)}</strong>
     </div>
     <pre style="background:#fff;border-radius:6px;padding:12px 16px;font-size:1rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;">
 ${I18N.t('nfrLevelLabel')}${dominioText}
