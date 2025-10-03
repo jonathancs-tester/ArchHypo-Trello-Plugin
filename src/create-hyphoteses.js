@@ -236,9 +236,8 @@ async function getCardCount() {
     });
 
     const allData = await res.json();
-    state.incertezaTotal = allData?.length || 0;
 
-    return state.incertezaTotal;
+    return allData;
 }
 
 function showStep(stepId) {
@@ -296,7 +295,8 @@ async function callEndpoint(endpoint, input) {
 
 async function analyzeHypothesis() {
   try {
-    state.incertezaTotal = await getCardCount();
+    var allData = await getCardCount();
+    state.incertezaTotal = allData?.length || 0;
     showLoading(0);
     const input = document.getElementById('contexto').value;
     const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
