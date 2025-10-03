@@ -14,6 +14,7 @@ const state = {
 
 let currentStep = 0;
 let sugestaoOriginal = '';
+let allData = '';
 
 // Initialize language from URL parameter or I18N system
 function initializeLanguage() {
@@ -235,7 +236,7 @@ async function getCardCount() {
       headers: { 'Content-Type': 'application/json' },
     });
 
-    const allData = await res.json();
+    allData = await res.json();
 
     return allData;
 }
@@ -295,7 +296,7 @@ async function callEndpoint(endpoint, input) {
 
 async function analyzeHypothesis() {
   try {
-    var allData = await getCardCount();
+    allData = await getCardCount();
     state.incertezaTotal = allData?.length || 0;
     showLoading(0);
     const input = document.getElementById('contexto').value;
