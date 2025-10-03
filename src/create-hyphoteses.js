@@ -226,6 +226,21 @@ function getBoardIdFromUrl() {
   return params.get('boardId');
 }
 
+async function getCardCount() {
+  const boardId = getBoardIdFromUrl();
+    const query = `boardId=${boardId}&column=INCERTEZA`;
+
+    const res = await fetch(`/.netlify/functions/get-uncertainty?` + query, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const allData = await res.json();
+    state.incertezaTotal = allData?.length || 0;
+
+    return state.incertezaTotal;
+}
+
 function showStep(stepId) {
   currentStep = stepId;
   document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
@@ -281,6 +296,7 @@ async function callEndpoint(endpoint, input) {
 
 async function analyzeHypothesis() {
   try {
+    state.incertezaTotal = await getCardCount();
     showLoading(0);
     const input = document.getElementById('contexto').value;
     const { sugestao, motivo } = await callEndpoint('analyze-hypothesis', input);
@@ -387,16 +403,6 @@ async function analyzeUncertainty() {
     showLoading(2);
     state.dominio = document.getElementById('dominio').value;
     state.dominioMotivo = document.getElementById('dominioResultado').value;
-    const boardId = getBoardIdFromUrl();
-    const query = `boardId=${boardId}&column=INCERTEZA`;
-
-    const res = await fetch(`/.netlify/functions/get-uncertainty?` + query, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    const allData = await res.json();
-    state.incertezaTotal = allData?.length || 0;
 
     let uncertaintyHistoricalStr = '';
     let usarHistorico = false;
@@ -722,7 +728,7 @@ function updatePreviewPanel() {
   preview.innerHTML = `
     <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">${I18N.t('previewTitle')}</h2>
     <div style="margin-bottom: 1.2rem;">
-      <strong style="color:#026aa7;">${(hipotese)}</strong>
+      <strong style="color:#026aa7;">${'H' + (state.incertezaTotal + 1) + ': ' + (hipotese)}</strong>
     </div>
     <pre style="background:#fff;border-radius:6px;padding:12px 16px;font-size:1rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;">
 ${I18N.t('nfrLevelLabel')}${dominioText}
