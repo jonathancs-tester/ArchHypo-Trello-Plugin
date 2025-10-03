@@ -538,6 +538,8 @@ async function createCard() {
   try {
     showLoading(4);
     state.dominio = document.getElementById('dominio').value;
+    state.impacto = document.getElementById('impacto').value;
+    state.impactoMotivo = document.getElementById('impactoMotivo').value;
     // Traduza os valores do state para o idioma selecionado, se necessário
     const levelMap = I18N.getLevelMapping();
     const nfrMap = I18N.getNFRMapping ? I18N.getNFRMapping() : {};

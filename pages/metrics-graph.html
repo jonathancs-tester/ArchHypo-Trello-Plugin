@@ -148,14 +148,14 @@
                 labels: translatedLevels,
                 datasets: [
                     {
-                        label: I18N.t('uncertaintyChart'),
+                        label: I18N.t('uncertaintyBadge'),
                         data: incertezaValues,
                         backgroundColor: "rgba(54, 162, 235, 0.7)",
                         borderColor: "rgba(54, 162, 235, 1)",
                         borderWidth: 1
                     },
                     {
-                        label: I18N.t('impact'),
+                        label: I18N.t('impactBadge'),
                         data: impactoValues,
                         backgroundColor: "rgba(255, 99, 132, 0.7)",
                         borderColor: "rgba(255, 99, 132, 1)",
@@ -177,7 +177,7 @@
         const naoFuncional = JSON.parse(urlParamsMetrics.get('naoFuncional'));
 
         // Dados para o gráfico de Requisito Não Funcional
-        let levelsNaoFuncional = ["Desempenho", "Segurança", "Confiabilidade", "Flexibilidade", "Usabilidade", "Productividade"];
+        let levelsNaoFuncional = [I18N.t('flexibilityText'),I18N.t('performanceText'),I18N.t('productivityText'),I18N.t('reliabilityText'),I18N.t('securityText'),I18N.t('usabilityText')];
         let translatedNFRLabels = levelsNaoFuncional.map(nfr => I18N.nfrMap[nfr] || nfr);
         let naoFuncionalValues = levelsNaoFuncional.map(l => naoFuncional[l] || 0);
 
