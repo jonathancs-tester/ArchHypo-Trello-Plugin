@@ -328,11 +328,35 @@ async function analyzeDomain() {
     `;
     const { sugestao, motivo } = await callEndpoint('analyze-domain', input);
 
+
     sugestaoOriginal = sugestao;
     const dominioField = document.getElementById('dominio');
     const motivoField = document.getElementById('dominioMotivo');
 
-    dominioField.value = sugestao;
+
+    // Se for select, tente setar pelo value ou pelo texto, adicionando a opção se necessário
+    if (dominioField && dominioField.tagName === 'SELECT') {
+      let found = false;
+      for (let option of dominioField.options) {
+        if (option.value === sugestao || option.text === sugestao) {
+          dominioField.value = option.value;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        // Adiciona a opção dinamicamente
+        const opt = document.createElement('option');
+        opt.value = sugestao;
+        opt.text = sugestao;
+        dominioField.appendChild(opt);
+        dominioField.value = sugestao;
+      }
+      updatePreviewPanel();
+    } else if (dominioField) {
+      dominioField.value = sugestao;
+    }
+
     document.getElementById('dominioResultado').innerHTML = motivoHTML(motivo);
     dominioField.style.display = 'block';
     motivoField.style.display = 'none';
