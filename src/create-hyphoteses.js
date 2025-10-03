@@ -685,13 +685,15 @@ function updatePreviewPanel() {
   const preview = document.getElementById('preview-content');
   if (!preview) return;
   const hipotese = document.getElementById('hipotese')?.value || '';
+  const dominio = document.getElementById('dominio')?.value || '';
   const contexto = document.getElementById('contexto')?.value || '';
-  // Use o state para manter compatibilidade com o createCard
+  const incerteza = document.getElementById('incerteza')?.value || '';
+  const impacto = document.getElementById('impacto')?.value || '';
   const levelMap = I18N.getLevelMapping();
   const nfrMap = I18N.getNFRMapping ? I18N.getNFRMapping() : {};
-  const dominioText = nfrMap[state.dominio] || state.dominio;
-  const incertezaText = levelMap[state.incerteza] || state.incerteza;
-  const impactoText = levelMap[state.impacto] || state.impacto;
+  const dominioText = nfrMap[dominio] || dominio;
+  const incertezaText = levelMap[incerteza] || incerteza;
+  const impactoText = levelMap[impacto] || impacto;
 
   preview.innerHTML = `
     <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">${I18N.t('previewTitle')}</h2>
