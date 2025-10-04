@@ -25,6 +25,11 @@
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
         return t.card('id', 'name', 'idList', 'attachments').then(function (card) {
+          if (!card || !card.name) {
+            // Se o card ou seu nome não existir, não faz nada.
+            // Isso previne erros que deixam o botão em "loading" eterno.
+            return [];
+          }
           const buttons = [];
 
           // Botão padrão para cards não-TPI
