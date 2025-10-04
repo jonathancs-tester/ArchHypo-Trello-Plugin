@@ -59,7 +59,7 @@
                     return t.modal({
                       title: I18N.t('reclassifyTitle'),
                       url: `./pages/reclassify.html?cardId=${card.id}&lang=${I18N.getCurrentLanguage()}`,
-                      height: 400,
+                      height: 700,
                       callback: function() {
                         // Força atualização das métricas imediatamente após fechar o modal
                         if (typeof window.atualizarMetricas === 'function') {
