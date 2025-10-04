@@ -14,10 +14,12 @@
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #172b4d;
-      margin: 20px;
+      margin: 0;
+      padding: 16px;
       color: #172b4d;
-      min-width: 800px;
+      min-width: 750px;
       min-height: 600px;
+      overflow-x: hidden;
     }
 
     h1 {
@@ -39,7 +41,7 @@
     .step {
       display: none;
       background: white;
-      max-width: 420px;
+      max-width: 100%;
       margin: 0 auto 1rem auto;
       padding: 1.2rem 1.5rem;
       border-radius: 8px;
@@ -308,15 +310,15 @@
     .trello-power-up-root,
     body,
     html {
-      min-width: 800px !important;
+      min-width: 750px !important;
       min-height: 600px !important;
+      overflow-x: hidden;
     }
 
     /* Preview Panel Styles - Trello Card Look */
     #preview-panel {
-      flex: 1;
-      min-width: 280px;
-      max-width: 320px;
+      flex: 0 0 auto;
+      width: 280px;
       background: #f4f5f7;
       border-radius: 10px;
       box-shadow: 0 1px 6px rgba(9,30,66,.10);
@@ -402,8 +404,8 @@
 
 <body>
 
-  <div style="display: flex; gap: 20px; align-items: flex-start;">
-    <div style="flex: 1; min-width: 380px; max-width: 450px;">
+  <div style="display: flex; gap: 16px; align-items: flex-start; max-width: 100%; padding: 0;">
+    <div style="flex: 1; min-width: 360px; max-width: 420px;">
       <!-- Step 0 -->
       <div id="step0" class="step active">
         <h2 id="step0Title"></h2>
