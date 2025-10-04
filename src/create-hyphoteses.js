@@ -740,10 +740,14 @@ function updatePreviewPanel() {
   // Monta o card com estilo Trello
   let badgesHTML = '';
   if (incerteza) {
-    badgesHTML += `<span class="badge uncertainty ${incerteza.toLowerCase()}">${I18N.t('uncertaintyBadge')}: ${incertezaText}</span>`;
+    // Remove espaços e converte para lowercase para a classe CSS
+    const incertezaClass = incerteza.toLowerCase().replace(/\s+/g, '');
+    badgesHTML += `<span class="badge uncertainty ${incertezaClass}">${I18N.t('uncertaintyBadge')}: ${incertezaText}</span>`;
   }
   if (impacto) {
-    badgesHTML += `<span class="badge impact ${impacto.toLowerCase()}">${I18N.t('impactBadge')}: ${impactoText}</span>`;
+    // Remove espaços e converte para lowercase para a classe CSS
+    const impactoClass = impacto.toLowerCase().replace(/\s+/g, '');
+    badgesHTML += `<span class="badge impact ${impactoClass}">${I18N.t('impactBadge')}: ${impactoText}</span>`;
   }
   if (dominio) {
     badgesHTML += `<span class="badge nfr">NFR: ${dominioText}</span>`;
