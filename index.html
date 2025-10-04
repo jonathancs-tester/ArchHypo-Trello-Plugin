@@ -254,8 +254,9 @@
                       // Extrai valor para qualquer label possível, aceitando variações de espaço e formatação
                       const extrair = (descricao, variants) => {
                         for (const chave of variants) {
-                          // Regex: aceita **LABEL:**, **LABEL :**, **LABEL:**, etc.
-                          const regex = new RegExp(`\\*\\*${chave}\s*:?\s*\\*\\*?\s*(.*)`, 'i');
+                          // Regex: aceita **LABEL:** valor ou LABEL: valor (para compatibilidade)
+                          // Procura por: opcional **, label, opcional espaço, opcional :, opcional espaço, opcional **, resto da linha
+                          const regex = new RegExp(`\\*{0,2}\\s*${chave}\\s*:?\\s*\\*{0,2}\\s*(.+?)(?=\\n|$)`, 'i');
                           const match = descricao.match(regex);
                           if (match) return match[1].trim();
                         }

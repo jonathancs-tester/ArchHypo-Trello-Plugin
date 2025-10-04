@@ -555,10 +555,10 @@ async function createCard() {
     const data = {
       name: "H" + (state.incertezaTotal + 1) + ": " + state.hipotese,
       detalhes:
-        I18N.t('nfrLevelLabel') + dominioText + "\n" +
-        I18N.t('uncertainty') + " " + state.contexto + "\n" +
-        I18N.t('uncertaintyLevelLabel') + incertezaText + "\n" +
-        I18N.t('impactLevelLabel') + impactoText
+        "**" + I18N.t('nfrLevelLabel') + "** " + dominioText + "\n" +
+        "**" + I18N.t('uncertainty') + "** " + state.contexto + "\n" +
+        "**" + I18N.t('uncertaintyLevelLabel') + "** " + incertezaText + "\n" +
+        "**" + I18N.t('impactLevelLabel') + "** " + impactoText
     };
 
     const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=INCERTEZA`, {
@@ -759,22 +759,22 @@ function updatePreviewPanel() {
   let descriptionParts = [];
   
   if (dominio && dominioText) {
-    descriptionParts.push(`${I18N.t('nfrLevelLabel')}${dominioText}`);
+    descriptionParts.push(`<strong>${I18N.t('nfrLevelLabel')}</strong> ${dominioText}`);
   }
   
   if (contexto) {
-    descriptionParts.push(`${I18N.t('uncertainty')} ${contexto}`);
+    descriptionParts.push(`<strong>${I18N.t('uncertainty')}</strong> ${contexto}`);
   }
   
   if (incerteza && incertezaText) {
-    descriptionParts.push(`${I18N.t('uncertaintyLevelLabel')}${incertezaText}`);
+    descriptionParts.push(`<strong>${I18N.t('uncertaintyLevelLabel')}</strong> ${incertezaText}`);
   }
   
   if (impacto && impactoText) {
-    descriptionParts.push(`${I18N.t('impactLevelLabel')}${impactoText}`);
+    descriptionParts.push(`<strong>${I18N.t('impactLevelLabel')}</strong> ${impactoText}`);
   }
   
-  const cardDescription = descriptionParts.join('\n');
+  const cardDescription = descriptionParts.join('<br>');
 
   preview.innerHTML = `
     <h2>${I18N.t('previewTitle')}</h2>
