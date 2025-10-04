@@ -754,7 +754,27 @@ function updatePreviewPanel() {
   }
 
   const cardTitle = hipotese ? `H${state.incertezaTotal + 1}: ${hipotese}` : '';
-  const cardDescription = contexto ? `${I18N.t('uncertainty')} ${contexto}` : '';
+  
+  // Monta a descrição formatada como no card real
+  let descriptionParts = [];
+  
+  if (dominio && dominioText) {
+    descriptionParts.push(`${I18N.t('nfrLevelLabel')}${dominioText}`);
+  }
+  
+  if (contexto) {
+    descriptionParts.push(`${I18N.t('uncertainty')} ${contexto}`);
+  }
+  
+  if (incerteza && incertezaText) {
+    descriptionParts.push(`${I18N.t('uncertaintyLevelLabel')}${incertezaText}`);
+  }
+  
+  if (impacto && impactoText) {
+    descriptionParts.push(`${I18N.t('impactLevelLabel')}${impactoText}`);
+  }
+  
+  const cardDescription = descriptionParts.join('\n');
 
   preview.innerHTML = `
     <h2>${I18N.t('previewTitle')}</h2>
