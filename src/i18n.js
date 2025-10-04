@@ -3,6 +3,7 @@ const I18N = {
     translations: {
         pt: {
             previewTitle: "Pré-visualização",
+            fillFieldsToPreview: "Preencha os campos para visualizar o preview do card",
             // Main plugin
             pluginTitle: "ArchHypo.AI - Trello Power App",
             selectLanguage: "Selecionar Idioma",
@@ -156,15 +157,15 @@ const I18N = {
             errorGeneratingTechnicalPlan: "Erro ao gerar plano técnico. Tente novamente.",
             unknownError: "Erro desconhecido",
             justification: "Justificativa: (clique aqui)",
-            objective: "**Objetivo:**",
-            description: "**Descrição:**",
-            domain: "**Domínio:**",
-            uncertainty: "**Incerteza:**",
-            impact: "**Impacto:**",
+            objective: "Objetivo:",
+            description: "Descrição:",
+            domain: "Domínio:",
+            uncertainty: "Incerteza:",
+            impact: "Impacto:",
             selectAtLeastOne: "Por favor, selecione pelo menos um item do plano para editar.",
             estimatedWait: "(Espera estimada: 15 segundos)",
-            pattern: "**Padrão ArchHypo:**",
-            tradeoff: "**Tradeoff:**",
+            pattern: "Padrão ArchHypo:",
+            tradeoff: "Tradeoff:",
             
             // Placeholders
             justifyChangePlaceholder: "Justifique a alteração...",
@@ -174,11 +175,11 @@ const I18N = {
             englishLabel: "🇺🇸 English",
             
             // Card description labels (used in regex matching)
-            nfrLevelLabel: "**Requisitos Não Funcionais:** ",
-            uncertaintyLevelLabel: "**Nível de Incerteza:** ",
-            impactLevelLabel: "**Nível de Impacto:** ",
-            patternLevelLabel: "**Padrão ArchHypo:** ",
-            planLevelLabel: "**Plano Técnico:** ",
+            nfrLevelLabel: "Requisitos Não Funcionais: ",
+            uncertaintyLevelLabel: "Nível de Incerteza: ",
+            impactLevelLabel: "Nível de Impacto: ",
+            patternLevelLabel: "Padrão ArchHypo: ",
+            planLevelLabel: "Plano Técnico: ",
             
             // Tooltips content
             uncertaintyTooltipVeryLow: "🔹 <strong>Muito Baixo:</strong> A hipótese é baseada em informações sólidas e bem preparadas. Alta confiança na análise com pouca margem de erro.",
@@ -202,6 +203,7 @@ const I18N = {
 
         en: {
             previewTitle: "Preview",
+            fillFieldsToPreview: "Fill in the fields to preview the card",
             // Main plugin
             pluginTitle: "ArchHypo.AI - Trello Power App",
             selectLanguage: "Select Language",
@@ -356,15 +358,15 @@ const I18N = {
             errorGeneratingTechnicalPlan: "Error generating technical plan. Please try again.",
             unknownError: "Unknown error",
             justification: "Justification: (click here)",
-            objective: "**Objective:**",
-            description: "**Description:**",
-            domain: "**Domain:**",
-            uncertainty: "**Uncertainty:**",
-            impact: "**Impact:**",
+            objective: "Objective:",
+            description: "Description:",
+            domain: "Domain:",
+            uncertainty: "Uncertainty:",
+            impact: "Impact:",
             selectAtLeastOne: "Please select at least one plan item to edit.",
             estimatedWait: "(Estimated wait: 15 seconds)",
-            pattern: "**ArchHypo Pattern:**",
-            tradeoff: "**Tradeoff:**",
+            pattern: "ArchHypo Pattern:",
+            tradeoff: "Tradeoff:",
             
             // Placeholders
             justifyChangePlaceholder: "Justify the change...",
@@ -374,11 +376,11 @@ const I18N = {
             englishLabel: "🇺🇸 English",
             
             // Card description labels (used in regex matching)
-            nfrLevelLabel: "**Non-Functional Requirements:** ",
-            uncertaintyLevelLabel: "**Uncertainty Level:** ",
-            impactLevelLabel: "**Impact Level:** ",
-            patternLevelLabel: "**ArchHypo Pattern:** ",
-            planLevelLabel: "**Technical Plan:** ",
+            nfrLevelLabel: "Non-Functional Requirements: ",
+            uncertaintyLevelLabel: "Uncertainty Level: ",
+            impactLevelLabel: "Impact Level: ",
+            patternLevelLabel: "ArchHypo Pattern: ",
+            planLevelLabel: "Technical Plan: ",
             
             // Tooltips content
             uncertaintyTooltipVeryLow: "🔹 <strong>Very Low:</strong> The hypothesis is based on solid and well-prepared information. High confidence in analysis with little margin for error.",

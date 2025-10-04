@@ -728,17 +728,35 @@ function updatePreviewPanel() {
   const incertezaText = levelMap[incerteza] || incerteza;
   const impactoText = levelMap[impacto] || impacto;
 
+  // Verifica se há algum conteúdo
+  if (!hipotese && !contexto && !dominio && !incerteza && !impacto) {
+    preview.innerHTML = `
+      <h2>${I18N.t('previewTitle')}</h2>
+      <div class="empty-state">${I18N.t('fillFieldsToPreview') || 'Preencha os campos para visualizar o preview'}</div>
+    `;
+    return;
+  }
+
+  // Monta o card com estilo Trello
+  let badgesHTML = '';
+  if (incerteza) {
+    badgesHTML += `<span class="badge uncertainty ${incerteza.toLowerCase()}">${I18N.t('uncertaintyBadge')}: ${incertezaText}</span>`;
+  }
+  if (impacto) {
+    badgesHTML += `<span class="badge impact ${impacto.toLowerCase()}">${I18N.t('impactBadge')}: ${impactoText}</span>`;
+  }
+  if (dominio) {
+    badgesHTML += `<span class="badge nfr">NFR: ${dominioText}</span>`;
+  }
+
+  const cardTitle = hipotese ? `H${state.incertezaTotal + 1}: ${hipotese}` : '';
+  const cardDescription = contexto ? `${I18N.t('uncertainty')} ${contexto}` : '';
+
   preview.innerHTML = `
-    <h2 style="color: #026aa7; font-size: 1.3rem; margin-bottom: 1.2rem;">${I18N.t('previewTitle')}</h2>
-    <div style="margin-bottom: 1.2rem;">
-      <strong style="color:#026aa7;">${'H' + (state.incertezaTotal + 1) + ': ' + (hipotese)}</strong>
-    </div>
-    <pre style="background:#fff;border-radius:6px;padding:12px 16px;font-size:1rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;">
-${I18N.t('nfrLevelLabel')}${dominioText}
-${I18N.t('uncertainty')} ${contexto}
-${I18N.t('uncertaintyLevelLabel')}${incertezaText}
-${I18N.t('impactLevelLabel')}${impactoText}
-    </pre>
+    <h2>${I18N.t('previewTitle')}</h2>
+    ${cardTitle ? `<div class="card-title">${cardTitle}</div>` : ''}
+    ${badgesHTML ? `<div class="card-badges">${badgesHTML}</div>` : ''}
+    ${cardDescription ? `<div class="card-description">${cardDescription}</div>` : ''}
   `;
 }
 
