@@ -57,7 +57,7 @@ const I18N = {
             // Badge labels
             uncertaintyBadge: "Incerteza",
             impactBadge: "Impacto",
-            nfrBadge: "Requisito Não Funcional",
+            nfrBadge: "NFR",
             archHypoPatternBadge: "Padrão ArchHypo",
             metricsSuccess: "Métricas habilitadas ✅",
             metricsFailed: "Métricas desabilitadas ❌",
@@ -195,7 +195,7 @@ const I18N = {
             impactTooltipVeryHigh: "🔸 <strong>Muito Alto:</strong> A situação é altamente incerta. Nenhum dado disponível, e o impacto pode ser imprevisível. Requer análise aprofundada e cautela.",
 
             // Reclassify
-            reclassifyTitle: "Reclassifique a Incerteza e o Impacto",
+            reclassifyTitle: "Reclassifique a Hipótese",
             reclassifyJustification: "Justificativa da reclassificação",
             selectOption: "Selecione...",
             save: "Salvar",
@@ -358,15 +358,15 @@ const I18N = {
             errorGeneratingTechnicalPlan: "Error generating technical plan. Please try again.",
             unknownError: "Unknown error",
             justification: "Justification: (click here)",
-            objective: "Objective:",
-            description: "Description:",
+            objective: "**Objective:**",
+            description: "**Description:**",
             domain: "Domain:",
             uncertainty: "Uncertainty:",
             impact: "Impact:",
             selectAtLeastOne: "Please select at least one plan item to edit.",
             estimatedWait: "(Estimated wait: 15 seconds)",
-            pattern: "ArchHypo Pattern:",
-            tradeoff: "Tradeoff:",
+            pattern: "**ArchHypo Pattern:**",
+            tradeoff: "**Tradeoff:**",
             
             // Placeholders
             justifyChangePlaceholder: "Justify the change...",
@@ -396,7 +396,7 @@ const I18N = {
             impactTooltipVeryHigh: "🔸 <strong>Very High:</strong> The situation is highly uncertain. No data available, and impact may be unpredictable. Requires in-depth analysis and caution.",
 
             // Reclassify
-            reclassifyTitle: "Reclassify Uncertainty and Impact",
+            reclassifyTitle: "Reclassify Hyphoteses",
             reclassifyJustification: "Justification for reclassification",
             selectOption: "Select...",
             save: "Save",
