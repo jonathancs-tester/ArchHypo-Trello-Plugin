@@ -552,13 +552,20 @@ async function createCard() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const boardId = urlParams.get('boardId');
+    
+    // Remove o espaço extra dos labels e adiciona ** corretamente
+    const nfrLabel = I18N.t('nfrLevelLabel').trim();
+    const uncertaintyLabel = I18N.t('uncertainty').trim();
+    const uncertaintyLevelLabel = I18N.t('uncertaintyLevelLabel').trim();
+    const impactLevelLabel = I18N.t('impactLevelLabel').trim();
+    
     const data = {
       name: "H" + (state.incertezaTotal + 1) + ": " + state.hipotese,
       detalhes:
-        "**" + I18N.t('nfrLevelLabel') + "** " + dominioText + "\n" +
-        "**" + I18N.t('uncertainty') + "** " + state.contexto + "\n" +
-        "**" + I18N.t('uncertaintyLevelLabel') + "** " + incertezaText + "\n" +
-        "**" + I18N.t('impactLevelLabel') + "** " + impactoText
+        "**" + nfrLabel + "** " + dominioText + "\n" +
+        "**" + uncertaintyLabel + "** " + state.contexto + "\n" +
+        "**" + uncertaintyLevelLabel + "** " + incertezaText + "\n" +
+        "**" + impactLevelLabel + "** " + impactoText
     };
 
     const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=INCERTEZA`, {
