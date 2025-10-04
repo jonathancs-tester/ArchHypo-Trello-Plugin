@@ -429,7 +429,7 @@ async function createCard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: itemText,
-          detalhes: `${I18N.t('objective')} ${state.justificativa}\n${I18N.t('description')} ${state.descricao}\n${I18N.t('pattern')} ${patternText}\n${I18N.t('tradeoff')} ${state.tradeoff}`
+          detalhes: `${I18N.t('objective')} ${state.justificativa}\n\n${I18N.t('description')} ${state.descricao}\n\n${I18N.t('pattern')} ${patternText}\n\n${I18N.t('tradeoff')} ${state.tradeoff}`
         })
       });
 
