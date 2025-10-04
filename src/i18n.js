@@ -472,7 +472,7 @@ const I18N = {
                 "Confiabilidade": "Reliability",
                 "Flexibilidade": "Flexibility",
                 "Usabilidade": "Usability",
-                "Productividade": "Productivity"
+                "Produtividade": "Productivity"
             };
         }
         return {}; // No mapping needed for Portuguese
@@ -518,7 +518,7 @@ const I18N = {
             'Confiabilidade': 'reliability',
             'Flexibilidade': 'flexibility',
             'Usabilidade': 'usability',
-            'Productividade': 'productivity',
+            'Produtividade': 'productivity',
             // English
             'Performance': 'performance',
             'Security': 'security',
