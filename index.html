@@ -59,7 +59,7 @@
                     return t.modal({
                       title: I18N.t('reclassifyTitle'),
                       url: `./pages/reclassify.html?cardId=${card.id}&lang=${I18N.getCurrentLanguage()}`,
-                      height: 700,
+                      height: 400,
                       callback: function() {
                         // Força atualização das métricas imediatamente após fechar o modal
                         if (typeof window.atualizarMetricas === 'function') {
@@ -189,7 +189,8 @@
                   return t.modal({
                     title: I18N.t('newUncertainty'),
                     url: `./pages/create-hyphoteses.html?boardId=${boardId.id}&lang=${I18N.getCurrentLanguage()}`,
-                    height: 750
+                    height: 750,
+                    width: 780
                   });
                 });
               }
