@@ -99,13 +99,23 @@
                     });
                   }
 
-                  let levels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
-                  let countIncerteza = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
-                  let countImpacto = { "Muito Baixo": 0, "Baixo": 0, "Médio": 0, "Alto": 0, "Muito Alto": 0 };
-                  let countNaoFuncional = {
-                    "Desempenho": 0, "Segurança": 0, "Confiabilidade": 0,
-                    "Flexibilidade": 0, "Usabilidade": 0, "Productividade": 0
-                  };
+                  // Use normalized keys instead of hardcoded Portuguese values
+                  let levelKeys = I18N.getAllLevelKeys();
+                  let nfrKeys = I18N.getAllNFRKeys();
+
+                  let countIncerteza = {};
+                  let countImpacto = {};
+                  let countNaoFuncional = {};
+                  
+                  levelKeys.forEach(key => {
+                    countIncerteza[key] = 0;
+                    countImpacto[key] = 0;
+                  });
+                  
+                  nfrKeys.forEach(key => {
+                    countNaoFuncional[key] = 0;
+                  });
+
                   let countPattern = {
                     "Architectural Spike": 0,
                     "Architectural Trigger": 0,
@@ -119,29 +129,24 @@
                     "Software Analytics": 0,
                     "Technical Debt Management": 0,
                     "Tracer Bullets": 0
-                    // "Architectural Hypotheses": 0, "Architectural Spike": 0, "Architectural Trigger": 0,
-                    // "Architecture in the Backlog": 0, "Bring the Specialist": 0, "Choose the Means": 0,
-                    // "Climbing on the Shoulders of Giants": 0, "Continuous Inspection": 0,
-                    // "Define Quality Standards": 0, "Find Where it Hurts": 0, "Hypothesis Impact": 0,
-                    // "Learning from Experiments": 0, "Plan Analytics Implementation": 0,
-                    // "Plan for Preparation": 0, "Plan for Responsible Moments": 0,
-                    // "Postpone Uncertain Decisions": 0, "Protective Guideline": 0,
-                    // "Quality Checkpoint": 0, "Reachable Goals": 0, "Small Steps for Analytics": 0,
-                    // "Suspend Measurement": 0, "Technical Debt Management": 0,
-                    // "Test Architecture": 0, "Tracer Bullets": 0, "Uncertainty Level": 0,
-                    // "What you Need to Know": 0
                   };
 
                   let cardPromises = cards.map(function (card) {
                     return Promise.all([
                       t.get(card.id, 'shared', 'incerteza'),
                       t.get(card.id, 'shared', 'impacto'),
-                      t.get(card.id, 'shared', 'dominio_problema'),
+                      t.get(card.id, 'shared', 'dominio'),
                       t.get(card.id, 'shared', 'pattern')
-                    ]).then(function ([incerteza, impacto, dominio_problema, pattern]) {
-                      if (levels.includes(incerteza)) countIncerteza[incerteza]++;
-                      if (levels.includes(impacto)) countImpacto[impacto]++;
-                      if (Object.keys(countNaoFuncional).includes(dominio_problema)) countNaoFuncional[dominio_problema]++;
+                    ]).then(function ([incerteza, impacto, dominio, pattern]) {
+                      // Normalize values to language-independent keys
+                      const normalizedIncerteza = I18N.normalizeLevelValue(incerteza);
+                      const normalizedImpacto = I18N.normalizeLevelValue(impacto);
+                      const normalizedDominio = I18N.normalizeNFRValue(dominio);
+
+                      if (normalizedIncerteza) countIncerteza[normalizedIncerteza]++;
+                      if (normalizedImpacto) countImpacto[normalizedImpacto]++;
+                      if (normalizedDominio) countNaoFuncional[normalizedDominio]++;
+                      
                       if (pattern) {
                         const patterns = pattern.split(',').map(p => p.trim()).filter(p => p !== '');
                         patterns.forEach(p => {

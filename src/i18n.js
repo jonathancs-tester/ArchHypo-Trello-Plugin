@@ -480,6 +480,65 @@ const I18N = {
 
     getNFRMapping: function () {
         return this.nfrMap;
+    },
+
+    // Normalize level values from any language to a common key
+    normalizeLevelValue: function(value) {
+        if (!value) return null;
+        const normalized = value.trim();
+        
+        // Create reverse mapping for both languages
+        const levelMap = {
+            // Portuguese
+            'Muito Baixo': 'veryLow',
+            'Baixo': 'low',
+            'Médio': 'medium',
+            'Alto': 'high',
+            'Muito Alto': 'veryHigh',
+            // English
+            'Very Low': 'veryLow',
+            'Low': 'low',
+            'Medium': 'medium',
+            'High': 'high',
+            'Very High': 'veryHigh'
+        };
+        
+        return levelMap[normalized] || null;
+    },
+
+    // Normalize NFR domain values from any language to a common key
+    normalizeNFRValue: function(value) {
+        if (!value) return null;
+        const normalized = value.trim();
+        
+        const nfrMap = {
+            // Portuguese
+            'Desempenho': 'performance',
+            'Segurança': 'security',
+            'Confiabilidade': 'reliability',
+            'Flexibilidade': 'flexibility',
+            'Usabilidade': 'usability',
+            'Productividade': 'productivity',
+            // English
+            'Performance': 'performance',
+            'Security': 'security',
+            'Reliability': 'reliability',
+            'Flexibility': 'flexibility',
+            'Usability': 'usability',
+            'Productivity': 'productivity'
+        };
+        
+        return nfrMap[normalized] || null;
+    },
+
+    // Get all possible level keys
+    getAllLevelKeys: function() {
+        return ['veryLow', 'low', 'medium', 'high', 'veryHigh'];
+    },
+
+    // Get all possible NFR keys
+    getAllNFRKeys: function() {
+        return ['performance', 'security', 'reliability', 'flexibility', 'usability', 'productivity'];
     }
 };
 

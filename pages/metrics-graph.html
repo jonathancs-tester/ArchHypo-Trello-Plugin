@@ -134,12 +134,12 @@
             ];
         }
 
-        // Original Portuguese levels for data mapping
-        let originalLevels = ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"];
+        // Normalized level keys (language independent)
+        let levelKeys = ['veryLow', 'low', 'medium', 'high', 'veryHigh'];
         let translatedLevels = getTranslatedLevels();
 
-        let incertezaValues = originalLevels.map(l => incerteza[l] || 0);
-        let impactoValues = originalLevels.map(l => impacto[l] || 0);
+        let incertezaValues = levelKeys.map(key => incerteza[key] || 0);
+        let impactoValues = levelKeys.map(key => impacto[key] || 0);
 
         let ctxMetrics = document.getElementById('metricsChart').getContext('2d');
         new Chart(ctxMetrics, {
@@ -176,10 +176,23 @@
         // Obtenção dos dados para Requisito Não Funcional
         const naoFuncional = JSON.parse(urlParamsMetrics.get('naoFuncional'));
 
-        // Dados para o gráfico de Requisito Não Funcional
-        let levelsNaoFuncional = [I18N.t('flexibilityText'),I18N.t('performanceText'),I18N.t('productivityText'),I18N.t('reliabilityText'),I18N.t('securityText'),I18N.t('usabilityText')];
-        let translatedNFRLabels = levelsNaoFuncional.map(nfr => I18N.nfrMap[nfr] || nfr);
-        let naoFuncionalValues = levelsNaoFuncional.map(l => naoFuncional[l] || 0);
+        // Normalized NFR keys (language independent)
+        let nfrKeys = ['flexibility', 'performance', 'productivity', 'reliability', 'security', 'usability'];
+        
+        // Get translated NFR labels based on current language
+        function getTranslatedNFRLabels() {
+            return [
+                I18N.t('flexibility'),
+                I18N.t('performance'),
+                I18N.t('productivity'),
+                I18N.t('reliability'),
+                I18N.t('security'),
+                I18N.t('usability')
+            ];
+        }
+        
+        let translatedNFRLabels = getTranslatedNFRLabels();
+        let naoFuncionalValues = nfrKeys.map(key => naoFuncional[key] || 0);
 
         let ctxNaoFuncional = document.getElementById('naoFuncionalChart').getContext('2d');
         new Chart(ctxNaoFuncional, {
