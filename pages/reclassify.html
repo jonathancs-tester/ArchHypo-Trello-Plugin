@@ -76,6 +76,7 @@
     <label for="incerteza" id="incertezaLabel"></label>
     <select id="incerteza" required>
       <option value="" id="selectOption"></option>
+      <option value="Muito Baixo" id="veryLowOption"></option>
       <option value="Baixo" id="lowOption"></option>
       <option value="Médio" id="mediumOption"></option>
       <option value="Alto" id="highOption"></option>
@@ -84,6 +85,7 @@
     <label for="impacto" id="impactoLabel"></label>
     <select id="impacto" required>
       <option value="" id="selectOption2"></option>
+      <option value="Muito Baixo" id="veryLowOption2"></option>
       <option value="Baixo" id="lowOption2"></option>
       <option value="Médio" id="mediumOption2"></option>
       <option value="Alto" id="highOption2"></option>
@@ -102,6 +104,8 @@
   document.getElementById('justificativaLabel').textContent = I18N.t('reclassifyJustification') || 'Justificativa da reclassificação';
   document.getElementById('selectOption').textContent = I18N.t('selectOption') || 'Selecione...';
   document.getElementById('selectOption2').textContent = I18N.t('selectOption') || 'Selecione...';
+    document.getElementById('veryLowOption').textContent = I18N.t('veryLowText') || 'Muito Baixo';
+    document.getElementById('veryLowOption2').textContent = I18N.t('veryLowText') || 'Muito Baixo';
     document.getElementById('lowOption').textContent = I18N.t('lowText') || 'Baixo';
     document.getElementById('mediumOption').textContent = I18N.t('mediumText') || 'Médio';
     document.getElementById('highOption').textContent = I18N.t('highText') || 'Alto';
