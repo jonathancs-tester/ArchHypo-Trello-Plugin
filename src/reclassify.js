@@ -11,16 +11,20 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
   const incerteza = document.getElementById('incerteza').value;
   const impacto = document.getElementById('impacto').value;
   const justificativa = document.getElementById('justificativa').value;
+  const levelMap = I18N.getLevelMapping();
+
+  const incertezaText = levelMap[incerteza] || incerteza;
+  const impactoText = levelMap[impacto] || impacto;
 
   // Pega os labels do i18n para passar ao backend
-  const uncertaintyLabel = "**" + I18N.t('uncertaintyLevelLabel') + "**" || '**Nível de Incerteza:** ';
-  const impactLabel = "**" + I18N.t('impactLevelLabel') + "**" || '**Nível de Impacto:** ';
+  const uncertaintyLabel = "**" + I18N.t('uncertaintyLevelLabel').trim() + "**" || '**Nível de Incerteza:** ';
+  const impactLabel = "**" + I18N.t('impactLevelLabel').trim() + "**" || '**Nível de Impacto:** ';
 
   if (window.TrelloPowerUp) {
     const t = window.TrelloPowerUp.iframe();
     await t.set('card', 'shared', {
-      incerteza,
-      impacto,
+      incertezaText,
+      impactoText,
       justificativa_reclassificacao: justificativa
     });
 
@@ -41,7 +45,7 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
         await fetch('/.netlify/functions/update-hypothesis-card', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hypothesisCardUrl, incerteza, impacto, uncertaintyLabel, impactLabel })
+          body: JSON.stringify({ hypothesisCardUrl, incertezaText, impactoText, uncertaintyLabel, impactLabel })
         });
       } catch (err) {
         alert('Erro ao atualizar card de hipótese: ' + err.message);
