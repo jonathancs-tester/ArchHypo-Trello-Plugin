@@ -13,8 +13,8 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
   const justificativa = document.getElementById('justificativa').value;
 
   // Pega os labels do i18n para passar ao backend
-  const uncertaintyLabel = I18N.t('uncertaintyLevelLabel') || '**Nível de Incerteza:** ';
-  const impactLabel = I18N.t('impactLevelLabel') || '**Nível de Impacto:** ';
+  const uncertaintyLabel = "**" + I18N.t('uncertaintyLevelLabel') + "**" || '**Nível de Incerteza:** ';
+  const impactLabel = "**" + I18N.t('impactLevelLabel') + "**" || '**Nível de Impacto:** ';
 
   if (window.TrelloPowerUp) {
     const t = window.TrelloPowerUp.iframe();
