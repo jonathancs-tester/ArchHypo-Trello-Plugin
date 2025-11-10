@@ -49,6 +49,20 @@
             });
           }
 
+          // Botão de Análise de Código - disponível para todos os cards
+          buttons.push({
+            icon: "https://img.icons8.com/ios-filled/50/000000/code.png",
+            text: I18N.t('analyzeCode') || 'Analisar Código',
+            callback: function (t) {
+              return t.modal({
+                title: I18N.t('codeAnalysisTitle') || 'Análise de Código com IA',
+                url: `./pages/repository-analysis.html?cardId=${card.id}&lang=${I18N.getCurrentLanguage()}`,
+                height: 700,
+                fullscreen: false
+              });
+            }
+          });
+
           // Botão de reclassificação para TPI em DONE com attachment de hipótese
           if (card.name && card.name.includes("TPI")) {
             // Buscar nome da lista DONE (pode ser customizado, então idealmente buscar pelo idList)
