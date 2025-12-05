@@ -229,7 +229,7 @@ function getBoardIdFromUrl() {
 
 async function getCardCount() {
   const boardId = getBoardIdFromUrl();
-    const query = `boardId=${boardId}&column=INCERTEZA`;
+    const query = `boardId=${boardId}&column=${I18N.t('col1')}`;
 
     const res = await fetch(`/.netlify/functions/get-uncertainty?` + query, {
       method: 'GET',
@@ -468,7 +468,7 @@ async function analyzeImpact() {
     state.incertezaMotivo = document.getElementById('incertezaResultado').value;
 
     const boardId = getBoardIdFromUrl();
-    const query = `boardId=${boardId}&column=INCERTEZA`;
+    const query = `boardId=${boardId}&column=${I18N.t('col1')}`;
 
     const res = await fetch(`/.netlify/functions/get-impact?` + query, {
       method: 'GET',
@@ -568,7 +568,7 @@ async function createCard() {
         "**" + impactLevelLabel + "** " + impactoText
     };
 
-    const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=INCERTEZA`, {
+    const res = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=${I18N.t('col1')}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
