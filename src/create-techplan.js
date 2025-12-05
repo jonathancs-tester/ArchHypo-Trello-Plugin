@@ -424,7 +424,7 @@ async function createCard() {
       const itemText = patternItems[i].querySelector('p').textContent;
       const patternText = patternItems[i].querySelector('select').value;
 
-      const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=ITEM PLANO TECNICO`, {
+      const response = await fetch(`/.netlify/functions/create-card?boardId=${boardId}&column=${I18N.t('col2')}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
