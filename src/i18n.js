@@ -464,22 +464,24 @@ const I18N = {
     },
 
     // NFR domain translation mappings
-    get nfrMap() {
-        if (this.currentLanguage === 'en') {
-            return {
-                "Desempenho": "Performance",
-                "Segurança": "Security",
-                "Confiabilidade": "Reliability",
-                "Flexibilidade": "Flexibility",
-                "Usabilidade": "Usability",
-                "Produtividade": "Productivity"
-            };
-        }
-        return {}; // No mapping needed for Portuguese
-    },
-
-    getNFRMapping: function () {
-        return this.nfrMap;
+    getNFRKeyFromValue: function(value) {
+        const nfrMap = {
+            // Portuguese
+            'Desempenho': 'performance',
+            'Segurança': 'security',
+            'Confiabilidade': 'reliability',
+            'Flexibilidade': 'flexibility',
+            'Usabilidade': 'usability',
+            'Produtividade': 'productivity',
+            // English
+            'Performance': 'performance',
+            'Security': 'security',
+            'Reliability': 'reliability',
+            'Flexibility': 'flexibility',
+            'Usability': 'usability',
+            'Productivity': 'productivity'
+        };
+        return nfrMap[value] || value; // Retorna a chave ou o valor original se não encontrar
     },
 
     // Normalize level values from any language to a common key

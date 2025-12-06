@@ -541,10 +541,9 @@ async function createCard() {
     state.impacto = document.getElementById('impacto').value;
     state.impactoMotivo = document.getElementById('impactoMotivo').value;
     // Traduza os valores do state para o idioma selecionado, se necessário
+    const nfrKey = I18N.getNFRKeyFromValue(state.dominio);
+    const dominioText = I18N.t(nfrKey);
     const levelMap = I18N.getLevelMapping();
-    const nfrMap = I18N.getNFRMapping ? I18N.getNFRMapping() : {};
-    // Se não houver mapeamento, mantém o valor original
-    const dominioText = nfrMap[state.dominio] || state.dominio;
     const incertezaText = levelMap[state.incerteza] || state.incerteza;
     const impactoText = levelMap[state.impacto] || state.impacto;
 
@@ -729,9 +728,9 @@ function updatePreviewPanel() {
   const contexto = document.getElementById('contexto')?.value || '';
   const incerteza = document.getElementById('incerteza')?.value || '';
   const impacto = document.getElementById('impacto')?.value || '';
+  const nfrKey = I18N.getNFRKeyFromValue(dominio);
+  const dominioText = I18N.t(nfrKey);
   const levelMap = I18N.getLevelMapping();
-  const nfrMap = I18N.getNFRMapping ? I18N.getNFRMapping() : {};
-  const dominioText = nfrMap[dominio] || dominio;
   const incertezaText = levelMap[incerteza] || incerteza;
   const impactoText = levelMap[impacto] || impacto;
 
