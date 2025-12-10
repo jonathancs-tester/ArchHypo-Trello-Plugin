@@ -130,6 +130,10 @@ function showStep(stepId) {
   if (stepElement) {
     stepElement.classList.add('active');
   }
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário clicou no botão NEXT"
+  });
 }
 
 function previousStep() {
@@ -137,6 +141,10 @@ function previousStep() {
   if (confirmLeave && currentStep >= 0) {
     showStep(currentStep - 1);
   }
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário clicou no botão PREVIOUS"
+  });
 }
 
 function previousEditStep() {
@@ -144,6 +152,10 @@ function previousEditStep() {
   if (confirmLeave && currentStep >= 0) {
     showStep(currentStep - 2);
   }
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário clicou no botão PREVIOUS"
+  });
 }
 
 function showLoading(stepId) {
@@ -180,6 +192,16 @@ async function callEndpoint(endpoint, input) {
   }
 
   const data = await res.json();
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: JSON.stringify({
+      message: "O usuário enviou uma requisição ao endpoint",
+      endpoint: endpoint,
+      input: input,
+      language: state.language,
+      result: data
+    })
+  });
   return data;
 }
 
@@ -285,6 +307,10 @@ async function editPlan() {
         `;
 
     editContainer.appendChild(resultDiv);
+    fetch("/.netlify/functions/log", {
+      method: "POST",
+      body: "O usuário editou o TPI" + textoInicial + " X "+ itemText
+    });
   }
 
   loadingElement.textContent = textoInicial;
@@ -347,6 +373,20 @@ async function classifyPattern() {
       });
 
       const data = await res.json();
+
+      fetch("/.netlify/functions/log", {
+        method: "POST",
+        body: JSON.stringify({
+          message: "O usuário enviou uma requisição ao endpoint",
+          endpoint: `classifyPattern`,
+          input: JSON.stringify({
+            hypothesis: hypothesisText,
+            language: state.language
+          }),
+          language: state.language,
+          result: data
+        })
+      });
 
       const resultDiv = document.createElement('div');
       const fixedOptions = [
@@ -434,6 +474,20 @@ async function createCard() {
       });
 
       const responseData = await response.json();
+
+      fetch("/.netlify/functions/log", {
+        method: "POST",
+        body: JSON.stringify({
+          message: "O usuário enviou uma requisição ao endpoint",
+          endpoint: `create-card?boardId=${boardId}&column=${I18N.t('col2')}`,
+          input: JSON.stringify({
+            name: itemText,
+            detalhes: `${I18N.t('objective')} ${state.justificativa}\n\n${I18N.t('description')} ${state.descricao}\n\n${I18N.t('pattern')} ${patternText}\n\n${I18N.t('tradeoff')} ${state.tradeoff}`
+          }),
+          language: state.language,
+          result: responseData
+        })
+      });
       const newCardId = responseData.data.id;
       const newCardUrl = responseData.data.shortUrl || responseData.data.url;
 

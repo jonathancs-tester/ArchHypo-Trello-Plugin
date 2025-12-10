@@ -37,6 +37,10 @@ async function createBoardTemplate(boardId) {
         });
 
         const result = await res.json();
+        fetch("/.netlify/functions/log", {
+          method: "POST",
+          body: "O usuário criou o board template com a info" + result
+        });
 
         if (!res.ok) {
             alert(`${I18N.t('createCardError')} ${result.error || result.erro || I18N.t('unknownError')}`);

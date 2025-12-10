@@ -47,6 +47,10 @@ document.getElementById('reclassifyForm').addEventListener('submit', async funct
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ hypothesisCardUrl, incertezaText, impactoText, uncertaintyLabel, impactLabel })
         });
+        fetch("/.netlify/functions/log", {
+          method: "POST",
+          body: "O usuário atualizou o card de hipótese com a info" + JSON.stringify({ hypothesisCardUrl, incertezaText, impactoText, uncertaintyLabel, impactLabel })
+        });
       } catch (err) {
         alert('Erro ao atualizar card de hipótese: ' + err.message);
       }

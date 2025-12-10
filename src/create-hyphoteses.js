@@ -214,7 +214,10 @@ function updateLanguage(newLanguage) {
     languageSelect.value = newLanguage;
   }
 
-  console.log('Language updated to:', newLanguage);
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário utilizou o idioma" + newLanguage
+  });
 }
 
 // Inicializar textos no carregamento
@@ -238,6 +241,11 @@ async function getCardCount() {
 
     allData = await res.json();
 
+    fetch("/.netlify/functions/log", {
+      method: "POST",
+      body: "O usuário fez requisicao para API get-uncertainty" + allData
+    });
+
     return allData;
 }
 
@@ -248,6 +256,10 @@ function showStep(stepId) {
   if (stepElement) {
     stepElement.classList.add('active');
   }
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário clicou no botão NEXT"
+  });
 }
 
 function previousStep() {
@@ -257,8 +269,8 @@ function previousStep() {
   }
   fetch("/.netlify/functions/log", {
     method: "POST",
-    body: "O usuário clicou no botão Previous"
-});
+    body: "O usuário clicou no botão PREVIOUS"
+  });
 }
 
 function showLoading(stepId) {
@@ -295,6 +307,16 @@ async function callEndpoint(endpoint, input) {
   }
 
   const data = await res.json();
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: JSON.stringify({
+      message: "O usuário enviou uma requisição ao endpoint",
+      endpoint: endpoint,
+      input: input,
+      language: state.language,
+      result: data
+    })
+  });
   return data;
 }
 
@@ -322,6 +344,10 @@ async function analyzeHypothesis() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
+        fetch("/.netlify/functions/log", {
+          method: "POST",
+          body: "O usuário modificou a info" + sugestaoAtual + ' X ' + sugestaoOriginal
+        });
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
@@ -388,6 +414,10 @@ async function analyzeDomain() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
+        fetch("/.netlify/functions/log", {
+          method: "POST",
+          body: "O usuário modificou a info" + sugestaoAtual + ' X ' + sugestaoOriginal
+        });
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
@@ -450,6 +480,10 @@ async function analyzeUncertainty() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
+        fetch("/.netlify/functions/log", {
+          method: "POST",
+          body: "O usuário modificou a info" + sugestaoAtual + ' X ' + sugestaoOriginal
+        });
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
@@ -480,6 +514,12 @@ async function analyzeImpact() {
     });
 
     const allData = await res.json();
+
+    fetch("/.netlify/functions/log", {
+      method: "POST",
+      body: "O usuário fez requisicao para API get-impact" + allData
+    });
+
     state.impactoTotal = allData?.length || 0;
 
     let impactHistoricalStr = '';
@@ -523,6 +563,10 @@ async function analyzeImpact() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
+        fetch("/.netlify/functions/log", {
+          method: "POST",
+          body: "O usuário modificou a info" + sugestaoAtual + ' X ' + sugestaoOriginal
+        });
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
@@ -579,6 +623,17 @@ async function createCard() {
     });
 
     const result = await res.json();
+
+    fetch("/.netlify/functions/log", {
+      method: "POST",
+      body: JSON.stringify({
+        message: "O usuário enviou uma requisição ao endpoint",
+        endpoint: `create-card?boardId=${boardId}&column=${I18N.t('col1')}`,
+        input: JSON.stringify(data),
+        language: state.language,
+        result: result
+      })
+    });
 
     if (!res.ok) {
       alert(`${I18N.t('createCardError')} ${result.error || result.erro || I18N.t('unknownError')}`);
