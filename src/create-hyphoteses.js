@@ -255,6 +255,10 @@ function previousStep() {
   if (confirmLeave && currentStep >= 0) {
     showStep(currentStep - 1);
   }
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário clicou no botão Previous"
+});
 }
 
 function showLoading(stepId) {
