@@ -124,7 +124,7 @@ function getCardIdFromUrl() {
 }
 
 function showStep(stepId) {
-  fetch("/.netlify/functions/log", {
+  fetch("/.netlify/functions/log2", {
     method: "POST",
     body: "O usuário clicou no botão NEXT"
   });
@@ -137,7 +137,7 @@ function showStep(stepId) {
 }
 
 function previousStep() {
-  fetch("/.netlify/functions/log", {
+  fetch("/.netlify/functions/log2", {
     method: "POST",
     body: "O usuário clicou no botão PREVIOUS"
   });
@@ -148,7 +148,7 @@ function previousStep() {
 }
 
 function previousEditStep() {
-  fetch("/.netlify/functions/log", {
+  fetch("/.netlify/functions/log2", {
     method: "POST",
     body: "O usuário clicou no botão PREVIOUS"
   });
@@ -192,7 +192,7 @@ async function callEndpoint(endpoint, input) {
   }
 
   const data = await res.json();
-  fetch("/.netlify/functions/log", {
+  fetch("/.netlify/functions/log2", {
     method: "POST",
     body: JSON.stringify({
       message: "O usuário enviou uma requisição ao endpoint",
@@ -307,7 +307,7 @@ async function editPlan() {
         `;
 
     editContainer.appendChild(resultDiv);
-    fetch("/.netlify/functions/log", {
+    fetch("/.netlify/functions/log2", {
       method: "POST",
       body: "O usuário editou o TPI. Inicial:" + textoInicial + " Editado: "+ itemText
     });
@@ -374,7 +374,7 @@ async function classifyPattern() {
 
       const data = await res.json();
 
-      fetch("/.netlify/functions/log", {
+      fetch("/.netlify/functions/log2", {
         method: "POST",
         body: JSON.stringify({
           message: "O usuário enviou uma requisição ao endpoint",
@@ -475,7 +475,7 @@ async function createCard() {
 
       const responseData = await response.json();
 
-      fetch("/.netlify/functions/log", {
+      fetch("/.netlify/functions/log2", {
         method: "POST",
         body: JSON.stringify({
           message: "O usuário enviou uma requisição ao endpoint",

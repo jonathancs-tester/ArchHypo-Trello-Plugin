@@ -238,7 +238,7 @@ async function getCardCount() {
 
     allData = await res.json();
 
-    fetch("/.netlify/functions/log", {
+    fetch("/.netlify/functions/log2", {
       method: "POST",
       body: "O usuário fez requisicao para API get-uncertainty."
     });
@@ -247,7 +247,7 @@ async function getCardCount() {
 }
 
 function showStep(stepId) {
-  fetch("/.netlify/functions/log", {
+  fetch("/.netlify/functions/log2", {
     method: "POST",
     body: "O usuário clicou no botão NEXT"
   });
@@ -260,7 +260,7 @@ function showStep(stepId) {
 }
 
 function previousStep() {
-  fetch("/.netlify/functions/log", {
+  fetch("/.netlify/functions/log2", {
     method: "POST",
     body: "O usuário clicou no botão PREVIOUS"
   });
@@ -304,7 +304,7 @@ async function callEndpoint(endpoint, input) {
   }
 
   const data = await res.json();
-  fetch("/.netlify/functions/log", {
+  fetch("/.netlify/functions/log2", {
     method: "POST",
     body: JSON.stringify({
       message: "O usuário enviou uma requisição ao endpoint",
@@ -341,7 +341,7 @@ async function analyzeHypothesis() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        fetch("/.netlify/functions/log", {
+        fetch("/.netlify/functions/log2", {
           method: "POST",
           body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
         });
@@ -411,7 +411,7 @@ async function analyzeDomain() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        fetch("/.netlify/functions/log", {
+        fetch("/.netlify/functions/log2", {
           method: "POST",
           body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
         });
@@ -477,7 +477,7 @@ async function analyzeUncertainty() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        fetch("/.netlify/functions/log", {
+        fetch("/.netlify/functions/log2", {
           method: "POST",
           body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
         });
@@ -512,7 +512,7 @@ async function analyzeImpact() {
 
     const allData = await res.json();
 
-    fetch("/.netlify/functions/log", {
+    fetch("/.netlify/functions/log2", {
       method: "POST",
       body: "O usuário fez requisicao para API get-impact."
     });
@@ -560,7 +560,7 @@ async function analyzeImpact() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        fetch("/.netlify/functions/log", {
+        fetch("/.netlify/functions/log2", {
           method: "POST",
           body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
         });
@@ -621,7 +621,7 @@ async function createCard() {
 
     const result = await res.json();
 
-    fetch("/.netlify/functions/log", {
+    fetch("/.netlify/functions/log2", {
       method: "POST",
       body: JSON.stringify({
         message: "O usuário enviou uma requisição ao endpoint",
