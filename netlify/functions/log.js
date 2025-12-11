@@ -6,13 +6,15 @@ export default async (req) => {
   const today = new Date().toISOString().split("T")[0];
   const filename = `logs-${today}.txt`;
 
+  // SEMPRE funciona
   const bodyText = await req.text();
+
   const timestamp = new Date().toISOString();
+  const current = (await store.get(filename, { type: "text" })) || "";
 
   const newLog = `${timestamp} - ${bodyText}\n`;
 
-  // 🔥 AQUI é o append certo
-  await store.set(filename, newLog, { append: true });
+  await store.set(filename, current + newLog, { append: true });
 
-  return Response.json({ ok: true });
+  return Response.json(`${timestamp} - ${bodyText}\n`);
 };
