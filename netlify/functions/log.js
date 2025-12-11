@@ -6,13 +6,15 @@ export default async (req) => {
   const today = new Date().toISOString().split("T")[0];
   const filename = `logs-${today}.txt`;
 
+  // SEMPRE funciona
   const bodyText = await req.text();
+
   const timestamp = new Date().toISOString();
+  const current = (await store.get(filename, { type: "text" })) || "";
 
   const newLog = `${timestamp} - ${bodyText}\n`;
 
-  // 🔥 Não sobrescreve. Adiciona no final mesmo com 100 requisições correndo juntas.
-  await store.append(filename, newLog);
+  await store.set(filename, current + newLog, { append: true });
 
   return Response.json({ ok: true });
 };
