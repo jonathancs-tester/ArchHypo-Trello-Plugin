@@ -216,7 +216,7 @@ function updateLanguage(newLanguage) {
 
   fetch("/.netlify/functions/log", {
     method: "POST",
-    body: "O usuário utilizou o idioma" + newLanguage
+    body: "O usuário utilizou o idioma: " + newLanguage
   });
 }
 
@@ -243,34 +243,34 @@ async function getCardCount() {
 
     fetch("/.netlify/functions/log", {
       method: "POST",
-      body: "O usuário fez requisicao para API get-uncertainty" + allData
+      body: "O usuário fez requisicao para API get-uncertainty."
     });
 
     return allData;
 }
 
 function showStep(stepId) {
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário clicou no botão NEXT"
+  });
   currentStep = stepId;
   document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
   const stepElement = document.getElementById('step' + stepId);
   if (stepElement) {
     stepElement.classList.add('active');
   }
-  fetch("/.netlify/functions/log", {
-    method: "POST",
-    body: "O usuário clicou no botão NEXT"
-  });
 }
 
 function previousStep() {
-  const confirmLeave = window.confirm(I18N.t('confirmLeave'));
-  if (confirmLeave && currentStep >= 0) {
-    showStep(currentStep - 1);
-  }
   fetch("/.netlify/functions/log", {
     method: "POST",
     body: "O usuário clicou no botão PREVIOUS"
   });
+  const confirmLeave = window.confirm(I18N.t('confirmLeave'));
+  if (confirmLeave && currentStep >= 0) {
+    showStep(currentStep - 1);
+  }
 }
 
 function showLoading(stepId) {
@@ -346,7 +346,7 @@ async function analyzeHypothesis() {
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
         fetch("/.netlify/functions/log", {
           method: "POST",
-          body: "O usuário modificou a info" + sugestaoAtual + ' X ' + sugestaoOriginal
+          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
         });
       } else {
         motivoField.style.display = 'none';
@@ -416,7 +416,7 @@ async function analyzeDomain() {
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
         fetch("/.netlify/functions/log", {
           method: "POST",
-          body: "O usuário modificou a info" + sugestaoAtual + ' X ' + sugestaoOriginal
+          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
         });
       } else {
         motivoField.style.display = 'none';
@@ -482,7 +482,7 @@ async function analyzeUncertainty() {
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
         fetch("/.netlify/functions/log", {
           method: "POST",
-          body: "O usuário modificou a info" + sugestaoAtual + ' X ' + sugestaoOriginal
+          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
         });
       } else {
         motivoField.style.display = 'none';
@@ -517,7 +517,7 @@ async function analyzeImpact() {
 
     fetch("/.netlify/functions/log", {
       method: "POST",
-      body: "O usuário fez requisicao para API get-impact" + allData
+      body: "O usuário fez requisicao para API get-impact."
     });
 
     state.impactoTotal = allData?.length || 0;
@@ -565,7 +565,7 @@ async function analyzeImpact() {
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
         fetch("/.netlify/functions/log", {
           method: "POST",
-          body: "O usuário modificou a info" + sugestaoAtual + ' X ' + sugestaoOriginal
+          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
         });
       } else {
         motivoField.style.display = 'none';
@@ -629,7 +629,7 @@ async function createCard() {
       body: JSON.stringify({
         message: "O usuário enviou uma requisição ao endpoint",
         endpoint: `create-card?boardId=${boardId}&column=${I18N.t('col1')}`,
-        input: JSON.stringify(data),
+        input: data,
         language: state.language,
         result: result
       })

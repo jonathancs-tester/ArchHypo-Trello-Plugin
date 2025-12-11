@@ -39,7 +39,7 @@ async function createBoardTemplate(boardId) {
         const result = await res.json();
         fetch("/.netlify/functions/log", {
           method: "POST",
-          body: "O usuário criou o board template com a info" + result
+          body: "O usuário criou o board template com a info: " + result
         });
 
         if (!res.ok) {

@@ -124,38 +124,38 @@ function getCardIdFromUrl() {
 }
 
 function showStep(stepId) {
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário clicou no botão NEXT"
+  });
   currentStep = stepId;
   document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
   const stepElement = document.getElementById('step' + stepId);
   if (stepElement) {
     stepElement.classList.add('active');
   }
-  fetch("/.netlify/functions/log", {
-    method: "POST",
-    body: "O usuário clicou no botão NEXT"
-  });
 }
 
 function previousStep() {
+  fetch("/.netlify/functions/log", {
+    method: "POST",
+    body: "O usuário clicou no botão PREVIOUS"
+  });
   const confirmLeave = window.confirm(I18N.t('confirmLeave'));
   if (confirmLeave && currentStep >= 0) {
     showStep(currentStep - 1);
   }
+}
+
+function previousEditStep() {
   fetch("/.netlify/functions/log", {
     method: "POST",
     body: "O usuário clicou no botão PREVIOUS"
   });
-}
-
-function previousEditStep() {
   const confirmLeave = window.confirm(I18N.t('confirmLeave'));
   if (confirmLeave && currentStep >= 0) {
     showStep(currentStep - 2);
   }
-  fetch("/.netlify/functions/log", {
-    method: "POST",
-    body: "O usuário clicou no botão PREVIOUS"
-  });
 }
 
 function showLoading(stepId) {
@@ -309,7 +309,7 @@ async function editPlan() {
     editContainer.appendChild(resultDiv);
     fetch("/.netlify/functions/log", {
       method: "POST",
-      body: "O usuário editou o TPI" + textoInicial + " X "+ itemText
+      body: "O usuário editou o TPI. Inicial:" + textoInicial + " Editado: "+ itemText
     });
   }
 
