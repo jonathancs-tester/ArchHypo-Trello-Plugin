@@ -411,7 +411,6 @@ async function analyzeDomain() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        motivoField.value = document.getElementById('impactoMotivo');
         fetch("/.netlify/functions/log", {
           method: "POST",
           body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
@@ -561,7 +560,6 @@ async function analyzeImpact() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        motivoField.value = document.getElementById('impactoMotivo');
         fetch("/.netlify/functions/log", {
           method: "POST",
           body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
