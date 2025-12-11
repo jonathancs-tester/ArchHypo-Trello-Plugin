@@ -96,10 +96,6 @@ function t(key) {
 }
 
 function updateLanguage(newLanguage) {
-  fetch("/.netlify/functions/log", {
-    method: "POST",
-    body: "O usuário utilizou o idioma: " + newLanguage
-  });
   state.language = newLanguage;
   I18N.setLanguage(newLanguage);
   updateTexts(newLanguage);
@@ -109,6 +105,8 @@ function updateLanguage(newLanguage) {
   if (languageSelect) {
     languageSelect.value = newLanguage;
   }
+
+  console.log('Language updated to:', newLanguage);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
