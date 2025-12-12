@@ -347,7 +347,7 @@ async function analyzeHypothesis() {
       }
     });
 
-    motivoField.addEventListener('input', function () {
+    motivoField.addEventListener('blur', function () {
       fetch("/.netlify/functions/log", {
         method: "POST",
         body: "O usuário modificou a justificativa. Atual: " + hipoteseField.value + ' Original: ' + sugestao + ' Justificativa: ' + this.value
@@ -414,17 +414,13 @@ async function analyzeDomain() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        fetch("/.netlify/functions/log", {
-          method: "POST",
-          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
-        });
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
       }
     });
 
-    motivoField.addEventListener('input', function () {
+    motivoField.addEventListener('blur', function () {
       fetch("/.netlify/functions/log", {
         method: "POST",
         body: "O usuário modificou a justificativa. Atual: " + dominioField.value + ' Original: ' + sugestao + ' Justificativa: ' + this.value
@@ -487,17 +483,13 @@ async function analyzeUncertainty() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        fetch("/.netlify/functions/log", {
-          method: "POST",
-          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
-        });
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
       }
     });
 
-    motivoField.addEventListener('input', function () {
+    motivoField.addEventListener('blur', function () {
       fetch("/.netlify/functions/log", {
         method: "POST",
         body: "O usuário modificou a justificativa. Atual: " + incertezaField.value + ' Original: ' + sugestao + ' Justificativa: ' + this.value
@@ -577,17 +569,13 @@ async function analyzeImpact() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        fetch("/.netlify/functions/log", {
-          method: "POST",
-          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField.value
-        });
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
       }
     });
 
-    motivoField.addEventListener('input', function () {
+    motivoField.addEventListener('blur', function () {
       fetch("/.netlify/functions/log", {
         method: "POST",
         body: "O usuário modificou a justificativa. Atual: " + impactoField.value + ' Original: ' + sugestao + ' Justificativa: ' + this.value
