@@ -1,7 +1,7 @@
 import { getStore } from "@netlify/blobs";
 
 export default async (req) => {
-  const store = getStore("logs");
+  const store = getStore({ name: "logs", consistency: "strong" });
 
   const today = new Date().toISOString().split("T")[0];
   const filename = `logs-${today}.txt`;
@@ -14,7 +14,7 @@ export default async (req) => {
 
   const newLog = `${timestamp} - ${bodyText}\n`;
 
-  await store.set(filename, current + newLog, { append: true });
+  await store.set(filename, current + newLog);
 
   return Response.json({ ok: true });
 };
