@@ -1,6 +1,5 @@
 import { handleCors, corsHeaders } from './utils/cors.js';
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
+import fetch from "node-fetch";
 import { cleanAndParseJSON } from './utils/json-utils.js';
 
 export async function handler(event) {
@@ -9,16 +8,10 @@ export async function handler(event) {
 
   const { input, language = 'pt' } = JSON.parse(event.body);
 
-  const model = new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash",
-    apiKey: process.env.GENAI_API_KEY,
-  });
-
   // Usar idioma enviado pelo frontend em vez de detecção automática
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
-  const prompt = ChatPromptTemplate.fromTemplate(
-    `Você é um Gerente de Produto Técnico (Technical Product Manager) sênior, especialista em análise de risco e validação de hipóteses. Sua tarefa é analisar o contexto fornecido em "{input}" para classificar o nível de incerteza associado.
+  const prompt = `Você é um Gerente de Produto Técnico (Technical Product Manager) sênior, especialista em análise de risco e validação de hipóteses. Sua tarefa é analisar o contexto fornecido em "${input}" para classificar o nível de incerteza associado.
 
 **Contexto / Hipótese para Análise:** "{input}"
 
@@ -50,14 +43,24 @@ export async function handler(event) {
 - A resposta **deve** ser um objeto JSON válido.
 - O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}
 - O JSON deve conter apenas as chaves "sugestao" e "motivo".
-`
+`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${process.env.GENAI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      }),
+    }
   );
 
-  const chain = prompt.pipe(model);
-  const result = await chain.invoke({ input });
+  const data = await response.json();
+  const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
   // Usar a função de parse robusto
-  const parsedResult = cleanAndParseJSON(result.content);
+  const parsedResult = cleanAndParseJSON(rawContent);
   const { sugestao, motivo } = parsedResult;
 
   return {
