@@ -1,5 +1,5 @@
 import { handleCors, corsHeaders } from './utils/cors.js';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import fetch from "node-fetch";
 import { cleanAndParseJSON } from './utils/json-utils.js';
 
 export async function handler(event) {
@@ -7,9 +7,6 @@ export async function handler(event) {
   if (corsResponse) return corsResponse;
 
   const { input, language = 'pt' } = JSON.parse(event.body);
-
-  const genAI = new GoogleGenerativeAI(process.env.GENAI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemma-3-4b" });
 
   // Usar idioma enviado pelo frontend em vez de detecção automática
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
@@ -36,12 +33,22 @@ export async function handler(event) {
 ---
 **Incerteza Fornecida:** "${input}"`;
 
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemma-2-9b-it:generateContent?key=${process.env.GENAI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      }),
+    }
+  );
+
+  const data = await response.json();
+  const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
   // Usar a função de parse robusto
-  const parsedResult = cleanAndParseJSON(text);
+  const parsedResult = cleanAndParseJSON(rawContent);
   const { sugestao, motivo } = parsedResult;
 
   return {
