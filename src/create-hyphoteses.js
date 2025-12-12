@@ -328,7 +328,7 @@ async function analyzeHypothesis() {
 
     sugestaoOriginal = sugestao;
     const hipoteseField = document.getElementById('hipotese');
-    const motivoField = document.getElementById('hipoteseMotivo').value;
+    const motivoField = document.getElementById('hipoteseMotivo');
 
     hipoteseField.value = sugestao;
     document.getElementById('hipoteseResultado').innerHTML = motivoHTML(motivo);
@@ -343,7 +343,7 @@ async function analyzeHypothesis() {
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
         fetch("/.netlify/functions/log", {
           method: "POST",
-          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + motivoField
+          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + document.getElementById('hipoteseMotivo').value
         });
       } else {
         motivoField.style.display = 'none';

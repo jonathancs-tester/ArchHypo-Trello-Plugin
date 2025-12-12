@@ -1,5 +1,6 @@
 import { handleCors, corsHeaders } from './utils/cors.js';
-import fetch from "node-fetch";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { cleanAndParseJSON } from './utils/json-utils.js';
 
 export async function handler(event) {
@@ -8,10 +9,16 @@ export async function handler(event) {
 
   const { input, language = 'pt' } = JSON.parse(event.body);
 
+  const model = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash-lite",
+    apiKey: process.env.GENAI_API_KEY,
+  });
+
   // Usar idioma enviado pelo frontend em vez de detecção automática
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
-  const prompt = `Você é um(a) Arquiteto(a) de Soluções Sênior. Sua tarefa é analisar o problema descrito em "${input}" e gerar uma resposta JSON estruturada contendo um plano de ação técnico e suas razões.
+  const prompt = ChatPromptTemplate.fromTemplate(
+    `Você é um(a) Arquiteto(a) de Soluções Sênior. Sua tarefa é analisar o problema descrito em "{input}" e gerar uma resposta JSON estruturada contendo um plano de ação técnico e suas razões.
 
 **Problema / Hipótese para Análise:** "{input}"
 
@@ -39,28 +46,17 @@ export async function handler(event) {
 
 **Regras de Saída:**
 - O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}`
-;
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${process.env.GENAI_API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      }),
-    }
   );
-  console.log(response.json())
-  const data = await response.json();
-  const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+  const chain = prompt.pipe(model);
+  const result = await chain.invoke({ input });
 
   // Usar a função de parse robusto sem fallback para detectar erros
-  const parsedResult = cleanAndParseJSON(rawContent);
+  const parsedResult = cleanAndParseJSON(result.content);
 
   // Verificar se o parsing foi bem-sucedido
   if (!parsedResult || !parsedResult.sugestao || parsedResult.sugestao.includes("Erro ao processar")) {
-    console.error("❌ Falha na geração do plano técnico:", rawContent.substring(0, 200));
+    console.error("❌ Falha na geração do plano técnico:", result.content.substring(0, 200));
 
     return {
       statusCode: 422, // Unprocessable Entity

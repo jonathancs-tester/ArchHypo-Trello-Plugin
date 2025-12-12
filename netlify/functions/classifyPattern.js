@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import fetch from "node-fetch";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { Pinecone } from "@pinecone-database/pinecone";
 import { cleanAndParseJSON } from './utils/json-utils.js';
@@ -121,6 +121,12 @@ async function queryPinecone(hypothesis, topK = 20, patternCandidates = []) {
 
 // --- Classificação com LLM ---
 async function classifyPattern(hypothesis, patternCandidates = [], language = 'pt') {
+  const llm = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash-lite",
+    apiKey: API_KEY,
+    verbose: true
+  });
+
   const { matches } = await queryPinecone(hypothesis, 20, patternCandidates);
 
   const relevantDocs = matches
@@ -198,19 +204,8 @@ Document content:
 ${context}
 `;
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      }),
-    }
-  );
-  const data = await response.json();
-  console.log(data)
-  const rawOutput = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  const response = await llm.invoke(prompt);
+  const rawOutput = response.text || response.candidates?.[0]?.content || '';
 
   try {
     const parsed = cleanAndParseJSON(rawOutput);
