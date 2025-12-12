@@ -341,14 +341,17 @@ async function analyzeHypothesis() {
       if (sugestaoAtual !== sugestaoOriginal) {
         motivoField.style.display = 'block';
         motivoField.placeholder = I18N.t('justifyChangePlaceholder');
-        fetch("/.netlify/functions/log", {
-          method: "POST",
-          body: "O usuário modificou a info. Atual: " + sugestaoAtual + ' Original: ' + sugestaoOriginal + ' Justificativa: ' + document.getElementById('hipoteseMotivo').value
-        });
       } else {
         motivoField.style.display = 'none';
         motivoField.value = '';
       }
+    });
+
+    motivoField.addEventListener('input', function () {
+      fetch("/.netlify/functions/log", {
+        method: "POST",
+        body: "O usuário modificou a justificativa. Atual: " + hipoteseField.value + ' Original: ' + sugestao + ' Justificativa: ' + this.value
+      });
     });
 
     showStep(1);
@@ -421,6 +424,13 @@ async function analyzeDomain() {
       }
     });
 
+    motivoField.addEventListener('input', function () {
+      fetch("/.netlify/functions/log", {
+        method: "POST",
+        body: "O usuário modificou a justificativa. Atual: " + dominioField.value + ' Original: ' + sugestao + ' Justificativa: ' + this.value
+      });
+    });
+
     showStep(2);
   } catch (error) {
     console.error('❌ Erro ao analisar domínio:', error.message || error);
@@ -485,6 +495,13 @@ async function analyzeUncertainty() {
         motivoField.style.display = 'none';
         motivoField.value = '';
       }
+    });
+
+    motivoField.addEventListener('input', function () {
+      fetch("/.netlify/functions/log", {
+        method: "POST",
+        body: "O usuário modificou a justificativa. Atual: " + incertezaField.value + ' Original: ' + sugestao + ' Justificativa: ' + this.value
+      });
     });
 
     showStep(3);
@@ -568,6 +585,13 @@ async function analyzeImpact() {
         motivoField.style.display = 'none';
         motivoField.value = '';
       }
+    });
+
+    motivoField.addEventListener('input', function () {
+      fetch("/.netlify/functions/log", {
+        method: "POST",
+        body: "O usuário modificou a justificativa. Atual: " + impactoField.value + ' Original: ' + sugestao + ' Justificativa: ' + this.value
+      });
     });
 
     showStep(4);
