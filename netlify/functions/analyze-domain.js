@@ -10,7 +10,7 @@ export async function handler(event) {
   const { input, language = 'pt' } = JSON.parse(event.body);
 
   const model = new ChatGoogleGenerativeAI({
-    model: "gemma-3-4b",
+    model: "gemini-1.5-flash",
     apiKey: process.env.GENAI_API_KEY,
   });
 

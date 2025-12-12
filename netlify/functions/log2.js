@@ -14,7 +14,7 @@ export default async (req) => {
 
   const newLog = `${timestamp} - ${bodyText}\n`;
 
-  await store.set(filename, current + newLog);
+  await store.set(filename, current + newLog, { append: true });
 
   return Response.json({ ok: true });
 };
