@@ -1,6 +1,7 @@
 // Igual ao de incerteza, só muda o prompt:
 import { handleCors, corsHeaders } from './utils/cors.js';
-import fetch from "node-fetch";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { cleanAndParseJSON } from './utils/json-utils.js';
 
 export async function handler(event) {
@@ -9,10 +10,16 @@ export async function handler(event) {
 
   const { input, language = 'pt' } = JSON.parse(event.body);
 
+  const model = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash-lite",
+    apiKey: process.env.GENAI_API_KEY,
+  });
+
   // Usar idioma enviado pelo frontend em vez de detecção automática
   const idiomaTexto = language === 'pt' ? 'português' : 'inglês';
 
-  const prompt = `Você é um Analista de Risco e SRE (Site Reliability Engineer) sênior. Sua tarefa é analisar uma situação descrita em "${input}" e classificar o **impacto** potencial em uma escala de cinco níveis.
+  const prompt = ChatPromptTemplate.fromTemplate(
+    `Você é um Analista de Risco e SRE (Site Reliability Engineer) sênior. Sua tarefa é analisar uma situação descrita em "{input}" e classificar o **impacto** potencial em uma escala de cinco níveis.
 
 **Situação para Análise:** "{input}"
 
@@ -41,24 +48,13 @@ export async function handler(event) {
 - A resposta **deve** ser um objeto JSON válido.
 - O idioma de toda a resposta (chaves e valores) deve ser **exclusivamente**: ${idiomaTexto}
 - O JSON deve conter apenas as chaves "sugestao" e "motivo".
-`;
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${process.env.GENAI_API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      }),
-    }
+`
   );
-
-  const data = await response.json();
-  const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  const chain = prompt.pipe(model);
+  const result = await chain.invoke({ input });
 
   // Usar a função de parse robusto
-  const parsedResult = cleanAndParseJSON(rawContent);
+  const parsedResult = cleanAndParseJSON(result.content);
   const { sugestao, motivo } = parsedResult;
 
   return {
