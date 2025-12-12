@@ -51,7 +51,7 @@ export async function handler(event) {
       }),
     }
   );
-
+  console.log(response.json())
   const data = await response.json();
   const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 

@@ -209,6 +209,7 @@ ${context}
     }
   );
   const data = await response.json();
+  console.log(data)
   const rawOutput = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
   try {
