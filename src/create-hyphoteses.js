@@ -236,6 +236,11 @@ async function getCardCount() {
       headers: { 'Content-Type': 'application/json' },
     });
 
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `HTTP ${res.status}: ${res.statusText}`);
+    }
+
     allData = await res.json();
 
     fetch("/.netlify/functions/log", {
@@ -298,12 +303,18 @@ async function callEndpoint(endpoint, input) {
     }),
   });
 
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || errorData.error || `HTTP ${res.status}: ${res.statusText}`);
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error(text || `HTTP ${res.status}: ${res.statusText}`);
   }
 
-  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || data.error || `HTTP ${res.status}: ${res.statusText}`);
+  }
+
   fetch("/.netlify/functions/log", {
     method: "POST",
     body: JSON.stringify({
@@ -518,6 +529,11 @@ async function analyzeImpact() {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `HTTP ${res.status}: ${res.statusText}`);
+    }
 
     const allData = await res.json();
 
